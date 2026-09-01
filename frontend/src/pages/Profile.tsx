@@ -83,7 +83,7 @@ export const Profile: React.FC = () => {
               )}
 
               {activeTab === 'delivery' && (
-                <DeliveryDetailsCard />
+                <DeliveryDetailsCard showActionLink={true} />
               )}
             </div>
           </div>

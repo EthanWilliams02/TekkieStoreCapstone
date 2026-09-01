@@ -1,0 +1,220 @@
+/* ==========================================================================
+   DELIVERY DETAILS PAGE STYLES
+   ========================================================================== */
+
+.delivery-details-page {
+  min-height: 100vh;
+  background-color: var(--off-white);
+  padding-bottom: 6rem;
+}
+
+.delivery-details-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   HEADER SECTION (Obsidian Banner)
+   -------------------------------------------------------------------------- */
+.delivery-header-section {
+  background-color: var(--obsidian);
+  color: var(--pure-white);
+  padding: 3.5rem 0 3rem;
+  border-bottom: 3px solid var(--brand-orange);
+}
+
+.delivery-header-content {
+  max-width: 800px;
+}
+
+.delivery-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--brand-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.delivery-main-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: var(--pure-white);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+}
+
+.delivery-header-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   BREADCRUMBS BAR
+   -------------------------------------------------------------------------- */
+.delivery-breadcrumb-bar {
+  padding: 1.25rem 0 0.5rem;
+}
+
+.delivery-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.delivery-breadcrumbs a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.delivery-breadcrumbs a:hover {
+  color: var(--brand-orange);
+}
+
+.delivery-breadcrumb-separator {
+  color: #BDBDBD;
+  font-size: 0.85rem;
+}
+
+.delivery-breadcrumb-current {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   ORDER SUMMARY META BAR
+   -------------------------------------------------------------------------- */
+.delivery-body-section {
+  padding-top: 1.5rem;
+}
+
+.order-meta-summary-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.order-meta-info-group {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.order-meta-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meta-unit-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.meta-unit-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--obsidian);
+}
+
+.meta-unit-value.order-id {
+  color: var(--brand-orange);
+}
+
+.btn-back-dashboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--off-white);
+  color: var(--obsidian);
+  border: 1px solid #D5D5D5;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+}
+
+.btn-back-dashboard:hover {
+  border-color: var(--obsidian);
+  background-color: var(--obsidian);
+  color: var(--pure-white);
+}
+
+/* --------------------------------------------------------------------------
+   TWO-COLUMN ADDRESS & CARRIER GRID
+   -------------------------------------------------------------------------- */
+.delivery-two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: stretch;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE QUERIES
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .delivery-details-container {
+    padding: 0 1.5rem;
+  }
+
+  .delivery-main-title {
+    font-size: 2.75rem;
+  }
+
+  .delivery-two-col-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .order-meta-info-group {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .delivery-header-section {
+    padding: 2.75rem 0 2.25rem;
+  }
+
+  .delivery-main-title {
+    font-size: 2.25rem;
+  }
+
+  .order-meta-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-back-dashboard {
+    width: 100%;
+    justify-content: center;
+  }
+}

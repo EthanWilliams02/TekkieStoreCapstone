@@ -1,0 +1,214 @@
+.carrier-details-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.carrier-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #EAEAEA;
+  margin-bottom: 1.25rem;
+}
+
+.carrier-card-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: rgba(253, 103, 1, 0.1);
+  color: var(--brand-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.carrier-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--obsidian);
+  margin: 0 0 0.2rem 0;
+}
+
+.carrier-card-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.carrier-details-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.carrier-brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.carrier-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--obsidian);
+  display: block;
+}
+
+.carrier-service-tier {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.carrier-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #059669;
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.carrier-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.carrier-spec-box {
+  background-color: var(--off-white);
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.spec-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.spec-value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--obsidian);
+}
+
+.carrier-contact-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background-color: #F8F8F8;
+  border: 1px solid #E5E5E5;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+}
+
+.contact-chip-icon {
+  color: var(--brand-orange);
+}
+
+.refresh-status-banner {
+  background-color: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #9A3412;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.carrier-actions-footer {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.btn-carrier-action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-carrier-action.primary {
+  background-color: var(--obsidian);
+  color: var(--pure-white);
+  border: 1px solid var(--obsidian);
+}
+
+.btn-carrier-action.primary:hover {
+  background-color: var(--brand-orange);
+  border-color: var(--brand-orange);
+  color: var(--pure-white);
+}
+
+.btn-carrier-action.secondary {
+  background-color: var(--pure-white);
+  color: var(--obsidian);
+  border: 1px solid #D5D5D5;
+}
+
+.btn-carrier-action.secondary:hover {
+  border-color: var(--obsidian);
+  background-color: var(--off-white);
+}
+
+.spin-anim {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

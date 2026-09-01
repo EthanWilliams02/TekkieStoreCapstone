@@ -778,6 +778,30 @@
   background-color: var(--pure-white);
 }
 
+.btn-view-live-tracking {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--brand-orange);
+  color: var(--pure-white);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(253, 103, 1, 0.25);
+  flex-shrink: 0;
+}
+
+.btn-view-live-tracking:hover {
+  background-color: var(--brand-orange-hover);
+  transform: translateY(-1px);
+  color: var(--pure-white);
+}
+
 .delivery-features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

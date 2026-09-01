@@ -1,7 +1,12 @@
 import React from 'react';
-import { Truck, ShieldCheck, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Truck, ShieldCheck, Clock, ArrowRight } from 'lucide-react';
 
-export const DeliveryDetailsCard: React.FC = () => {
+interface DeliveryDetailsCardProps {
+  showActionLink?: boolean;
+}
+
+export const DeliveryDetailsCard: React.FC<DeliveryDetailsCardProps> = ({ showActionLink = false }) => {
   return (
     <div className="profile-card delivery-overview-card">
       <div className="profile-card-header">
@@ -11,6 +16,13 @@ export const DeliveryDetailsCard: React.FC = () => {
             Overview of standard dispatch schedules, courier partners, and tracking services.
           </p>
         </div>
+
+        {showActionLink && (
+          <Link to="/delivery-details" className="btn-view-live-tracking" title="View live delivery and tracking details">
+            <span>View Live Tracking</span>
+            <ArrowRight size={16} />
+          </Link>
+        )}
       </div>
 
       <div className="delivery-features-grid">

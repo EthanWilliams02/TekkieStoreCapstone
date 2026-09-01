@@ -8,6 +8,7 @@ import { SignUp } from '../pages/SignUp';
 import { ForgotPassword } from '../pages/ForgotPassword';
 
 import { Profile } from '../pages/Profile';
+import { DeliveryDetails } from '../pages/DeliveryDetails';
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: '/profile',
         element: <Profile />,
+      },
+      {
+        path: '/delivery-details',
+        element: <DeliveryDetails />,
       },
     ],
   },

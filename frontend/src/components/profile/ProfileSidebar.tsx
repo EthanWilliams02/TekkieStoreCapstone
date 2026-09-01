@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Package, Truck, LogOut } from 'lucide-react';
 
 export type ProfileTab = 'profile' | 'orders' | 'delivery';
@@ -14,6 +15,13 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   onTabChange,
   onLogout,
 }) => {
+  const navigate = useNavigate();
+
+  const handleDeliveryClick = () => {
+    onTabChange('delivery');
+    navigate('/delivery-details');
+  };
+
   return (
     <aside className="profile-sidebar" aria-label="Account Navigation">
       <nav className="profile-nav-menu">
@@ -38,7 +46,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
         <button
           type="button"
           className={`profile-nav-item ${activeTab === 'delivery' ? 'active' : ''}`}
-          onClick={() => onTabChange('delivery')}
+          onClick={handleDeliveryClick}
         >
           <Truck className="nav-item-icon" size={19} />
           <span>Delivery Details</span>
