@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './SaleSection.css';
 
 export const SaleSection = () => {
@@ -14,14 +15,14 @@ export const SaleSection = () => {
             <p className="sale-description">
               Use code <strong className="sale-promo-code">TEKKIE20</strong> at checkout. Limited time only.
             </p>
-            <a href="/shop/sale" className="sale-button">
+            <Link to="/catalogue" className="sale-button">
               Explore Catalogue
-            </a>
+            </Link>
           </div>
           <div className="sale-image-container">
-            <img 
-              src="/category_sneakers_1788049733131.jpg" 
-              alt="Orange Nike Shoe" 
+            <img
+              src="/category_sneakers_1788049733131.jpg"
+              alt="Orange Nike Shoe"
               className="sale-image"
             />
           </div>

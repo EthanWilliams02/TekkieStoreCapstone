@@ -53,30 +53,27 @@
   cursor: pointer;
 }
 
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 8px;
+  outline: none;
+  transition: transform 0.3s ease;
+}
+
+.brand-link:focus-visible {
+  box-shadow: 0 0 0 3px var(--brand-orange);
+}
+
 .brand-icon:hover {
   opacity: 1;
-  filter: grayscale(0%); /* Restore original SVG colors */
+  filter: grayscale(0%);
   transform: translateY(-4px);
 }
 
-.brand-more {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--obsidian);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.5; /* Slightly more visible than the brands by default */
-  transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
-}
-
-.brand-more:hover {
+.brand-link:hover .brand-icon {
   opacity: 1;
-  color: var(--brand-orange);
-  transform: translateY(-2px);
-}
-
-.brands-footer {
-  text-align: center;
-  margin-top: 1.7rem;
+  filter: grayscale(0%);
+  transform: translateY(-4px);
 }

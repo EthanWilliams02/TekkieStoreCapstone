@@ -1,13 +1,14 @@
-import "./BrandsSection.css";
+import { Link } from 'react-router-dom';
+import './BrandsSection.css';
 
 export const BrandsSection = () => {
   const brands = [
-    { name: "NIKE", src: "/nike.svg" },
-    { name: "ADIDAS", src: "/adidas.svg" },
-    { name: "VANS", src: "/vans.svg" },
-    { name: "NEW BALANCE", src: "/newBalance.svg" },
-    { name: "PUMA", src: "/puma.svg" },
-    { name: "CONVERSE", src: "/converse.svg" },
+    { name: 'Nike',        displayName: 'NIKE',        src: '/nike.svg' },
+    { name: 'adidas',      displayName: 'ADIDAS',      src: '/adidas.svg' },
+    { name: 'Vans',        displayName: 'VANS',        src: '/vans.svg' },
+    { name: 'New Balance', displayName: 'NEW BALANCE', src: '/newBalance.svg' },
+    { name: 'PUMA',        displayName: 'PUMA',        src: '/puma.svg' },
+    { name: 'Converse',    displayName: 'CONVERSE',    src: '/converse.svg' },
   ];
 
   return (
@@ -20,17 +21,20 @@ export const BrandsSection = () => {
           </p>
         </div>
         <div className="brands-row">
-          {brands.map((brand, index) => (
-            <img
-              key={index}
-              src={brand.src}
-              alt={brand.name}
-              className="brand-icon"
-            />
+          {brands.map((brand) => (
+            <Link
+              key={brand.name}
+              to={`/catalogue?brand=${encodeURIComponent(brand.name)}`}
+              className="brand-link"
+              aria-label={`Shop ${brand.displayName}`}
+            >
+              <img
+                src={brand.src}
+                alt={brand.displayName}
+                className="brand-icon"
+              />
+            </Link>
           ))}
-        </div>
-        <div className="brands-footer">
-          <span className="brand-more">+ AND MORE</span>
         </div>
       </div>
     </section>

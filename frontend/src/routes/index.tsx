@@ -9,6 +9,7 @@ import { ForgotPassword } from '../pages/ForgotPassword';
 
 import { Profile } from '../pages/Profile';
 import { DeliveryDetails } from '../pages/DeliveryDetails';
+import { ProductDetails } from '../pages/ProductDetails';
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: '/new-drops',
         element: <CataloguePage />,
+      },
+      {
+        path: '/product/:id',
+        element: <ProductDetails />,
       },
       {
         path: '/wishlist',

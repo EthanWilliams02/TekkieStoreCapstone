@@ -3,6 +3,7 @@ import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-
 import { Search, Heart, ShoppingBag, User } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 import './Navbar.css';
 
 export const Navbar = () => {
@@ -12,6 +13,7 @@ export const Navbar = () => {
   const urlSearch = searchParams.get('search') || '';
   const [localSearch, setLocalSearch] = useState<string | null>(null);
   const { wishlistCount } = useWishlist();
+  const { cartCount } = useCart();
   const { isAuthenticated } = useAuth();
 
   const searchValue = localSearch !== null ? localSearch : urlSearch;
@@ -117,10 +119,17 @@ export const Navbar = () => {
               </div>
             </Link>
             
-            {/* Cart Icon */}
-            <button className="navActionBtn" aria-label="Cart" title="Cart">
-              <ShoppingBag className="actionIcon" strokeWidth={1.75} />
-            </button>
+            {/* Cart Icon with Live Badge */}
+            <Link to="/delivery-details" className="navActionBtn" aria-label={`Cart (${cartCount} items)`} title="Cart & Orders">
+              <div className="navBadgeWrapper">
+                <ShoppingBag className="actionIcon" strokeWidth={1.75} />
+                {cartCount > 0 && (
+                  <span className="navBadge" aria-label={`${cartCount} items in cart`}>
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+            </Link>
 
             {/* Conditional Profile Avatar or Log In / Sign Up */}
             {isAuthenticated ? (

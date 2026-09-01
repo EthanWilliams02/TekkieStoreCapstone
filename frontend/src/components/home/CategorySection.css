@@ -28,6 +28,8 @@
   aspect-ratio: 3 / 4;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  text-decoration: none;
+  color: inherit;
 }
 
 .category-image-wrapper {

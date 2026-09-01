@@ -14,6 +14,7 @@ export interface ShoeProduct {
   description: string;
   gender: ShoeGender;
   image: string;
+  images?: string[];
   isNewDrop?: boolean;
   tag?: string;
 }

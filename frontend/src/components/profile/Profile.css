@@ -115,8 +115,6 @@
   border-radius: 12px;
   padding: 1.25rem 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  position: sticky;
-  top: 90px;
 }
 
 .profile-nav-menu {
