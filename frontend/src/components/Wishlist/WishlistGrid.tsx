@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
 import { ShoeProduct } from '../../types/catalogue';
 import { WishlistCard } from './WishlistCard';
@@ -11,6 +12,7 @@ interface WishlistGridProps {
 
 export const WishlistGrid: React.FC<WishlistGridProps> = ({ products }) => {
   const { clearWishlist } = useWishlist();
+  const navigate = useNavigate();
 
   return (
     <div className="wishlist-grid-section">
@@ -32,7 +34,11 @@ export const WishlistGrid: React.FC<WishlistGridProps> = ({ products }) => {
 
       <div className="wishlist-products-grid">
         {products.map((product) => (
-          <WishlistCard key={product.id} product={product} />
+          <WishlistCard
+            key={product.id}
+            product={product}
+            onClick={() => navigate(`/product/${product.id}`)}
+          />
         ))}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { SHOES_DATA } from '../data/products';
 import { ShoeBrand, ShoeCategory, ShoeProduct, RouteMode } from '../types/catalogue';
 import { CatalogueFilters } from '../components/catalogue/CatalogueFilters';
@@ -15,6 +15,7 @@ const ITEMS_PER_PAGE = 12;
 
 export const CataloguePage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const mainColRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +70,21 @@ export const CataloguePage = () => {
 
   // Search Query from URL parameter
   const searchQuery = searchParams.get('search') || '';
+
+  // Brand pre-selection from URL parameter (?brand=Nike)
+  useEffect(() => {
+    const brandParam = searchParams.get('brand');
+    if (brandParam) {
+      const normalised = brandParam.trim() as ShoeBrand;
+      setSelectedBrands([normalised]);
+      // Remove the ?brand= param from the URL so the filter panel is the source of truth
+      const next = new URLSearchParams(searchParams);
+      next.delete('brand');
+      setSearchParams(next, { replace: true });
+      setCurrentPage(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Filter Toggle Handlers (all automatically reset to page 1)
   const handleToggleBrand = (brand: ShoeBrand) => {
@@ -240,8 +256,8 @@ export const CataloguePage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleProductCardClick = (_product: ShoeProduct) => {
-    // Ready for product details navigation
+  const handleProductCardClick = (product: ShoeProduct) => {
+    navigate(`/product/${product.id}`);
   };
 
   return (

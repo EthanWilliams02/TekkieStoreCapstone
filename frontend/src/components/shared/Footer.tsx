@@ -28,10 +28,10 @@ export const Footer = () => {
           <div className="footer-links">
             <h3 className="footer-title">SHOP</h3>
             <ul>
-              <li><a href="/shop/new">New Drops</a></li>
-              <li><a href="/shop/men">Men</a></li>
-              <li><a href="/shop/women">Women</a></li>
-              <li><a href="/shop/sale">Sale</a></li>
+              <li><Link to="/new-drops">New Drops</Link></li>
+              <li><Link to="/men">Men</Link></li>
+              <li><Link to="/women">Women</Link></li>
+              <li><Link to="/catalogue">All Products</Link></li>
             </ul>
           </div>
 

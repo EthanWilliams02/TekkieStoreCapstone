@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import "./CategorySection.css";
 import { ArrowRight } from "lucide-react";
 
@@ -8,21 +9,21 @@ export const CategorySection = () => {
       name: "NEW DROPS",
       subtitle: "The latest heat.",
       image: "/category_new_drops_boxes.jpg",
-      link: "/shop/new-drops",
+      link: "/new-drops",
     },
     {
       id: 2,
       name: "MEN",
       subtitle: "Men's footwear.",
       image: "/category_men_sneakers_standing_outfit.jpg",
-      link: "/shop/men",
+      link: "/men",
     },
     {
       id: 3,
       name: "WOMEN",
       subtitle: "Women's footwear.",
       image: "/category_women_sneakers_sitting_orange.jpg",
-      link: "/shop/women",
+      link: "/women",
     },
   ];
 
@@ -35,7 +36,7 @@ export const CategorySection = () => {
 
         <div className="category-grid">
           {categories.map((category) => (
-            <a key={category.id} href={category.link} className="category-card">
+            <Link key={category.id} to={category.link} className="category-card">
               <div className="category-image-wrapper">
                 <img
                   src={category.image}
@@ -51,7 +52,7 @@ export const CategorySection = () => {
                   Shop Now <ArrowRight size={18} />
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
