@@ -7,7 +7,7 @@ import { CatalogueToolbar } from '../components/catalogue/CatalogueToolbar';
 import { CatalogueProductCard } from '../components/catalogue/CatalogueProductCard';
 import { CataloguePagination } from '../components/catalogue/CataloguePagination';
 import { X, SearchX } from 'lucide-react';
-import './CataloguePage.css';
+import '../components/catalogue/CataloguePage.css';
 
 const MIN_PRICE = 1000;
 const MAX_PRICE = 4000;

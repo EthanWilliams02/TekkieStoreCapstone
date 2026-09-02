@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import { ProductGallery } from '../components/product/ProductGallery';
 import { ProductInfo } from '../components/product/ProductInfo';
 import { CatalogueProductCard } from '../components/catalogue/CatalogueProductCard';
-import './ProductDetails.css';
+import '../components/product/ProductDetails.css';
 
 export const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();

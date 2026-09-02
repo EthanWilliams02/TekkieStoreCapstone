@@ -2,7 +2,7 @@ import React from 'react';
 import { useWishlist } from '../context/WishlistContext';
 import { WishlistGrid } from '../components/Wishlist/WishlistGrid';
 import { WishlistEmpty } from '../components/Wishlist/WishlistEmpty';
-import './CataloguePage.css';
+import '../components/catalogue/CataloguePage.css';
 
 export const Wishlist: React.FC = () => {
   const { wishlist } = useWishlist();
