@@ -120,7 +120,7 @@ export const Navbar = () => {
             </Link>
             
             {/* Cart Icon with Live Badge */}
-            <Link to="/delivery-details" className="navActionBtn" aria-label={`Cart (${cartCount} items)`} title="Cart & Orders">
+            <Link to="/cart" className="navActionBtn" aria-label={`Cart (${cartCount} items)`} title="Shopping Cart">
               <div className="navBadgeWrapper">
                 <ShoppingBag className="actionIcon" strokeWidth={1.75} />
                 {cartCount > 0 && (

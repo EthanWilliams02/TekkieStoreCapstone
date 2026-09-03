@@ -63,14 +63,14 @@ export const ProductDetails: React.FC = () => {
     toggleWishlist(product);
   };
 
-  const handleProceedToCheckout = (size: string, quantity: number) => {
+  const handleAddToCart = (size: string, quantity: number) => {
     addToCart(product, size, quantity);
-    navigate('/delivery-details');
+    // Stays on page, does not navigate
   };
 
   const handleBuyItNow = (size: string, quantity: number) => {
     addToCart(product, size, quantity);
-    navigate('/delivery-details');
+    navigate('/cart');
   };
 
   const handleBackNavigation = () => {
@@ -129,7 +129,7 @@ export const ProductDetails: React.FC = () => {
             <div className="product-info-col">
               <ProductInfo
                 product={product}
-                onProceedToCheckout={handleProceedToCheckout}
+                onAddToCart={handleAddToCart}
                 onBuyItNow={handleBuyItNow}
               />
             </div>
@@ -159,6 +159,7 @@ export const ProductDetails: React.FC = () => {
                   key={relProduct.id}
                   product={relProduct}
                   onClick={() => navigate(`/product/${relProduct.id}`)}
+                  onQuickAdd={(item) => addToCart(item)}
                 />
               ))}
             </div>

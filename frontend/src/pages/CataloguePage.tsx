@@ -7,6 +7,7 @@ import { CatalogueToolbar } from '../components/catalogue/CatalogueToolbar';
 import { CatalogueProductCard } from '../components/catalogue/CatalogueProductCard';
 import { CataloguePagination } from '../components/catalogue/CataloguePagination';
 import { X, SearchX } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 import '../components/catalogue/CataloguePage.css';
 
 const MIN_PRICE = 1000;
@@ -18,6 +19,7 @@ export const CataloguePage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const mainColRef = useRef<HTMLDivElement>(null);
+  const { addToCart } = useCart();
 
   // Determine current route mode
   const routeMode: RouteMode = useMemo(() => {
@@ -326,6 +328,7 @@ export const CataloguePage = () => {
                         key={product.id}
                         product={product}
                         onClick={handleProductCardClick}
+                        onQuickAdd={addToCart}
                       />
                     ))}
                   </div>

@@ -279,6 +279,11 @@
   transform: translateY(0);
 }
 
+.btn-proceed-checkout.added {
+  background-color: #059669;
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.35);
+}
+
 .btn-buy-it-now {
   display: flex;
   align-items: center;

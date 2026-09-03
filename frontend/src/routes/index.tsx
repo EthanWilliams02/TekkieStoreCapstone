@@ -10,6 +10,7 @@ import { ForgotPassword } from '../pages/ForgotPassword';
 import { Profile } from '../pages/Profile';
 import { DeliveryDetails } from '../pages/DeliveryDetails';
 import { ProductDetails } from '../pages/ProductDetails';
+import { CartPage } from '../pages/CartPage';
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
       {
         path: '/delivery-details',
         element: <DeliveryDetails />,
+      },
+      {
+        path: '/cart',
+        element: <CartPage />,
       },
     ],
   },
