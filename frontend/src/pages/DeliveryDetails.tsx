@@ -1,14 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { TrackingStatus } from '../components/Delivery/TrackingStatus';
 import { DeliveryAddress } from '../components/Delivery/DeliveryAddress';
 import { CarrierDetails } from '../components/Delivery/CarrierDetails';
 import { ShipmentItems } from '../components/Delivery/ShipmentItems';
 import { DeliveryDetailsCard } from '../components/profile/DeliveryDetailsCard';
+import { useOrder } from '../context/OrderContext';
 import './DeliveryDetails.css';
 
 export const DeliveryDetails: React.FC = () => {
+  const { orderId } = useParams<{ orderId?: string }>();
+  const { activeOrder, getOrderById } = useOrder();
+
+  const order = (orderId ? getOrderById(orderId) : null) || activeOrder;
+
+  const orderNumber = order?.orderNumber || '#TK-84920';
+  const datePlaced = order?.dateFormatted || '28 Aug 2026';
+  const estimatedDelivery = order?.estimatedArrival || '03 Sep 2026';
+  const shipmentMethod = order?.shippingMethod || 'DSV Express Air';
+
   return (
     <div className="delivery-details-page">
       {/* OBSIDIAN HEADER SECTION */}
@@ -45,19 +56,19 @@ export const DeliveryDetails: React.FC = () => {
             <div className="order-meta-info-group">
               <div className="order-meta-unit">
                 <span className="meta-unit-label">Order Number</span>
-                <span className="meta-unit-value order-id">#TK-84920</span>
+                <span className="meta-unit-value order-id">{orderNumber}</span>
               </div>
               <div className="order-meta-unit">
                 <span className="meta-unit-label">Date Placed</span>
-                <span className="meta-unit-value">28 Aug 2026</span>
+                <span className="meta-unit-value">{datePlaced}</span>
               </div>
               <div className="order-meta-unit">
                 <span className="meta-unit-label">Estimated Delivery</span>
-                <span className="meta-unit-value">03 Sep 2026</span>
+                <span className="meta-unit-value">{estimatedDelivery}</span>
               </div>
               <div className="order-meta-unit">
                 <span className="meta-unit-label">Shipment Method</span>
-                <span className="meta-unit-value">DSV Express Air</span>
+                <span className="meta-unit-value">{shipmentMethod}</span>
               </div>
             </div>
 

@@ -1,13 +1,26 @@
 import React from 'react';
 import { MapPin, Phone, Building, Info } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useOrder } from '../../context/OrderContext';
 import './DeliveryAddress.css';
 
 export const DeliveryAddress: React.FC = () => {
   const { user } = useAuth();
+  const { activeOrder } = useOrder();
   
-  const recipientName = user ? `${user.firstName} ${user.lastName}` : 'Marcus Redelinghuys';
+  const recipientName = activeOrder?.shippingAddress.recipientName || 
+    (user ? `${user.firstName} ${user.lastName}` : 'Marcus Redelinghuys');
   const recipientPhone = user?.phone || '+27 82 555 1234';
+
+  const streetLine = activeOrder
+    ? `${activeOrder.shippingAddress.streetNumber} ${activeOrder.shippingAddress.streetName}`
+    : '42 Kloof Street, Apartment 4B';
+  const suburbLine = activeOrder
+    ? `${activeOrder.shippingAddress.suburb}, ${activeOrder.shippingAddress.city}`
+    : 'Gardens, Cape Town';
+  const postalLine = activeOrder
+    ? `${activeOrder.shippingAddress.postalCode}, ${activeOrder.shippingAddress.province}, South Africa`
+    : '8001, Western Cape, South Africa';
 
   return (
     <div className="delivery-address-card">
@@ -28,9 +41,9 @@ export const DeliveryAddress: React.FC = () => {
         </div>
 
         <div className="address-lines">
-          <p className="street-line">42 Kloof Street, Apartment 4B</p>
-          <p className="suburb-line">Gardens, Cape Town</p>
-          <p className="postal-line">8001, Western Cape, South Africa</p>
+          <p className="street-line">{streetLine}</p>
+          <p className="suburb-line">{suburbLine}</p>
+          <p className="postal-line">{postalLine}</p>
         </div>
 
         <div className="address-meta-list">

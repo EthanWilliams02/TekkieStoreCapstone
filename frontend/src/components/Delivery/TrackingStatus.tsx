@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Clock, Truck, Package, MapPin, Copy, CheckCircle2 } from 'lucide-react';
+import { useOrder } from '../../context/OrderContext';
 import './TrackingStatus.css';
 
 interface TrackingStep {
@@ -14,8 +15,10 @@ interface TrackingStep {
 }
 
 export const TrackingStatus: React.FC = () => {
+  const { activeOrder } = useOrder();
   const [copied, setCopied] = useState(false);
-  const trackingNumber = 'DSV-ZA-99482710';
+  const trackingNumber = activeOrder?.trackingNumber || 'DSV-ZA-99482710';
+  const orderDate = activeOrder?.dateFormatted || '28 Aug 2026';
 
   const handleCopyTracking = () => {
     navigator.clipboard.writeText(trackingNumber);
@@ -28,8 +31,8 @@ export const TrackingStatus: React.FC = () => {
       id: 'step-1',
       title: 'Order Confirmed',
       description: 'Order placed & payment verified successfully.',
-      date: '28 Aug 2026',
-      time: '10:15 AM',
+      date: orderDate,
+      time: 'Just now',
       location: 'Tekkie Store Online Vault, JHB',
       status: 'completed',
       icon: <Check size={16} />,
