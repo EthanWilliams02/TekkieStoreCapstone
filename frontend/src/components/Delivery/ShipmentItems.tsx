@@ -1,6 +1,7 @@
 import React from 'react';
 import { Package, Tag, Shield } from 'lucide-react';
 import { formatPrice } from '../../utils/formatters';
+import { useOrder } from '../../context/OrderContext';
 import airMax90 from '../../assets/Nike/Nike Air Max 90.jpg';
 import mr530 from '../../assets/New Balance/MR530 White_Grey.jpg';
 import './ShipmentItems.css';
@@ -18,7 +19,9 @@ interface ShipmentItem {
 }
 
 export const ShipmentItems: React.FC = () => {
-  const items: ShipmentItem[] = [
+  const { activeOrder } = useOrder();
+
+  const defaultItems: ShipmentItem[] = [
     {
       id: 'ship-item-1',
       brand: 'Nike',
@@ -43,9 +46,23 @@ export const ShipmentItems: React.FC = () => {
     },
   ];
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shippingFee = 0; // Free express delivery
-  const grandTotal = subtotal + shippingFee;
+  const items: ShipmentItem[] = activeOrder && activeOrder.items.length > 0
+    ? activeOrder.items.map((item, idx) => ({
+        id: item.id || `order-item-${idx}`,
+        brand: item.brand,
+        name: item.name,
+        colour: 'Original Authenticated',
+        size: item.size,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image,
+        tag: idx === 0 ? 'ORDER CONFIRMED' : undefined,
+      }))
+    : defaultItems;
+
+  const subtotal = activeOrder ? activeOrder.subtotal : items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const shippingFee = activeOrder ? activeOrder.shippingFee : 0;
+  const grandTotal = activeOrder ? activeOrder.total : subtotal + shippingFee;
 
   return (
     <div className="shipment-items-card">

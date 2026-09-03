@@ -3,13 +3,16 @@ import { router } from './routes';
 import { WishlistProvider } from './context/WishlistContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { OrderProvider } from './context/OrderContext';
 
 function App() {
   return (
     <AuthProvider>
       <WishlistProvider>
         <CartProvider>
-          <RouterProvider router={router} />
+          <OrderProvider>
+            <RouterProvider router={router} />
+          </OrderProvider>
         </CartProvider>
       </WishlistProvider>
     </AuthProvider>

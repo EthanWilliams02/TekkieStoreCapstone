@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Truck, RotateCcw, Tag, Check, ShoppingBag } from 'lucide-react';
 import { formatPrice } from '../../utils/formatters';
 import './OrderSummary.css';
@@ -13,11 +13,11 @@ const FREE_SHIPPING_THRESHOLD = 1000;
 const STANDARD_SHIPPING_FEE = 150;
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, itemCount }) => {
+  const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState('');
-  const [checkoutClicked, setCheckoutClicked] = useState(false);
 
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0;
   const shippingFee = isFreeShipping ? 0 : STANDARD_SHIPPING_FEE;
@@ -47,11 +47,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, itemCount 
   };
 
   const handleProceedToCheckout = () => {
-    // As explicitly specified: Proceed to Checkout button must NOT navigate anywhere yet.
-    setCheckoutClicked(true);
-    setTimeout(() => {
-      setCheckoutClicked(false);
-    }, 2500);
+    navigate('/checkout');
   };
 
   return (
@@ -167,19 +163,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, itemCount 
       <div className="checkout-action-wrapper">
         <button
           type="button"
-          className={`btn-proceed-checkout ${checkoutClicked ? 'clicked' : ''}`}
+          className="btn-proceed-checkout"
           onClick={handleProceedToCheckout}
           aria-label="Proceed to Checkout"
         >
           <ShoppingBag size={18} />
-          <span>{checkoutClicked ? 'Checkout Opening Soon' : 'PROCEED TO CHECKOUT'}</span>
+          <span>PROCEED TO CHECKOUT</span>
         </button>
-
-        {checkoutClicked && (
-          <p className="checkout-notice-feedback">
-            Proceeding to checkout will be enabled in the upcoming release.
-          </p>
-        )}
 
         <Link to="/catalogue" className="btn-continue-shopping">
           <span>Continue Shopping</span>
