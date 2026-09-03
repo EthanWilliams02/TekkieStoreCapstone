@@ -14,19 +14,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import tools.jackson.databind.ObjectMapper;
 import za.ac.cput.tekkiestorecapstone.domain.Address;
 import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 import za.ac.cput.tekkiestorecapstone.factory.DeliveryDetailsFactory;
 import za.ac.cput.tekkiestorecapstone.service.DeliveryDetailsService;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +53,7 @@ class DeliveryDetailsControllerTest {
                 address,
                 "Aramex",
                 "TRK-889922",
-                new Date()
+                LocalDate.now()
         );
     }
 

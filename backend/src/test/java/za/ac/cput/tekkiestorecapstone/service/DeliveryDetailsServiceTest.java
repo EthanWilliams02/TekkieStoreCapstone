@@ -19,7 +19,7 @@ import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 import za.ac.cput.tekkiestorecapstone.factory.DeliveryDetailsFactory;
 import za.ac.cput.tekkiestorecapstone.repository.DeliveryDetailsRepository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +48,7 @@ class DeliveryDetailsServiceTest {
                 .setPostalCode("8005")
                 .build();
 
-        deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", new Date());
+        deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", LocalDate.now());
 
     }
 

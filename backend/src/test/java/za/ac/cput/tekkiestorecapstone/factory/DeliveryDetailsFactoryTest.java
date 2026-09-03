@@ -13,7 +13,7 @@ import org.springframework.core.annotation.Order;
 import za.ac.cput.tekkiestorecapstone.domain.Address;
 import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +32,7 @@ public class DeliveryDetailsFactoryTest {
     @Test
     @Order(1)
     public void createDeliveryDetails() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", new Date());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", LocalDate.now());
         assertNotNull(deliveryDetails);
         System.out.println(deliveryDetails.toString());
     }
@@ -40,28 +40,28 @@ public class DeliveryDetailsFactoryTest {
     @Test
     @Order(2)
     public void createDeliveryDetailsWithNullDeliveryId() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails(null, address, "Aramex", "TRK-889922", new Date());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails(null, address, "Aramex", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(3)
     public void createDeliveryDetailsWithEmptyCourier() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "", "TRK-889922", new Date());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(4)
     public void createDeliveryDetailsWithNullTrackingNumber() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", null, new Date());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", null, LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(5)
     public void createDeliveryDetailsWithNullAddress() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", null, "Aramex", "TRK-889922", new Date());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", null, "Aramex", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
