@@ -6,8 +6,16 @@ Date: 18 July 2026
 
 package za.ac.cput.tekkiestorecapstone.domain;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //represents a shoe entity in the system.
 @Entity
@@ -20,7 +28,11 @@ public class Shoe {
     private String description;
     private String gender;
     private double basePrice;
-    //private String imageUrl;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "shoe_images", joinColumns = @JoinColumn(name = "shoe_id"))
+    @Column(name = "image_url")
+    private List<String> imageUrls = new ArrayList<>();
 
     //Default constructor
     protected Shoe(){
@@ -36,6 +48,7 @@ public class Shoe {
         this.description = builder.description;
         this.gender = builder.gender;
         this.basePrice = builder.basePrice;
+        this.imageUrls = builder.imageUrls != null ? builder.imageUrls : new ArrayList<>();
     }
 
     // Getter methods to access private fields
@@ -61,6 +74,9 @@ public class Shoe {
     public double getBasePrice() {
         return basePrice;
     }
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
 
     @Override
     public String toString() {
@@ -72,6 +88,7 @@ public class Shoe {
                 ", description='" + description + '\'' +
                 ", gender='" + gender + '\'' +
                 ", basePrice='" + basePrice + '\'' +
+                ", imageUrls='" + imageUrls + '\'' +
                 '}';
     }
 
@@ -84,6 +101,7 @@ public class Shoe {
         private String description;
         private String gender;
         private double basePrice;
+        private List<String> imageUrls = new ArrayList<>();
 
         public Builder setShoeId(String shoeId) {
             this.shoeId = shoeId;
@@ -113,6 +131,10 @@ public class Shoe {
             this.basePrice = basePrice;
             return this;
         }
+        public Builder setImageUrls(List<String> imageUrls) {
+            this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
+            return this;
+        }
 
         //Copies values from an existing Admin object
         public Builder copy(Shoe shoe){
@@ -123,6 +145,7 @@ public class Shoe {
             this.description = shoe.description;
             this.gender = shoe.gender;
             this.basePrice = shoe.basePrice;
+            this.imageUrls = shoe.imageUrls != null ? new ArrayList<>(shoe.imageUrls) : new ArrayList<>();
             return this;
         }
 

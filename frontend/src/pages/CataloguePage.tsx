@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import { SHOES_DATA } from '../data/products';
+import { fetchAllShoes } from '../services/shoeService';
 import { ShoeBrand, ShoeCategory, ShoeProduct, RouteMode } from '../types/catalogue';
 import { CatalogueFilters } from '../components/catalogue/CatalogueFilters';
 import { CatalogueToolbar } from '../components/catalogue/CatalogueToolbar';
@@ -26,6 +26,7 @@ export const CataloguePage = () => {
     const path = location.pathname.toLowerCase();
     if (path.includes('men') && !path.includes('women')) return 'men';
     if (path.includes('women')) return 'women';
+    if (path.includes('kids')) return 'kids';
     if (path.includes('new-drops') || path.includes('drops')) return 'new-drops';
     return 'all';
   }, [location.pathname]);
@@ -44,6 +45,12 @@ export const CataloguePage = () => {
           eyebrow: "Women's Footwear",
           title: "WOMEN'S COLLECTION",
           subtitle: 'Your next statement pair starts here. Premium silhouettes and elevated platforms.',
+        };
+      case 'kids':
+        return {
+          eyebrow: "Kids' Footwear",
+          title: "KIDS' ROTATION",
+          subtitle: 'Everyday comfort, durability, and playful style for the next generation.',
         };
       case 'new-drops':
         return {
@@ -146,31 +153,54 @@ export const CataloguePage = () => {
     selectedSizes.length +
     (currentMaxPrice < MAX_PRICE ? 1 : 0);
 
+  // Live Shoes from Spring Boot REST API
+  const [allProducts, setAllProducts] = useState<ShoeProduct[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAllShoes().then((shoes) => {
+      if (isMounted) {
+        setAllProducts(shoes);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // 1. BASE ROUTE PRODUCTS
   const baseProducts = useMemo(() => {
     switch (routeMode) {
       case 'men':
-        return SHOES_DATA.filter((p) => p.gender === 'Men');
+        return allProducts.filter((p) => p.gender === 'Men' || p.gender === 'Unisex');
       case 'women':
-        return SHOES_DATA.filter((p) => p.gender === 'Women');
+        return allProducts.filter((p) => p.gender === 'Women' || p.gender === 'Unisex');
+      case 'kids':
+        return allProducts.filter((p) => p.gender === 'Kids');
       case 'new-drops':
-        return SHOES_DATA.filter((p) => Boolean(p.isNewDrop));
+        return allProducts.filter((p) => Boolean(p.isNewDrop));
       case 'all':
       default:
-        return SHOES_DATA;
+        return allProducts;
     }
-  }, [routeMode]);
+  }, [allProducts, routeMode]);
 
   // 2. APPLY SIDEBAR FILTERS & SEARCH ON TOP OF BASE ROUTE PRODUCTS
   const filteredProducts = useMemo(() => {
     return baseProducts.filter((product) => {
-      // Brand filter
-      if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) {
+      // Brand filter (case-insensitive)
+      if (
+        selectedBrands.length > 0 &&
+        !selectedBrands.some((b) => b.toLowerCase() === product.brand.toLowerCase())
+      ) {
         return false;
       }
 
-      // Category filter
-      if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) {
+      // Category filter (case-insensitive)
+      if (
+        selectedCategories.length > 0 &&
+        !selectedCategories.some((c) => c.toLowerCase() === product.category.toLowerCase())
+      ) {
         return false;
       }
 

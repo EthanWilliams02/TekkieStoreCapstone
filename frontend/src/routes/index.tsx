@@ -35,6 +35,10 @@ export const router = createBrowserRouter([
         element: <CataloguePage />,
       },
       {
+        path: '/kids',
+        element: <CataloguePage />,
+      },
+      {
         path: '/new-drops',
         element: <CataloguePage />,
       },

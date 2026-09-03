@@ -1,7 +1,7 @@
-export type ShoeBrand = 'Nike' | 'adidas' | 'PUMA' | 'New Balance' | 'Converse' | 'Vans';
+export type ShoeBrand = 'Nike' | 'adidas' | 'PUMA' | 'New Balance' | 'Converse' | 'Vans' | 'Asics' | 'Reebok';
 export type ShoeCategory = 'Casual' | 'Sneaker' | 'Trainer';
-export type ShoeGender = 'Men' | 'Women' | 'Unisex';
-export type RouteMode = 'all' | 'men' | 'women' | 'new-drops';
+export type ShoeGender = 'Men' | 'Women' | 'Unisex' | 'Kids';
+export type RouteMode = 'all' | 'men' | 'women' | 'kids' | 'new-drops';
 
 export interface ShoeProduct {
   id: string;

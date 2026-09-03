@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, SearchX, Sparkles } from 'lucide-react';
-import { SHOES_DATA } from '../data/products';
+import { fetchShoeById, fetchAllShoes } from '../services/shoeService';
 import { ShoeProduct } from '../types/catalogue';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
@@ -17,22 +17,40 @@ export const ProductDetails: React.FC = () => {
   const { addToCart } = useCart();
 
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
+  const [product, setProduct] = useState<ShoeProduct | undefined>(undefined);
+  const [allProducts, setAllProducts] = useState<ShoeProduct[]>([]);
 
-  // Scroll to top on product change
+  // Scroll to top and fetch product on id change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
+    let isMounted = true;
 
-  // Find product by id from the single source of truth
-  const product: ShoeProduct | undefined = SHOES_DATA.find((p) => p.id === id);
+    if (id) {
+      fetchShoeById(id).then((p) => {
+        if (isMounted) {
+          setProduct(p);
+        }
+      });
+    }
+
+    fetchAllShoes().then((shoes) => {
+      if (isMounted) {
+        setAllProducts(shoes);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   // Suggested products from the same brand or category
   const relatedProducts = React.useMemo(() => {
     if (!product) return [];
-    return SHOES_DATA
+    return allProducts
       .filter((p) => p.id !== product.id && (p.brand === product.brand || p.category === product.category))
       .slice(0, 3);
-  }, [product]);
+  }, [product, allProducts]);
 
   // Handle Product Not Found
   if (!product) {

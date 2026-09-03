@@ -1,36 +1,52 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './TrendingSection.css';
 import { ArrowRight } from 'lucide-react';
-import { SHOES_DATA } from '../../data/products';
+import { fetchAllShoes } from '../../services/shoeService';
+import { ShoeProduct } from '../../types/catalogue';
 import { formatPrice } from '../../utils/formatters';
-import airMax90 from '../../assets/Nike/Nike Air Max 90.jpg';
-import mr530 from '../../assets/New Balance/MR530 White_Grey.jpg';
-import vansOldSkool from '../../assets/Vans/Vans Old Skool Black_White.jpg';
-import airMonarch from '../../assets/Nike/Nike Mens Air Monarch IV.jpg';
 
-// Local image overrides for the 4 featured trending products (LCP-critical assets)
-const TRENDING_IMAGES: Record<string, string> = {
-  'nike-men-2': airMax90,
-  'new-balance-unisex-11': mr530,
-  'vans-men-1': vansOldSkool,
-  'nike-men-5': airMonarch,
-};
-
-// Tags shown on the trending cards (editorial/marketing labels, not in product data)
+// Editorial marketing tags for the featured trending shoes
 const TRENDING_TAGS: Record<string, string> = {
-  'nike-men-2': 'LIMITED',
-  'new-balance-unisex-11': 'SELLING FAST',
-  'vans-men-1': 'RESTOCKED',
-  'nike-men-5': 'JUST DROPPED',
+  'ADI-007': 'SELLING FAST',
+  'NIKE-001': 'LIMITED',
+  'PUM-011': 'RESTOCKED',
+  'NIKE-016': 'JUST DROPPED',
 };
 
-// The 4 products featured in the Trending section — sourced from SHOES_DATA
-const TRENDING_IDS = ['nike-men-2', 'new-balance-unisex-11', 'vans-men-1', 'nike-men-5'];
+// Target shoe IDs from MySQL database: Samba OG, Air Max 90, Puma Suede Classic, P-6000 Metallic
+const FEATURED_TRENDING_IDS = ['ADI-007', 'NIKE-001', 'PUM-011', 'NIKE-016'];
 
 export const TrendingSection = () => {
-  const trendingProducts = TRENDING_IDS
-    .map((id) => SHOES_DATA.find((p) => p.id === id))
-    .filter(Boolean);
+  const [trendingProducts, setTrendingProducts] = useState<ShoeProduct[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAllShoes().then((shoes) => {
+      if (!isMounted) return;
+
+      if (shoes && shoes.length > 0) {
+        // Pick the 4 featured shoes, or fallback to first 4 real shoes
+        const selected = FEATURED_TRENDING_IDS
+          .map((id) => shoes.find((p) => p.id === id))
+          .filter(Boolean) as ShoeProduct[];
+
+        if (selected.length >= 4) {
+          setTrendingProducts(selected);
+        } else {
+          setTrendingProducts(shoes.slice(0, 4));
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (trendingProducts.length === 0) {
+    return null;
+  }
 
   return (
     <section className="trending-section">
@@ -47,7 +63,7 @@ export const TrendingSection = () => {
 
         <div className="trending-grid">
           {trendingProducts.map((product) => {
-            if (!product) return null;
+            const tag = TRENDING_TAGS[product.id] || 'HOT';
             return (
               <Link
                 key={product.id}
@@ -55,11 +71,12 @@ export const TrendingSection = () => {
                 className="product-card"
               >
                 <div className="product-image-container">
-                  <span className="product-tag">{TRENDING_TAGS[product.id]}</span>
+                  <span className="product-tag">{tag}</span>
                   <img
-                    src={TRENDING_IMAGES[product.id] ?? product.image}
+                    src={product.image}
                     alt={product.name}
                     className="product-image"
+                    loading="lazy"
                   />
                   <div className="quick-view-overlay">View Product</div>
                 </div>
