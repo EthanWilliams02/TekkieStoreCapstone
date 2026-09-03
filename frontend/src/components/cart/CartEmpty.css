@@ -1,0 +1,111 @@
+/* ==========================================================================
+   CART EMPTY STATE STYLES
+   ========================================================================== */
+
+.cart-empty-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem;
+}
+
+.cart-empty-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E5E5E5;
+  border-radius: 16px;
+  padding: 5rem 2.5rem;
+  max-width: 580px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  animation: fadeInScale 0.3s ease-out;
+}
+
+.cart-empty-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: rgba(253, 103, 1, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.cart-empty-card:hover .cart-empty-icon-wrapper {
+  transform: scale(1.08);
+}
+
+.cart-empty-icon {
+  color: var(--brand-orange);
+}
+
+.cart-empty-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 2.25rem;
+  letter-spacing: 0.03em;
+  color: var(--obsidian);
+  margin: 0 0 0.85rem 0;
+  text-transform: uppercase;
+}
+
+.cart-empty-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 0 2.5rem 0;
+}
+
+.cart-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--brand-orange);
+  color: var(--pure-white);
+  padding: 1rem 2.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(253, 103, 1, 0.25);
+  text-decoration: none;
+}
+
+.cart-empty-btn:hover {
+  background-color: var(--brand-orange-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(253, 103, 1, 0.35);
+  color: var(--pure-white);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 580px) {
+  .cart-empty-card {
+    padding: 3.5rem 1.5rem;
+  }
+
+  .cart-empty-title {
+    font-size: 1.75rem;
+  }
+
+  .cart-empty-subtitle {
+    font-size: 0.95rem;
+  }
+}

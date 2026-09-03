@@ -1,0 +1,207 @@
+/* ==========================================================================
+   CART PAGE STYLES
+   ========================================================================== */
+
+.cart-page {
+  min-height: 100vh;
+  background-color: var(--off-white);
+  padding-bottom: 6rem;
+}
+
+.cart-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   HEADER SECTION (Obsidian Banner)
+   -------------------------------------------------------------------------- */
+.cart-header-section {
+  background-color: var(--obsidian);
+  color: var(--pure-white);
+  padding: 3.5rem 0 3rem;
+  border-bottom: 3px solid var(--brand-orange);
+}
+
+.cart-header-content {
+  max-width: 800px;
+}
+
+.cart-eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--brand-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.cart-main-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: var(--pure-white);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+}
+
+.cart-header-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   BREADCRUMB BAR
+   -------------------------------------------------------------------------- */
+.cart-breadcrumb-bar {
+  padding: 1.25rem 0 0.5rem;
+}
+
+.cart-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.cart-breadcrumbs a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.cart-breadcrumbs a:hover {
+  color: var(--brand-orange);
+}
+
+.cart-breadcrumb-separator {
+  color: #BDBDBD;
+  font-size: 0.85rem;
+}
+
+.cart-breadcrumb-current {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   MAIN BODY & 2-COLUMN GRID
+   -------------------------------------------------------------------------- */
+.cart-body-section {
+  padding-top: 1.5rem;
+}
+
+.cart-layout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 2.25rem;
+  align-items: start;
+}
+
+/* Cart Items Section */
+.cart-items-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cart-items-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.25rem 0.75rem;
+}
+
+.cart-items-count-text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.cart-items-count-text strong {
+  color: var(--obsidian);
+  font-weight: 700;
+}
+
+.cart-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.cart-clear-btn:hover {
+  color: #DC2626;
+  background-color: #FEE2E2;
+}
+
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Subtle entrance animation for cart cards */
+.cart-items-list > * {
+  animation: slideFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE DESIGN
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .cart-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 0 1.25rem;
+  }
+
+  .cart-header-section {
+    padding: 2.75rem 0 2.25rem;
+  }
+
+  .cart-main-title {
+    font-size: 2.5rem;
+  }
+
+  .cart-header-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-main-title {
+    font-size: 2.1rem;
+  }
+}

@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import { Minus, Plus, ShoppingBag, Zap, ShieldCheck, Truck, RotateCcw, AlertCircle } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, Zap, ShieldCheck, Truck, RotateCcw, AlertCircle, Check } from 'lucide-react';
 import { ShoeProduct } from '../../types/catalogue';
 import { formatPrice } from '../../utils/formatters';
 import './ProductInfo.css';
 
 interface ProductInfoProps {
   product: ShoeProduct;
-  onProceedToCheckout: (size: string, quantity: number) => void;
+  onAddToCart?: (size: string, quantity: number) => void;
+  onProceedToCheckout?: (size: string, quantity: number) => void;
   onBuyItNow: (size: string, quantity: number) => void;
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
   product,
+  onAddToCart,
   onProceedToCheckout,
   onBuyItNow,
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [sizeError, setSizeError] = useState<boolean>(false);
+  const [addedFeedback, setAddedFeedback] = useState<boolean>(false);
 
   const handleSizeSelect = (size: string) => {
     setSelectedSize(size);
@@ -34,12 +37,18 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
     setQuantity((prev) => prev + 1);
   };
 
-  const handleProceedClick = () => {
+  const handleAddToCartClick = () => {
     if (!selectedSize) {
       setSizeError(true);
       return;
     }
-    onProceedToCheckout(selectedSize, quantity);
+    if (onAddToCart) {
+      onAddToCart(selectedSize, quantity);
+    } else if (onProceedToCheckout) {
+      onProceedToCheckout(selectedSize, quantity);
+    }
+    setAddedFeedback(true);
+    setTimeout(() => setAddedFeedback(false), 1800);
   };
 
   const handleBuyNowClick = () => {
@@ -151,15 +160,25 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         </div>
       </div>
 
-      {/* ACTION BUTTONS: PROCEED TO CHECKOUT & BUY IT NOW */}
+      {/* ACTION BUTTONS: ADD TO CART & BUY IT NOW */}
       <div className="product-actions-group">
         <button
           type="button"
-          className="btn-proceed-checkout"
-          onClick={handleProceedClick}
+          className={`btn-proceed-checkout ${addedFeedback ? 'added' : ''}`}
+          onClick={handleAddToCartClick}
+          aria-label={addedFeedback ? "Added to Cart" : "Add to Cart"}
         >
-          <ShoppingBag size={18} />
-          <span>PROCEED TO CHECKOUT</span>
+          {addedFeedback ? (
+            <>
+              <Check size={18} />
+              <span>ADDED TO CART</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={18} />
+              <span>ADD TO CART</span>
+            </>
+          )}
         </button>
 
         <button

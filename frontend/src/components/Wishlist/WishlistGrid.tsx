@@ -4,6 +4,7 @@ import { Trash2 } from 'lucide-react';
 import { ShoeProduct } from '../../types/catalogue';
 import { WishlistCard } from './WishlistCard';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import './WishlistGrid.css';
 
 interface WishlistGridProps {
@@ -12,6 +13,7 @@ interface WishlistGridProps {
 
 export const WishlistGrid: React.FC<WishlistGridProps> = ({ products }) => {
   const { clearWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
 
   return (
@@ -38,6 +40,7 @@ export const WishlistGrid: React.FC<WishlistGridProps> = ({ products }) => {
             key={product.id}
             product={product}
             onClick={() => navigate(`/product/${product.id}`)}
+            onQuickAdd={addToCart}
           />
         ))}
       </div>
