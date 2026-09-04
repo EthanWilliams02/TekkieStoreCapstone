@@ -31,6 +31,7 @@ export const Footer = () => {
               <li><Link to="/new-drops">New Drops</Link></li>
               <li><Link to="/men">Men</Link></li>
               <li><Link to="/women">Women</Link></li>
+              <li><Link to="/sale" style={{ color: '#E02B20', fontWeight: 600 }}>Sale</Link></li>
               <li><Link to="/catalogue">All Products</Link></li>
             </ul>
           </div>

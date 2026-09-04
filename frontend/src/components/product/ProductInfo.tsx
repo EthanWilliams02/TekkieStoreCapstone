@@ -75,7 +75,19 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
 
       {/* PRICE */}
       <div className="product-info-price-row">
-        <span className="product-info-price">{formatPrice(product.price)}</span>
+        {product.isOnSale && product.salePrice ? (
+          <div className="product-details-sale-pricing">
+            <span className="product-info-price sale-price">{formatPrice(product.salePrice)}</span>
+            <span className="product-info-price original-price">{formatPrice(product.price)}</span>
+            {product.salePercentage && (
+              <span className="product-sale-pill">
+                Save {Math.round(product.salePercentage)}%
+              </span>
+            )}
+          </div>
+        ) : (
+          <span className="product-info-price">{formatPrice(product.price)}</span>
+        )}
         <span className="product-info-vat">Incl. VAT</span>
       </div>
 

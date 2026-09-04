@@ -57,7 +57,7 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
       <div className="product-image-container">
         {/* Product Tag / Badge */}
         {product.tag && (
-          <span className={`product-tag ${product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
+          <span className={`product-tag ${product.isOnSale ? 'tag-sale' : product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
             {product.tag}
           </span>
         )}
@@ -114,7 +114,16 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
         </div>
         <h3 className="product-name">{product.name}</h3>
         <p className="product-colour-text">{product.colour}</p>
-        <span className="product-price">{formatPrice(product.price)}</span>
+        <div className="product-price-container">
+          {product.isOnSale && product.salePrice ? (
+            <div className="product-price-sale-row">
+              <span className="product-price sale-price">{formatPrice(product.salePrice)}</span>
+              <span className="product-price original-price">{formatPrice(product.price)}</span>
+            </div>
+          ) : (
+            <span className="product-price">{formatPrice(product.price)}</span>
+          )}
+        </div>
       </div>
     </div>
   );

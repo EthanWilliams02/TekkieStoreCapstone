@@ -54,6 +54,14 @@
   color: var(--brand-orange);
 }
 
+.link.sale-nav-link {
+  color: #E02B20;
+}
+
+.link.sale-nav-link:hover, .link.sale-nav-link.active {
+  color: #FF3B30;
+}
+
 .navRight {
   display: flex;
   align-items: center;

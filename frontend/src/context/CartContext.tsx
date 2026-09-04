@@ -87,8 +87,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart([]);
   };
 
+  const getEffectivePrice = (product: ShoeProduct) =>
+    product.isOnSale && product.salePrice ? product.salePrice : product.price;
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const cartTotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+  const cartTotal = cart.reduce((total, item) => total + getEffectivePrice(item.product) * item.quantity, 0);
 
   const value: CartContextType = {
     cart,

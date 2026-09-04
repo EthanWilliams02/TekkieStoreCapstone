@@ -27,10 +27,10 @@ export const CategorySection = () => {
     },
     {
       id: 4,
-      name: "KIDS",
-      subtitle: "Playful comfort & mini heat.",
+      name: "SALE",
+      subtitle: "Up to 35% off limited heat.",
       image: "/category_sneakers_1788049733131.jpg",
-      link: "/kids",
+      link: "/sale",
     },
   ];
 

@@ -24,9 +24,9 @@ export const CataloguePage = () => {
   // Determine current route mode
   const routeMode: RouteMode = useMemo(() => {
     const path = location.pathname.toLowerCase();
+    if (path.includes('sale')) return 'sale';
     if (path.includes('men') && !path.includes('women')) return 'men';
     if (path.includes('women')) return 'women';
-    if (path.includes('kids')) return 'kids';
     if (path.includes('new-drops') || path.includes('drops')) return 'new-drops';
     return 'all';
   }, [location.pathname]);
@@ -34,6 +34,12 @@ export const CataloguePage = () => {
   // Dynamic Context-Aware Header
   const headerContent = useMemo(() => {
     switch (routeMode) {
+      case 'sale':
+        return {
+          eyebrow: 'Limited Time Markdowns',
+          title: 'STEP INTO THE SALE',
+          subtitle: 'Score discounts of up to 35% off on selected grails and essential silhouettes.',
+        };
       case 'men':
         return {
           eyebrow: "Men's Footwear",
@@ -45,12 +51,6 @@ export const CataloguePage = () => {
           eyebrow: "Women's Footwear",
           title: "WOMEN'S COLLECTION",
           subtitle: 'Your next statement pair starts here. Premium silhouettes and elevated platforms.',
-        };
-      case 'kids':
-        return {
-          eyebrow: "Kids' Footwear",
-          title: "KIDS' ROTATION",
-          subtitle: 'Everyday comfort, durability, and playful style for the next generation.',
         };
       case 'new-drops':
         return {
@@ -171,12 +171,12 @@ export const CataloguePage = () => {
   // 1. BASE ROUTE PRODUCTS
   const baseProducts = useMemo(() => {
     switch (routeMode) {
+      case 'sale':
+        return allProducts.filter((p) => Boolean(p.isOnSale));
       case 'men':
         return allProducts.filter((p) => p.gender === 'Men' || p.gender === 'Unisex');
       case 'women':
         return allProducts.filter((p) => p.gender === 'Women' || p.gender === 'Unisex');
-      case 'kids':
-        return allProducts.filter((p) => p.gender === 'Kids');
       case 'new-drops':
         return allProducts.filter((p) => Boolean(p.isNewDrop));
       case 'all':

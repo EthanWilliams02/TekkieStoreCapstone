@@ -17,7 +17,8 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
   onRemove,
 }) => {
   const { product, size, quantity, cartId } = item;
-  const lineTotal = product.price * quantity;
+  const unitPrice = product.isOnSale && product.salePrice ? product.salePrice : product.price;
+  const lineTotal = unitPrice * quantity;
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -34,7 +35,7 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
       {/* THUMBNAIL */}
       <div className="cart-item-thumb-wrapper">
         {product.tag && (
-          <span className={`cart-item-tag ${product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
+          <span className={`cart-item-tag ${product.isOnSale ? 'tag-sale' : product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
             {product.tag}
           </span>
         )}
@@ -105,9 +106,13 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
       <div className="cart-item-price-actions">
         <div className="cart-price-col">
           <span className="cart-line-total">{formatPrice(lineTotal)}</span>
-          {quantity > 1 && (
+          {product.isOnSale && product.salePrice ? (
+            <span className="cart-unit-price" style={{ textDecoration: 'line-through', color: 'var(--text-muted)' }}>
+              {formatPrice(product.price * quantity)}
+            </span>
+          ) : quantity > 1 ? (
             <span className="cart-unit-price">{formatPrice(product.price)} each</span>
-          )}
+          ) : null}
         </div>
 
         <button

@@ -155,3 +155,6 @@ In this project, we use two third-party tools to handle data and media efficient
 
 **Q: How did you optimize image load times for large (7MB–10MB) raw photos?**  
 > *"We utilized Cloudinary's dynamic on-the-fly transformations (`f_auto,q_auto,w_800`). Cloudinary automatically compresses the image, converts it into modern WebP format, and resizes it to 800px on their global CDN, shrinking file sizes by over 95% for instant page loads."*
+
+**Q: How are sale prices and sale percentages handled across the application?**  
+> *"The database `shoe` entity stores both `sale_price` and `sale_percentage`. When a sale percentage is applied (e.g. 20%), the discounted price is calculated and persisted in MySQL. In the frontend, on-sale shoes display a badge (`-20% OFF`), a strikethrough original price, and are filterable through a dedicated `/sale` route. The shopping cart automatically charges the discounted price upon checkout."*

@@ -62,6 +62,38 @@
   letter-spacing: -0.01em;
 }
 
+.product-details-sale-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.product-info-price.sale-price {
+  color: #E02B20;
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.product-info-price.original-price {
+  font-size: 1.35rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-weight: 600;
+}
+
+.product-sale-pill {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #E02B20 0%, #FF3B30 100%);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 10px rgba(224, 43, 32, 0.3);
+}
+
 .product-info-vat {
   font-size: 0.85rem;
   color: var(--text-muted);

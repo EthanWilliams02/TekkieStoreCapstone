@@ -30,7 +30,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     public void run(String... args) {
         // Only seed if the database has no shoes
         if (shoeRepository.count() > 0) {
-            System.out.println("Database already contains " + shoeRepository.count() + " shoes. Skipping seed.");
+            updateExistingShoesWithSaleData();
+            System.out.println("Database already contains " + shoeRepository.count() + " shoes. Verified sale data.");
             return;
         }
 
@@ -41,16 +42,16 @@ public class DatabaseSeeder implements CommandLineRunner {
         // ==========================================
         // ADIDAS
         // ==========================================
-        shoes.add(ShoeFactory.createShoe("ADI-001", "Adidas", "Campus 00s", "Sneaker",
-                "Chunky skate-inspired sneaker with premium suede upper and padded collar.", "Unisex", 1999.00,
+        shoes.add(ShoeFactory.createSaleShoe("ADI-001", "Adidas", "Campus 00s", "Sneaker",
+                "Chunky skate-inspired sneaker with premium suede upper and padded collar.", "Unisex", 1999.00, 20.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470411/shoes/adidas/adidas_Campus_00s.jpg")));
 
         shoes.add(ShoeFactory.createShoe("ADI-002", "Adidas", "Gazelle Bold", "Casual",
                 "Iconic Gazelle silhouette stacked on a triple-layer platform sole.", "Women", 2199.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470419/shoes/adidas/adidas_Gazelle_Bold.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("ADI-003", "Adidas", "Gazelle Blue", "Casual",
-                "Timeless low-profile classic in royal blue suede with contrast white stripes.", "Unisex", 1899.00,
+        shoes.add(ShoeFactory.createSaleShoe("ADI-003", "Adidas", "Gazelle Blue", "Casual",
+                "Timeless low-profile classic in royal blue suede with contrast white stripes.", "Unisex", 1899.00, 15.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470425/shoes/adidas/adidas_Gazelle_Blue.jpg")));
 
         shoes.add(ShoeFactory.createShoe("ADI-004", "Adidas", "Gazelle Green", "Casual",
@@ -73,8 +74,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "Elevated take on the Samba featuring a translucent gum platform sole.", "Women", 2299.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470475/shoes/adidas/adidas_Sambae.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("ADI-009", "Adidas", "SL 72 OG", "Trainer",
-                "Lightweight retro running shoe originally debuted for the 1972 Munich games.", "Unisex", 1799.00,
+        shoes.add(ShoeFactory.createSaleShoe("ADI-009", "Adidas", "SL 72 OG", "Trainer",
+                "Lightweight retro running shoe originally debuted for the 1972 Munich games.", "Unisex", 1799.00, 25.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470482/shoes/adidas/adidas_SL_72_OG.jpg")));
 
         shoes.add(ShoeFactory.createShoe("ADI-010", "Adidas", "Spiritain 2000 Grey", "Trainer",
@@ -111,8 +112,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                         "https://res.cloudinary.com/nuivwupa/image/upload/v1788470527/shoes/nike/Air_Max_90_Black_2.jpg"
                 )));
 
-        shoes.add(ShoeFactory.createShoe("NIKE-002", "Nike", "Air Max 90 University Red", "Sneaker",
-                "Bold red colorway featuring Max Air cushioning and stitched overlays.", "Men", 2799.00,
+        shoes.add(ShoeFactory.createSaleShoe("NIKE-002", "Nike", "Air Max 90 University Red", "Sneaker",
+                "Bold red colorway featuring Max Air cushioning and stitched overlays.", "Men", 2799.00, 20.0,
                 Arrays.asList(
                         "https://res.cloudinary.com/nuivwupa/image/upload/v1788470531/shoes/nike/Air_Max_90_University_Red.jpg",
                         "https://res.cloudinary.com/nuivwupa/image/upload/v1788470535/shoes/nike/Air_Max_90_University_Red_2.jpg"
@@ -137,8 +138,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "Human anatomy-inspired design with graduated panels and large visible air bubbles.", "Men", 3299.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470565/shoes/nike/Nike_Air_Max_95_Big_Bubble.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("NIKE-007", "Nike", "Court Vision Low", "Casual",
-                "Fastbreak style meets modern comfort inspired by 1980s basketball silhouettes.", "Men", 1499.00,
+        shoes.add(ShoeFactory.createSaleShoe("NIKE-007", "Nike", "Court Vision Low", "Casual",
+                "Fastbreak style meets modern comfort inspired by 1980s basketball silhouettes.", "Men", 1499.00, 30.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470570/shoes/nike/Nike_Court_Vision_Low.jpg")));
 
         shoes.add(ShoeFactory.createShoe("NIKE-008", "Nike", "Flex Train", "Trainer",
@@ -149,8 +150,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "Signature skate shoe for Ishod Wair with cupsole durability and Max Air tech.", "Men", 2199.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470579/shoes/nike/Nike_SB_Air_Max_Ishod.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("NIKE-010", "Nike", "SB Chron 2 Canvas", "Casual",
-                "Flexible canvas skate shoe with recycled materials and comfortable foam insole.", "Unisex", 1299.00,
+        shoes.add(ShoeFactory.createSaleShoe("NIKE-010", "Nike", "SB Chron 2 Canvas", "Casual",
+                "Flexible canvas skate shoe with recycled materials and comfortable foam insole.", "Unisex", 1299.00, 25.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470583/shoes/nike/Nike_SB_Chron_2_Canvas.jpg")));
 
         shoes.add(ShoeFactory.createShoe("NIKE-011", "Nike", "SB Dunk Low Pro", "Sneaker",
@@ -161,8 +162,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "Modern cupsole skate innovation with canvas-suede durability and heritage DNA.", "Unisex", 1699.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470598/shoes/nike/Nike_SB_Force_58.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("NIKE-013", "Nike", "V5 RNR", "Trainer",
-                "Futuristic running trainer with bold geometric sole tooling and breathable upper.", "Unisex", 2299.00,
+        shoes.add(ShoeFactory.createSaleShoe("NIKE-013", "Nike", "V5 RNR", "Trainer",
+                "Futuristic running trainer with bold geometric sole tooling and breathable upper.", "Unisex", 2299.00, 15.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470604/shoes/nike/Nike_V5_RNR.jpg")));
 
         shoes.add(ShoeFactory.createShoe("NIKE-014", "Nike", "Zoom Vomero 5", "Trainer",
@@ -196,16 +197,16 @@ public class DatabaseSeeder implements CommandLineRunner {
         // ==========================================
         // PUMA
         // ==========================================
-        shoes.add(ShoeFactory.createShoe("PUM-001", "Puma", "CA Pro Classic", "Casual",
-                "Heritage California 1980s court silhouette with stacked midsole and premium leather.", "Unisex", 1699.00,
+        shoes.add(ShoeFactory.createSaleShoe("PUM-001", "Puma", "CA Pro Classic", "Casual",
+                "Heritage California 1980s court silhouette with stacked midsole and premium leather.", "Unisex", 1699.00, 20.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470697/shoes/puma/PUMA_CA_Pro_Classic.jpg")));
 
         shoes.add(ShoeFactory.createShoe("PUM-002", "Puma", "Court Classic Clean", "Casual",
                 "Minimalist tennis sneaker engineered for effortless everyday pairing.", "Unisex", 1299.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470715/shoes/puma/PUMA_Court_Classic_Clean.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("PUM-003", "Puma", "H-Street Etoile", "Trainer",
-                "Reissued running spike reimagined for ultra-lightweight street fashion.", "Women", 1999.00,
+        shoes.add(ShoeFactory.createSaleShoe("PUM-003", "Puma", "H-Street Etoile", "Trainer",
+                "Reissued running spike reimagined for ultra-lightweight street fashion.", "Women", 1999.00, 35.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470761/shoes/puma/PUMA_H-Street_Etoile.jpg")));
 
         shoes.add(ShoeFactory.createShoe("PUM-004", "Puma", "Palermo Moda", "Casual",
@@ -232,8 +233,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "Formula 1 racing driver footwear repurposed for sleek low-profile streetwear.", "Unisex", 1999.00,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470798/shoes/puma/PUMA_Speedcat.jpg")));
 
-        shoes.add(ShoeFactory.createShoe("PUM-010", "Puma", "Suede Bloom", "Casual",
-                "Floral pastel accents bloom across the iconic 1968 Puma Suede upper.", "Women", 1699.00,
+        shoes.add(ShoeFactory.createSaleShoe("PUM-010", "Puma", "Suede Bloom", "Casual",
+                "Floral pastel accents bloom across the iconic 1968 Puma Suede upper.", "Women", 1699.00, 20.0,
                 List.of("https://res.cloudinary.com/nuivwupa/image/upload/v1788470808/shoes/puma/PUMA_Suede_Bloom.jpg")));
 
         shoes.add(ShoeFactory.createShoe("PUM-011", "Puma", "Suede Classic", "Casual",
@@ -251,5 +252,42 @@ public class DatabaseSeeder implements CommandLineRunner {
         // Save all shoes to MySQL
         shoeRepository.saveAll(shoes);
         System.out.println("SUCCESS: Seeded " + shoes.size() + " sneakers with live Cloudinary URLs into MySQL!");
+    }
+
+    private void updateExistingShoesWithSaleData() {
+        java.util.Map<String, Double> sales = java.util.Map.of(
+            "ADI-001", 20.0,
+            "ADI-003", 15.0,
+            "ADI-009", 25.0,
+            "NIKE-002", 20.0,
+            "NIKE-007", 30.0,
+            "NIKE-010", 25.0,
+            "NIKE-013", 15.0,
+            "PUM-001", 20.0,
+            "PUM-003", 35.0,
+            "PUM-010", 20.0
+        );
+
+        boolean updatedAny = false;
+        for (var entry : sales.entrySet()) {
+            var optionalShoe = shoeRepository.findById(entry.getKey());
+            if (optionalShoe.isPresent()) {
+                Shoe existing = optionalShoe.get();
+                if (existing.getSalePercentage() == 0) {
+                    double percent = entry.getValue();
+                    double salePrice = Math.round(existing.getBasePrice() * (1.0 - (percent / 100.0)) * 100.0) / 100.0;
+                    Shoe updated = new Shoe.Builder()
+                            .copy(existing)
+                            .setSalePercentage(percent)
+                            .setSalePrice(salePrice)
+                            .build();
+                    shoeRepository.save(updated);
+                    updatedAny = true;
+                }
+            }
+        }
+        if (updatedAny) {
+            System.out.println("Updated existing database shoes with sale percentages and sale prices.");
+        }
     }
 }

@@ -28,6 +28,8 @@ public class Shoe {
     private String description;
     private String gender;
     private double basePrice;
+    private double salePrice;
+    private double salePercentage;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shoe_images", joinColumns = @JoinColumn(name = "shoe_id"))
@@ -48,6 +50,8 @@ public class Shoe {
         this.description = builder.description;
         this.gender = builder.gender;
         this.basePrice = builder.basePrice;
+        this.salePrice = builder.salePrice;
+        this.salePercentage = builder.salePercentage;
         this.imageUrls = builder.imageUrls != null ? builder.imageUrls : new ArrayList<>();
     }
 
@@ -74,6 +78,15 @@ public class Shoe {
     public double getBasePrice() {
         return basePrice;
     }
+    public double getSalePrice() {
+        return salePrice;
+    }
+    public double getSalePercentage() {
+        return salePercentage;
+    }
+    public boolean isOnSale() {
+        return salePercentage > 0 && salePrice > 0;
+    }
     public List<String> getImageUrls() {
         return imageUrls;
     }
@@ -87,8 +100,10 @@ public class Shoe {
                 ", category='" + category + '\'' +
                 ", description='" + description + '\'' +
                 ", gender='" + gender + '\'' +
-                ", basePrice='" + basePrice + '\'' +
-                ", imageUrls='" + imageUrls + '\'' +
+                ", basePrice=" + basePrice + '\'' +
+                ", salePrice=" + salePrice + '\'' +
+                ", salePercentage=" + salePercentage + '\'' +
+                ", imageUrls=" + imageUrls + '\'' +
                 '}';
     }
 
@@ -101,6 +116,8 @@ public class Shoe {
         private String description;
         private String gender;
         private double basePrice;
+        private double salePrice;
+        private double salePercentage;
         private List<String> imageUrls = new ArrayList<>();
 
         public Builder setShoeId(String shoeId) {
@@ -131,6 +148,23 @@ public class Shoe {
             this.basePrice = basePrice;
             return this;
         }
+        public Builder setSalePrice(double salePrice) {
+            this.salePrice = salePrice;
+            return this;
+        }
+        public Builder setSalePercentage(double salePercentage) {
+            this.salePercentage = salePercentage;
+            return this;
+        }
+        public Builder setSale(double salePercentage) {
+            this.salePercentage = salePercentage;
+            if (salePercentage > 0 && this.basePrice > 0) {
+                this.salePrice = Math.round(this.basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
+            } else {
+                this.salePrice = 0.0;
+            }
+            return this;
+        }
         public Builder setImageUrls(List<String> imageUrls) {
             this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
             return this;
@@ -145,6 +179,8 @@ public class Shoe {
             this.description = shoe.description;
             this.gender = shoe.gender;
             this.basePrice = shoe.basePrice;
+            this.salePrice = shoe.salePrice;
+            this.salePercentage = shoe.salePercentage;
             this.imageUrls = shoe.imageUrls != null ? new ArrayList<>(shoe.imageUrls) : new ArrayList<>();
             return this;
         }

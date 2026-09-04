@@ -65,6 +65,13 @@
   background-color: var(--brand-orange);
 }
 
+.catalogue-product-card .product-tag.tag-sale {
+  background: linear-gradient(135deg, #E02B20 0%, #FF3B30 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(224, 43, 32, 0.35);
+  font-weight: 800;
+}
+
 /* Wishlist Button */
 .wishlist-btn {
   position: absolute;
@@ -213,4 +220,31 @@
   font-weight: 700;
   color: var(--brand-orange);
   margin-top: 0.2rem;
+}
+
+.product-price-container {
+  display: flex;
+  align-items: baseline;
+  margin-top: 0.2rem;
+}
+
+.product-price-sale-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.product-price.sale-price {
+  color: #E02B20;
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-top: 0;
+}
+
+.product-price.original-price {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-weight: 500;
+  margin-top: 0;
 }

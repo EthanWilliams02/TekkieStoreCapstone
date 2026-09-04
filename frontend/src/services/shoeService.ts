@@ -9,6 +9,8 @@ export interface BackendShoe {
   description: string;
   gender: string;
   basePrice: number;
+  salePrice?: number;
+  salePercentage?: number;
   imageUrls: string[];
 }
 
@@ -53,10 +55,21 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
   const cleanGender = (shoe.gender || '').trim().toLowerCase();
   if (cleanGender === 'men') gender = 'Men';
   else if (cleanGender === 'women') gender = 'Women';
-  else if (cleanGender === 'kids') gender = 'Kids';
 
   const newDropIds = ['ADI-001', 'ADI-002', 'ADI-007', 'ADI-008', 'NIKE-001', 'NIKE-006', 'NIKE-011', 'NIKE-014', 'PUM-004', 'PUM-007', 'PUM-008', 'PUM-012'];
   const isNewDrop = newDropIds.includes(shoe.shoeId);
+
+  const isOnSale = Boolean(
+    shoe.salePercentage && shoe.salePercentage > 0 &&
+    shoe.salePrice && shoe.salePrice > 0 && shoe.salePrice < shoe.basePrice
+  );
+
+  let tag: string | undefined = undefined;
+  if (isOnSale) {
+    tag = `${Math.round(shoe.salePercentage!)}% OFF`;
+  } else if (isNewDrop) {
+    tag = 'JUST DROPPED';
+  }
 
   return {
     id: shoe.shoeId,
@@ -66,11 +79,15 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
     colour: 'Original',
     sizes: ['UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11'],
     price: shoe.basePrice,
+    salePrice: isOnSale ? shoe.salePrice : undefined,
+    salePercentage: isOnSale ? shoe.salePercentage : undefined,
+    isOnSale: isOnSale,
     description: shoe.description,
     gender: gender,
     image: primaryImage,
     images: optimizedImages,
     isNewDrop: isNewDrop,
+    tag: tag,
   };
 };
 

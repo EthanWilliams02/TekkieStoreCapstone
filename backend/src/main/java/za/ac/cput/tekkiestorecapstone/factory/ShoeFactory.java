@@ -21,6 +21,11 @@ public class ShoeFactory {
 
     // Method supporting list of image URLs (Cloudinary)
     public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, List<String> imageUrls) {
+        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, 0.0, 0.0, imageUrls);
+    }
+
+    // Method supporting basePrice, salePrice, salePercentage, and imageUrls
+    public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePrice, double salePercentage, List<String> imageUrls) {
         if (Helper.isNullOrEmpty(shoeId)
                 || Helper.isNullOrEmpty(brand)
                 || Helper.isNullOrEmpty(shoeName)
@@ -30,7 +35,7 @@ public class ShoeFactory {
             return null;
         }
 
-        if (basePrice < 0) {
+        if (basePrice < 0 || salePrice < 0 || salePercentage < 0) {
             return null;
         }
 
@@ -42,7 +47,18 @@ public class ShoeFactory {
                 .setDescription(description)
                 .setGender(gender)
                 .setBasePrice(basePrice)
+                .setSalePrice(salePrice)
+                .setSalePercentage(salePercentage)
                 .setImageUrls(imageUrls != null ? imageUrls : new ArrayList<>())
                 .build();
+    }
+
+    // Convenience method that automatically calculates salePrice from salePercentage
+    public static Shoe createSaleShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePercentage, List<String> imageUrls) {
+        double salePrice = 0.0;
+        if (salePercentage > 0 && basePrice > 0) {
+            salePrice = Math.round(basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
+        }
+        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, salePrice, salePercentage, imageUrls);
     }
 }

@@ -15,8 +15,8 @@ export const SaleSection = () => {
             <p className="sale-description">
               Use code <strong className="sale-promo-code">TEKKIE20</strong> at checkout. Limited time only.
             </p>
-            <Link to="/catalogue" className="sale-button">
-              Explore Catalogue
+            <Link to="/sale" className="sale-button">
+              Shop The Sale
             </Link>
           </div>
           <div className="sale-image-container">

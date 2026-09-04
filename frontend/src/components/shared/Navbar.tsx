@@ -23,7 +23,7 @@ export const Navbar = () => {
     const query = searchValue.trim();
     
     // Check if currently on a catalogue route
-    const isCatalogueRoute = ['/catalogue', '/men', '/women', '/kids', '/new-drops'].includes(location.pathname);
+    const isCatalogueRoute = ['/catalogue', '/men', '/women', '/new-drops', '/sale'].includes(location.pathname);
     
     if (isCatalogueRoute) {
       if (query) {
@@ -46,7 +46,7 @@ export const Navbar = () => {
     const val = e.target.value;
     setLocalSearch(val);
     
-    const isCatalogueRoute = ['/catalogue', '/men', '/women', '/kids', '/new-drops'].includes(location.pathname);
+    const isCatalogueRoute = ['/catalogue', '/men', '/women', '/new-drops', '/sale'].includes(location.pathname);
     if (isCatalogueRoute) {
       if (val.trim()) {
         searchParams.set('search', val.trim());
@@ -84,8 +84,8 @@ export const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/kids" className={({ isActive }) => isActive ? 'link active' : 'link'}>
-                KIDS
+              <NavLink to="/sale" className={({ isActive }) => isActive ? 'link active sale-nav-link' : 'link sale-nav-link'}>
+                SALE
               </NavLink>
             </li>
             <li>
