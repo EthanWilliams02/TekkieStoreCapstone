@@ -1,0 +1,31 @@
+.legalSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.legalSectionHeading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--obsidian);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.legalSectionText {
+  font-size: 0.98rem;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.75;
+}
+
+@media (max-width: 640px) {
+  .legalSectionHeading {
+    font-size: 1.1rem;
+  }
+
+  .legalSectionText {
+    font-size: 0.94rem;
+  }
+}

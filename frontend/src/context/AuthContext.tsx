@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile } from '../types/profile';
+import { authService, RegisterPayload } from '../services/authService';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -9,13 +10,14 @@ interface AuthState {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserProfile | null;
-  login: (email?: string, password?: string) => void;
-  signup: (data: { fullName?: string; firstName?: string; lastName?: string; email: string; phone?: string }) => void;
+  login: (email: string, password?: string) => Promise<void>;
+  signup: (data: RegisterPayload) => Promise<void>;
   logout: () => void;
   updateProfile: (updatedData: Partial<UserProfile>) => void;
 }
 
 const STORAGE_KEY = 'tekkie_store_auth';
+const TOKEN_KEY = 'tekkie_token';
 
 export const DEFAULT_USER: UserProfile = {
   firstName: 'Marcus',
@@ -30,7 +32,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authState, setAuthState] = useState<AuthState>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (saved && token) {
         const parsed = JSON.parse(saved);
         return {
           isAuthenticated: Boolean(parsed.isAuthenticated),
@@ -54,38 +57,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [authState]);
 
-  const login = (email?: string) => {
-    setAuthState((prev) => ({
-      isAuthenticated: true,
-      user: prev.user || {
-        ...DEFAULT_USER,
-        email: email || DEFAULT_USER.email,
-      },
-    }));
-  };
+  const login = async (email: string, password?: string) => {
+    const response = await authService.login(email, password);
+    localStorage.setItem(TOKEN_KEY, response.token);
 
-  const signup = (data: { fullName?: string; firstName?: string; lastName?: string; email: string; phone?: string }) => {
-    let first = data.firstName || '';
-    let last = data.lastName || '';
-
-    if (data.fullName && (!first || !last)) {
-      const parts = data.fullName.trim().split(' ');
-      first = parts[0] || 'Member';
+    let first = '';
+    let last = '';
+    if (response.name) {
+      const parts = response.name.trim().split(/\s+/);
+      first = parts[0] || '';
       last = parts.slice(1).join(' ') || '';
     }
 
+    const realUser: UserProfile = {
+      firstName: first || 'Member',
+      lastName: last,
+      email: response.email,
+      phone: '',
+    };
+
     setAuthState({
       isAuthenticated: true,
-      user: {
-        firstName: first || DEFAULT_USER.firstName,
-        lastName: last || DEFAULT_USER.lastName,
-        email: data.email || DEFAULT_USER.email,
-        phone: data.phone || DEFAULT_USER.phone,
-      },
+      user: realUser,
+    });
+  };
+
+  const signup = async (data: RegisterPayload) => {
+    const response = await authService.register(data);
+    localStorage.setItem(TOKEN_KEY, response.token);
+
+    let first = data.firstName || '';
+    let last = data.lastName || '';
+
+    if (!first && response.name) {
+      const parts = response.name.trim().split(/\s+/);
+      first = parts[0] || '';
+      last = parts.slice(1).join(' ') || '';
+    }
+
+    const realUser: UserProfile = {
+      firstName: first || 'Member',
+      lastName: last,
+      email: response.email,
+      phone: data.phone || data.mobileNumber || '',
+    };
+
+    setAuthState({
+      isAuthenticated: true,
+      user: realUser,
     });
   };
 
   const logout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(STORAGE_KEY);
     setAuthState({
       isAuthenticated: false,
       user: null,

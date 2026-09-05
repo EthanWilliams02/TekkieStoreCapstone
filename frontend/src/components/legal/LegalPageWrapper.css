@@ -1,0 +1,29 @@
+.legalPageWrapper {
+  min-height: calc(100vh - 200px);
+  background-color: var(--off-white);
+  padding: 4rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.legalPageContainer {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--pure-white);
+  border-radius: 20px;
+  padding: 3.5rem 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .legalPageWrapper {
+    padding: 2rem 1rem;
+  }
+
+  .legalPageContainer {
+    padding: 2.25rem 1.5rem;
+    border-radius: 16px;
+  }
+}
