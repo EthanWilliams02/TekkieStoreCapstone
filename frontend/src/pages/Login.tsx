@@ -9,16 +9,29 @@ export const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setForm((prev) => ({ ...prev, [id === 'login-email' ? 'email' : 'password']: value }));
+    if (error) setError(null);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    login(form.email, form.password);
-    navigate('/catalogue');
+    setError(null);
+    setLoading(true);
+    try {
+      await login(form.email, form.password);
+      navigate('/catalogue');
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message || err.message || 'Invalid email or password. Please try again.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,6 +43,12 @@ export const Login = () => {
       footerLinkTo="/signup"
     >
       <form className="authForm" onSubmit={handleSubmit}>
+        {error && (
+          <div style={{ color: '#dc2626', fontSize: '0.875rem', textAlign: 'center', marginTop: '-0.25rem' }}>
+            {error}
+          </div>
+        )}
+
         <AuthField
           id="login-email"
           type="email"
@@ -58,8 +77,8 @@ export const Login = () => {
           </Link>
         </div>
 
-        <button type="submit" className="authSubmitBtn">
-          LOGIN
+        <button type="submit" className="authSubmitBtn" disabled={loading}>
+          {loading ? 'SIGNING IN...' : 'LOGIN'}
         </button>
       </form>
     </AuthContainer>

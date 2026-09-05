@@ -16,6 +16,7 @@ public class Customer {
     @Id
     private String customerId;
     private String email;
+    private String password;
     @Embedded
     private Name name;
     private String mobileNumber;
@@ -27,6 +28,7 @@ public class Customer {
     private Customer(Builder builder){
         this.customerId= builder.customerId;
         this.email= builder.email;
+        this.password= builder.password;
         this.name= builder.name;
         this.mobileNumber= builder.mobileNumber;
         this.address= builder.address;
@@ -46,6 +48,14 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Name getName() {
@@ -74,6 +84,7 @@ public class Customer {
     public static class Builder{
        private String customerId;
        private String email;
+       private String password;
        private Name name;
        private String mobileNumber;
        private Address address;
@@ -85,6 +96,11 @@ public class Customer {
 
        public Builder setEmail(String email) {
            this.email = email;
+           return this;
+       }
+
+       public Builder setPassword(String password) {
+           this.password = password;
            return this;
        }
 
@@ -106,6 +122,7 @@ public class Customer {
        public Builder copy(Customer customer){
            this.customerId= customer.customerId;
            this.email= customer.email;
+           this.password= customer.password;
            this.name= customer.name;
            this.mobileNumber=customer.mobileNumber;
            this.address=customer.address;

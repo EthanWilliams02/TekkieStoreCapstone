@@ -1,0 +1,23 @@
+.faqPageWrapper {
+  min-height: calc(100vh - 200px);
+  background-color: var(--off-white);
+  padding: 4rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.faqPageContainer {
+  width: 100%;
+  max-width: 850px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .faqPageWrapper {
+    padding: 2rem 1rem;
+  }
+}

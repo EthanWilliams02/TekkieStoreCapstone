@@ -39,7 +39,7 @@ export const Footer = () => {
           <div className="footer-links">
             <h3 className="footer-title">SUPPORT</h3>
             <ul>
-              <li><a href="/help">FAQ</a></li>
+              <li><Link to="/faq">FAQ</Link></li>
               <li><a href="/shipping">Shipping & Returns</a></li>
               <li><a href="/contact">Contact Us</a></li>
               <li><a href="/track">Track Order</a></li>
@@ -50,8 +50,8 @@ export const Footer = () => {
             <h3 className="footer-title">COMPANY</h3>
             <ul>
               <li><a href="/about">About Us</a></li>
-              <li><a href="/privacy">Privacy Policy</a></li>
-              <li><a href="/terms">Terms of Service</a></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

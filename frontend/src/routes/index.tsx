@@ -13,6 +13,9 @@ import { ProductDetails } from '../pages/ProductDetails';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { OrderConfirmation } from '../pages/OrderConfirmation';
+import { PrivacyPolicy } from '../pages/PrivacyPolicy';
+import { TermsOfService } from '../pages/TermsOfService';
+import { FAQ } from '../pages/FAQ';
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +84,18 @@ export const router = createBrowserRouter([
       {
         path: '/order-confirmation/:orderId',
         element: <OrderConfirmation />,
+      },
+      {
+        path: '/privacy',
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: '/terms',
+        element: <TermsOfService />,
+      },
+      {
+        path: '/faq',
+        element: <FAQ />,
       },
     ],
   },
