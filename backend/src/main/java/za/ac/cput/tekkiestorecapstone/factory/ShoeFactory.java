@@ -14,18 +14,13 @@ import java.util.List;
 
 public class ShoeFactory {
 
-    // Overloaded method preserving existing 7-argument signature
-    public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice) {
-        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, new ArrayList<>());
-    }
-
-    // Method supporting list of image URLs (Cloudinary)
+    // Overload for regular retail shoes (defaults salePercentage to 0.0)
     public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, List<String> imageUrls) {
-        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, 0.0, 0.0, imageUrls);
+        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, 0.0, imageUrls);
     }
 
-    // Method supporting basePrice, salePrice, salePercentage, and imageUrls
-    public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePrice, double salePercentage, List<String> imageUrls) {
+    // Unified master method: handles validation, automatic salePrice calculation from salePercentage, and builds Shoe
+    public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePercentage, List<String> imageUrls) {
         if (Helper.isNullOrEmpty(shoeId)
                 || Helper.isNullOrEmpty(brand)
                 || Helper.isNullOrEmpty(shoeName)
@@ -35,8 +30,13 @@ public class ShoeFactory {
             return null;
         }
 
-        if (basePrice < 0 || salePrice < 0 || salePercentage < 0) {
+        if (basePrice < 0 || salePercentage < 0 || salePercentage > 100) {
             return null;
+        }
+
+        double salePrice = 0.0;
+        if (salePercentage > 0) {
+            salePrice = Math.round(basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
         }
 
         return new Shoe.Builder()
@@ -53,12 +53,8 @@ public class ShoeFactory {
                 .build();
     }
 
-    // Convenience method that automatically calculates salePrice from salePercentage
+    // Convenience alias preserving explicit readability for promotional items
     public static Shoe createSaleShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePercentage, List<String> imageUrls) {
-        double salePrice = 0.0;
-        if (salePercentage > 0 && basePrice > 0) {
-            salePrice = Math.round(basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
-        }
-        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, salePrice, salePercentage, imageUrls);
+        return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, salePercentage, imageUrls);
     }
 }

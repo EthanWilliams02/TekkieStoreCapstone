@@ -45,7 +45,8 @@ class ShoeControllerTest {
                 "Sneaker",
                 "Comfortable running shoe",
                 "Unisex",
-                2500.00
+                2500.00,
+                List.of("https://res.cloudinary.com/test/nike-air-max.jpg")
         );
     }
 

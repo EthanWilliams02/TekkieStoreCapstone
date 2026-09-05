@@ -38,8 +38,16 @@ class ShoeServiceTest {
 
     @BeforeEach
     void setUp() {
-        shoe = ShoeFactory.createShoe("S001", "Adios", "Fakanese", "Sneaker", "Cheaper shows with the same comfortability", "UniSex", 320.00f);
-
+        shoe = ShoeFactory.createShoe(
+                "S001",
+                "Adios",
+                "Fakanese",
+                "Sneaker",
+                "Cheaper shoes with the same comfortability",
+                "Unisex",
+                320.00,
+                List.of("https://res.cloudinary.com/test/shoe.jpg")
+        );
     }
 
     @Test
