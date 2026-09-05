@@ -9,4 +9,19 @@ const api = axios.create({
   timeout: 10000,
 });
 
+// Request interceptor to attach JWT bearer token to outgoing requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('tekkie_token');
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default api;
