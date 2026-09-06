@@ -10,6 +10,7 @@ import za.ac.cput.tekkiestorecapstone.domain.Shoe;
 
 import java.util.List;
 
+// Service contract for Shoe operations extending generic IService
 public interface IShoeService extends IService<Shoe, String> {
     List<Shoe> getAll();
 }

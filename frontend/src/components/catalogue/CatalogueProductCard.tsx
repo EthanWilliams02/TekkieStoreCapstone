@@ -86,10 +86,6 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
           alt={`${product.brand} ${product.name} in ${product.colour}`} 
           className="product-image" 
           loading="lazy"
-          onError={(e) => {
-            // Clean fallback in case of loading anomaly
-            (e.target as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-          }}
         />
 
         {/* Quick Add Button */}

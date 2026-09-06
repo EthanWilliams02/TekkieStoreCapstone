@@ -1,6 +1,7 @@
 import api from './api';
 import { ShoeProduct, ShoeBrand, ShoeCategory, ShoeGender } from '../types/catalogue';
 
+// Matches the exact fields returned by the Spring Boot Shoe entity
 export interface BackendShoe {
   shoeId: string;
   brand: string;
@@ -14,12 +15,7 @@ export interface BackendShoe {
   imageUrls: string[];
 }
 
-/**
- * Optimizes Cloudinary images dynamically on the fly:
- * - f_auto: delivers lightweight WebP or AVIF based on browser support
- * - q_auto: smart compression with zero visible loss of quality
- * - w_800: resizes massive 7MB-10MB raw uploads down to responsive 800px display width
- */
+// Auto-converts raw Cloudinary uploads to fast WebP/AVIF and resizes to 800px
 export const optimizeCloudinaryUrl = (url: string, width = 800): string => {
   if (!url || typeof url !== 'string') return url;
   if (url.includes('cloudinary.com') && url.includes('/upload/')) {
@@ -30,10 +26,27 @@ export const optimizeCloudinaryUrl = (url: string, width = 800): string => {
   return url;
 };
 
-/**
- * Transforms a backend Shoe entity into the frontend ShoeProduct format.
- */
+// Make sure the main front photo is always first, before alternate views like _2 or _3
+export const sortShoeImages = (urls: string[]): string[] => {
+  if (!urls || urls.length <= 1) return urls || [];
+
+  return [...urls].sort((a, b) => {
+    // If a photo filename has _2 or _3, it is an alternate angle
+    const aIsAlternate = a.includes('_2') || a.includes('_3');
+    const bIsAlternate = b.includes('_2') || b.includes('_3');
+
+    // Keep the main photo (the one without _2 or _3) at index 0
+    if (!aIsAlternate && bIsAlternate) return -1;
+    if (aIsAlternate && !bIsAlternate) return 1;
+
+    // Otherwise sort normally (_2 before _3)
+    return a.localeCompare(b);
+  });
+};
+
+// Maps backend Shoe data into the format expected by our frontend components
 export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
+  // Normalize brand names for clean UI filters
   let brand: ShoeBrand = 'Nike';
   const cleanBrand = (shoe.brand || '').trim().toLowerCase();
   if (cleanBrand === 'adidas') brand = 'adidas';
@@ -44,26 +57,28 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
   else if (cleanBrand === 'asics') brand = 'Asics';
   else if (cleanBrand === 'reebok') brand = 'Reebok';
 
-  const rawImages = shoe.imageUrls && shoe.imageUrls.length > 0
-    ? shoe.imageUrls
-    : ['/trending_shoe_1_1788049696433.jpg'];
-
+  // Get images from the database and make sure the main photo is first
+  const rawImages = sortShoeImages(shoe.imageUrls || []);
   const optimizedImages = rawImages.map((u) => optimizeCloudinaryUrl(u, 800));
-  const primaryImage = optimizedImages[0];
+  const primaryImage = optimizedImages[0] || '';
 
+  // Gender classification
   let gender: ShoeGender = 'Unisex';
   const cleanGender = (shoe.gender || '').trim().toLowerCase();
   if (cleanGender === 'men') gender = 'Men';
   else if (cleanGender === 'women') gender = 'Women';
 
+  // Highlight specific hot shoes as new drops
   const newDropIds = ['ADI-001', 'ADI-002', 'ADI-007', 'ADI-008', 'NIKE-001', 'NIKE-006', 'NIKE-011', 'NIKE-014', 'PUM-004', 'PUM-007', 'PUM-008', 'PUM-012'];
   const isNewDrop = newDropIds.includes(shoe.shoeId);
 
+  // Check if shoe is discounted
   const isOnSale = Boolean(
     shoe.salePercentage && shoe.salePercentage > 0 &&
     shoe.salePrice && shoe.salePrice > 0 && shoe.salePrice < shoe.basePrice
   );
 
+  // Badge text for card overlays
   let tag: string | undefined = undefined;
   if (isOnSale) {
     tag = `${Math.round(shoe.salePercentage!)}% OFF`;
@@ -91,10 +106,7 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
   };
 };
 
-/**
- * Fetches all shoes from the Spring Boot backend REST endpoint (/shoe/getAll).
- * Falls back to local static dataset if the backend is unreachable.
- */
+// GET: Fetch all shoes from the backend REST API
 export const fetchAllShoes = async (): Promise<ShoeProduct[]> => {
   try {
     const response = await api.get<BackendShoe[]>('/shoe/getAll');
@@ -108,9 +120,7 @@ export const fetchAllShoes = async (): Promise<ShoeProduct[]> => {
   }
 };
 
-/**
- * Fetches a single shoe by ID from the Spring Boot backend REST endpoint (/shoe/read/{id}).
- */
+// GET: Fetch a single shoe by ID
 export const fetchShoeById = async (id: string): Promise<ShoeProduct | undefined> => {
   try {
     const response = await api.get<BackendShoe>(`/shoe/read/${id}`);
@@ -122,4 +132,38 @@ export const fetchShoeById = async (id: string): Promise<ShoeProduct | undefined
   }
   return undefined;
 };
+
+// POST: Send a new shoe to Spring Boot to persist in the database
+export const createShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null> => {
+  try {
+    const response = await api.post<BackendShoe>('/shoe/create', shoe);
+    return response.data ? mapBackendShoeToProduct(response.data) : null;
+  } catch (error) {
+    console.error('Failed to create shoe via backend API:', error);
+    return null;
+  }
+};
+
+// POST: Send updated shoe details to Spring Boot
+export const updateShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null> => {
+  try {
+    const response = await api.post<BackendShoe>('/shoe/update', shoe);
+    return response.data ? mapBackendShoeToProduct(response.data) : null;
+  } catch (error) {
+    console.error('Failed to update shoe via backend API:', error);
+    return null;
+  }
+};
+
+// DELETE: Delete a shoe by ID
+export const deleteShoe = async (id: string): Promise<boolean> => {
+  try {
+    const response = await api.delete<boolean>(`/shoe/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to delete shoe ${id}:`, error);
+    return false;
+  }
+};
+
 

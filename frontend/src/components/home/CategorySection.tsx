@@ -25,13 +25,6 @@ export const CategorySection = () => {
       image: "/category_women_sneakers_sitting_orange.jpg",
       link: "/women",
     },
-    {
-      id: 4,
-      name: "SALE",
-      subtitle: "Up to 35% off limited heat.",
-      image: "/category_sneakers_1788049733131.jpg",
-      link: "/sale",
-    },
   ];
 
   return (

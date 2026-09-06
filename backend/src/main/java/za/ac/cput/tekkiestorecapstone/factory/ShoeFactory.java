@@ -14,13 +14,14 @@ import java.util.List;
 
 public class ShoeFactory {
 
-    // Overload for regular retail shoes (defaults salePercentage to 0.0)
+    // For normal shoes with no discount (sets sale to 0%)
     public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, List<String> imageUrls) {
         return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, 0.0, imageUrls);
     }
 
-    // Unified master method: handles validation, automatic salePrice calculation from salePercentage, and builds Shoe
+    // Validates required fields, calculates discount price if on sale, and builds the Shoe
     public static Shoe createShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePercentage, List<String> imageUrls) {
+        // Validate required strings
         if (Helper.isNullOrEmpty(shoeId)
                 || Helper.isNullOrEmpty(brand)
                 || Helper.isNullOrEmpty(shoeName)
@@ -30,10 +31,12 @@ public class ShoeFactory {
             return null;
         }
 
+        // Validate prices and percentages
         if (basePrice < 0 || salePercentage < 0 || salePercentage > 100) {
             return null;
         }
 
+        // Auto-compute sale price rounded to 2 decimals
         double salePrice = 0.0;
         if (salePercentage > 0) {
             salePrice = Math.round(basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
@@ -53,7 +56,7 @@ public class ShoeFactory {
                 .build();
     }
 
-    // Convenience alias preserving explicit readability for promotional items
+    // Handy alias when explicitly creating promotional sale shoes
     public static Shoe createSaleShoe(String shoeId, String brand, String shoeName, String category, String description, String gender, double basePrice, double salePercentage, List<String> imageUrls) {
         return createShoe(shoeId, brand, shoeName, category, description, gender, basePrice, salePercentage, imageUrls);
     }

@@ -7,6 +7,7 @@ import { CatalogueToolbar } from '../components/catalogue/CatalogueToolbar';
 import { CatalogueProductCard } from '../components/catalogue/CatalogueProductCard';
 import { CataloguePagination } from '../components/catalogue/CataloguePagination';
 import { X, SearchX } from 'lucide-react';
+import Skeleton from '@mui/material/Skeleton';
 import { useCart } from '../context/CartContext';
 import '../components/catalogue/CataloguePage.css';
 
@@ -153,22 +154,30 @@ export const CataloguePage = () => {
     selectedSizes.length +
     (currentMaxPrice < MAX_PRICE ? 1 : 0);
 
-  // Live Shoes from Spring Boot REST API
+  // Stores all shoes fetched from the database
   const [allProducts, setAllProducts] = useState<ShoeProduct[]>([]);
+  // Loading state while fetching catalogue from cloud database
+  const [loading, setLoading] = useState<boolean>(true);
 
+  // Fetch the full shoe catalogue when page loads
   useEffect(() => {
     let isMounted = true;
-    fetchAllShoes().then((shoes) => {
-      if (isMounted) {
-        setAllProducts(shoes);
-      }
-    });
+    fetchAllShoes()
+      .then((shoes) => {
+        if (isMounted) {
+          setAllProducts(shoes);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
     return () => {
       isMounted = false;
     };
   }, []);
 
-  // 1. BASE ROUTE PRODUCTS
+  // 1. Filter shoes by page route (e.g. /sale, /men, /women, /new-drops)
   const baseProducts = useMemo(() => {
     switch (routeMode) {
       case 'sale':
@@ -370,6 +379,25 @@ export const CataloguePage = () => {
                     onPageChange={handlePageChange}
                   />
                 </>
+              ) : loading ? (
+                <div className="catalogue-product-grid" aria-busy="true" aria-label="Loading shoes">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <div key={idx} className="catalogue-product-card" style={{ cursor: 'default' }}>
+                      <Skeleton
+                        variant="rounded"
+                        width="100%"
+                        height={280}
+                        animation="wave"
+                        sx={{ borderRadius: '12px', mb: 2 }}
+                      />
+                      <div className="product-info">
+                        <Skeleton variant="text" width="30%" height={16} animation="wave" />
+                        <Skeleton variant="text" width="80%" height={24} animation="wave" />
+                        <Skeleton variant="text" width="40%" height={20} animation="wave" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="catalogue-empty-state">
                   <div className="empty-state-icon-wrapper">

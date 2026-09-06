@@ -36,3 +36,21 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* Shimmer Skeleton Animation for Loading States */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #EBEBEB 25%, #F7F7F8 50%, #EBEBEB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: 8px;
+}
+

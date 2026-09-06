@@ -13,11 +13,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//represents a shoe entity in the system.
+// Main JPA entity mapped to the shoe table
 @Entity
 public class Shoe {
     @Id
@@ -31,17 +32,19 @@ public class Shoe {
     private double salePrice;
     private double salePercentage;
 
+    // Stores multiple Cloudinary image URLs in a separate child table (shoe_images)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shoe_images", joinColumns = @JoinColumn(name = "shoe_id"))
     @Column(name = "image_url")
+    @OrderBy
     private List<String> imageUrls = new ArrayList<>();
 
-    //Default constructor
+    // Required default constructor for JPA
     protected Shoe(){
 
     }
 
-    // Constructor that uses the Builder object to initialize fields
+    // Private constructor used by the Builder pattern
     private Shoe(Builder builder){
         this.shoeId = builder.shoeId;
         this.brand = builder.brand;
@@ -156,6 +159,7 @@ public class Shoe {
             this.salePercentage = salePercentage;
             return this;
         }
+        // Calculates sale price automatically when a discount percentage is applied
         public Builder setSale(double salePercentage) {
             this.salePercentage = salePercentage;
             if (salePercentage > 0 && this.basePrice > 0) {
@@ -170,7 +174,7 @@ public class Shoe {
             return this;
         }
 
-        //Copies values from an existing Admin object
+        // Copies values from an existing Shoe instance
         public Builder copy(Shoe shoe){
             this.shoeId = shoe.shoeId;
             this.brand = shoe.brand;
@@ -185,7 +189,7 @@ public class Shoe {
             return this;
         }
 
-        //Builds and returns a new Admin object
+        // Returns the newly constructed immutable Shoe object
         public Shoe build(){
             return new Shoe(this);
         }
