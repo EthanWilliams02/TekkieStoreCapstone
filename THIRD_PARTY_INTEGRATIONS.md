@@ -332,13 +332,13 @@ In React, everything on screen is composed of **components** (reusable pieces of
 
 ---
 
-## 5. Cart Axios Integration (Frontend ↔ Backend)
+## 7. Cart Axios Integration (Frontend ↔ Backend)
 
 This section documents the Axios-based cart integration that connects the React frontend shopping cart to the Spring Boot backend. Cart state is persisted to the database for authenticated users while remaining functional locally for all users.
 
 ---
 
-### 5.1 Files Created or Changed
+### 7.1 Files Created or Changed
 
 | File | Role |
 |---|---|
@@ -349,7 +349,7 @@ This section documents the Axios-based cart integration that connects the React 
 
 ---
 
-### 5.2 Axios Integration
+### 7.2 Axios Integration
 
 The cart integration reuses the existing central Axios instance defined in `frontend/src/services/api.ts`:
 
@@ -368,7 +368,7 @@ const api = axios.create({
 
 ---
 
-### 5.3 Cart Backend Endpoints
+### 7.3 Cart Backend Endpoints
 
 All endpoints listed below are actually called by the frontend cart implementation.
 
@@ -395,7 +395,7 @@ All endpoints listed below are actually called by the frontend cart implementati
 
 ---
 
-### 5.4 Cart Service (`cartService.ts`)
+### 7.4 Cart Service (`cartService.ts`)
 
 `frontend/src/services/cartService.ts` is a dedicated service module that wraps all cart-related Axios calls. It exports a `cartService` object with the following functions:
 
@@ -436,7 +436,7 @@ export interface BackendCartItem {
 
 ---
 
-### 5.5 Cart State Synchronization (`CartContext.tsx`)
+### 7.5 Cart State Synchronization (`CartContext.tsx`)
 
 `CartContext.tsx` manages cart state for the entire application and synchronizes it with the Spring Boot backend for authenticated users. The cart also persists locally in `localStorage` under the key `tekkie_store_cart` for resilience.
 
@@ -479,7 +479,7 @@ On authentication, `refreshCart()` is called automatically. It:
 
 ---
 
-### 5.6 Authentication and Axios Cart Requests
+### 7.6 Authentication and Axios Cart Requests
 
 Authentication directly affects which Axios cart requests are permitted.
 
@@ -490,7 +490,7 @@ Authentication directly affects which Axios cart requests are permitted.
 
 ---
 
-### 5.7 Cart Calculations
+### 7.7 Cart Calculations
 
 Pricing logic in `CartContext.tsx` accounts for sale prices:
 
@@ -506,7 +506,7 @@ Shipping is not calculated in `CartContext.tsx`.
 
 ---
 
-### 5.8 Error Handling
+### 7.8 Error Handling
 
 | Scenario | Handling |
 |---|---|
@@ -524,7 +524,7 @@ The local cart stored in `localStorage` acts as a fallback — if any backend ca
 
 ---
 
-### 5.9 Code References
+### 7.9 Code References
 
 | Source | Used For |
 |---|---|
