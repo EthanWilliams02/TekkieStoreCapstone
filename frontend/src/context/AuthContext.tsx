@@ -70,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const realUser: UserProfile = {
+      customerId: response.customerId,
       firstName: first || 'Member',
       lastName: last,
       email: response.email,
@@ -96,6 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const realUser: UserProfile = {
+      customerId: response.customerId,
       firstName: first || 'Member',
       lastName: last,
       email: response.email,

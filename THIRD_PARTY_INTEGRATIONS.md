@@ -158,3 +158,208 @@ In this project, we use two third-party tools to handle data and media efficient
 
 **Q: How are sale prices and sale percentages handled across the application?**  
 > *"The database `shoe` entity stores both `sale_price` and `sale_percentage`. When a sale percentage is applied (e.g. 20%), the discounted price is calculated and persisted in MySQL. In the frontend, on-sale shoes display a badge (`-20% OFF`), a strikethrough original price, and are filterable through a dedicated `/sale` route. The shopping cart automatically charges the discounted price upon checkout."*
+
+---
+
+## 5. Cart Axios Integration (Frontend ↔ Backend)
+
+This section documents the Axios-based cart integration that connects the React frontend shopping cart to the Spring Boot backend. Cart state is persisted to the database for authenticated users while remaining functional locally for all users.
+
+---
+
+### 5.1 Files Created or Changed
+
+| File | Role |
+|---|---|
+| `frontend/src/services/cartService.ts` | **Created.** Dedicated Axios service wrapping all cart and cart item REST endpoints. |
+| `frontend/src/services/api.ts` | **Reused (unchanged).** Central Axios instance consumed by `cartService.ts`. No duplicate configuration was created. |
+| `frontend/src/context/CartContext.tsx` | **Modified.** Cart state management updated to synchronize with the Spring Boot backend via `cartService.ts`. |
+| `frontend/src/pages/CartPage.tsx` | **Existing page.** Cart UI was not restructured; it consumes `CartContext` as before. |
+
+---
+
+### 5.2 Axios Integration
+
+The cart integration reuses the existing central Axios instance defined in `frontend/src/services/api.ts`:
+
+```typescript
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 10000,
+});
+```
+
+- **Backend base URL:** `http://localhost:8080`
+- **Communication:** All cart Axios requests are made from the React frontend to the Spring Boot REST API over HTTP.
+- **JWT headers:** The existing request interceptor in `api.ts` automatically attaches the `Authorization: Bearer <token>` header from `localStorage` (`tekkie_token`) to every outgoing request. `cartService.ts` does not manage tokens directly — it inherits authentication from the shared instance.
+- **No duplication:** A second Axios instance was not created. `cartService.ts` imports and reuses `api` directly.
+
+---
+
+### 5.3 Cart Backend Endpoints
+
+All endpoints listed below are actually called by the frontend cart implementation.
+
+**Cart (`/cart`)**
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/cart/read/{id}` | Retrieve a cart by its ID |
+| `POST` | `/cart/create` | Create a new cart record |
+| `POST` | `/cart/update` | Update an existing cart (total amount) |
+| `DELETE` | `/cart/delete/{id}` | Delete a cart by ID |
+
+**Cart Items (`/cartitem`)**
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/cartitem/getAll` | Retrieve all cart item records |
+| `GET` | `/cartitem/read/{id}` | Retrieve a single cart item by ID |
+| `POST` | `/cartitem/create` | Create a new cart item |
+| `POST` | `/cartitem/update` | Update an existing cart item (quantity, subtotal) |
+| `DELETE` | `/cartitem/delete/{id}` | Delete a cart item by ID |
+
+> Spring Boot controllers: `CartController.java` and `CartItemController.java`.
+
+---
+
+### 5.4 Cart Service (`cartService.ts`)
+
+`frontend/src/services/cartService.ts` is a dedicated service module that wraps all cart-related Axios calls. It exports a `cartService` object with the following functions:
+
+**Cart functions:**
+
+| Function | Axios Request | Purpose |
+|---|---|---|
+| `getCart(cartId)` | `GET /cart/read/{id}` | Retrieve a cart by ID. Returns `null` on failure. |
+| `createCart(cart)` | `POST /cart/create` | Create a new cart entity. |
+| `updateCart(cart)` | `POST /cart/update` | Update cart total. Falls back to `createCart` if the cart does not yet exist. |
+| `deleteCart(cartId)` | `DELETE /cart/delete/{id}` | Delete a cart. Returns `false` on failure. |
+
+**Cart item functions:**
+
+| Function | Axios Request | Purpose |
+|---|---|---|
+| `getAllCartItems()` | `GET /cartitem/getAll` | Retrieve all cart items. Returns `[]` on failure. |
+| `getCartItem(cartItemId)` | `GET /cartitem/read/{id}` | Retrieve a single cart item. Returns `null` on failure. |
+| `createCartItem(cartItem)` | `POST /cartitem/create` | Create a new cart item. |
+| `updateCartItem(cartItem)` | `POST /cartitem/update` | Update a cart item. Falls back to `createCartItem` if the item does not yet exist. |
+| `deleteCartItem(cartItemId)` | `DELETE /cartitem/delete/{id}` | Delete a cart item. Returns `false` on failure. |
+
+**TypeScript interfaces exported by `cartService.ts`:**
+
+```typescript
+export interface BackendCart {
+  cartId: string;
+  totalAmount: number;
+}
+
+export interface BackendCartItem {
+  cartItemId: string;
+  quantity: number;
+  unitPrice: number;
+  subTotal: number;
+}
+```
+
+---
+
+### 5.5 Cart State Synchronization (`CartContext.tsx`)
+
+`CartContext.tsx` manages cart state for the entire application and synchronizes it with the Spring Boot backend for authenticated users. The cart also persists locally in `localStorage` under the key `tekkie_store_cart` for resilience.
+
+**Cart item ID scheme:**  
+Each cart item is identified on the backend using a composite string key:
+```
+<userCartId>___<productId>-<selectedSize>
+```
+This allows filtering all items belonging to a specific user from the shared `GET /cartitem/getAll` response.
+
+**`refreshCart()`:**  
+On authentication, `refreshCart()` is called automatically. It:
+1. Calls `getCart(userCartId)` to check if a backend cart exists.
+2. Calls `getAllCartItems()` and filters items whose `cartItemId` starts with `<userCartId>___`.
+3. If backend items exist, they are merged into the local cart state (quantities updated from backend).
+4. If no backend items exist but local items do, they are pushed to the backend via `createCartItem` and `updateCart`.
+
+**`addToCart(product, size, quantity)`:**  
+1. Updates local state immediately for instant UI feedback.
+2. Calls `updateCartItem(...)` to upsert the item on the backend (falls back to `createCartItem` on 404/failure).
+3. Calls `updateCart(...)` to update the cart total.
+
+**`updateQuantity(cartId, quantity)`:**  
+1. Updates local state.
+2. Calls `updateCartItem(...)` with the new quantity and recalculated subtotal.
+3. Recalculates the full cart total and calls `updateCart(...)`.
+
+**`removeFromCart(cartId)`:**  
+1. Removes the item from local state.
+2. Calls `deleteCartItem(backendItemId)`.
+3. Recalculates the cart total and calls `updateCart(...)`.
+
+**`clearCart()`:**  
+1. Clears local state to `[]`.
+2. Iterates over all previous items and calls `deleteCartItem` for each.
+3. Calls `updateCart(...)` with `totalAmount: 0`.
+
+**Cart count:**  
+`cartCount` is a `useMemo` derived value — the sum of all item quantities — consumed by the navigation bar to display a live item count badge.
+
+---
+
+### 5.6 Authentication and Axios Cart Requests
+
+Authentication directly affects which Axios cart requests are permitted.
+
+- **Unauthenticated users:** `addToCart` immediately redirects to `/login` and returns `false` before any Axios request is made. No cart data is sent to the backend.
+- **Authenticated users:** Cart changes (add, update, remove, clear) are persisted to the Spring Boot backend via Axios.
+- **Token attachment:** The JWT Bearer token is attached to all Axios requests automatically by the `api.ts` request interceptor, including cart requests.
+- **401/403 handling:** If any cart Axios request receives a `401 Unauthorized` or `403 Forbidden` response, `CartContext` calls `logout()` and redirects to `/login`, consistent with the existing authentication system.
+
+---
+
+### 5.7 Cart Calculations
+
+Pricing logic in `CartContext.tsx` accounts for sale prices:
+
+| Value | Calculation |
+|---|---|
+| **Effective unit price** | `product.salePrice` if `product.isOnSale && product.salePrice`, otherwise `product.price` |
+| **Line subtotal** | `effectiveUnitPrice × quantity` |
+| **Cart total** | Sum of all line subtotals (`cartTotal` via `useMemo`) |
+| **Backend `subTotal`** | Sent to Spring Boot as `unitPrice × quantity` per cart item |
+| **Backend `totalAmount`** | Sent to Spring Boot as the recalculated full cart total on every mutation |
+
+Shipping is not calculated in `CartContext.tsx`.
+
+---
+
+### 5.8 Error Handling
+
+| Scenario | Handling |
+|---|---|
+| Backend cart/item request fails | Wrapped in `try/catch`; a warning is logged to the console (`console.warn`). Local cart state is unaffected. |
+| `getCart` / `getAllCartItems` fails | Returns `null` or `[]` gracefully; the local cart continues to function. |
+| `createCart` / `createCartItem` fails | Exception propagates to the caller's `catch` block in `CartContext`. |
+| `updateCart` / `updateCartItem` fails | Falls back to the corresponding `create` call inside `cartService.ts`. |
+| `deleteCartItem` fails | Returns `false`; warning logged. |
+| Network timeout | Axios cancels the request after 10 000 ms (set in `api.ts`). |
+| `401` / `403` response | `CartContext` calls `logout()` and navigates to `/login`. |
+| `isLoading` state | Set to `true` during `refreshCart()` and `false` on completion. Consumers can render loading indicators. |
+| `error` state | A user-facing string `'Unable to synchronize cart with the server. Local cart remains active.'` is set on `refreshCart` failure for non-auth errors. |
+
+The local cart stored in `localStorage` acts as a fallback — if any backend call fails, the user's cart items remain visible and usable in the UI.
+
+---
+
+### 5.9 Code References
+
+| Source | Used For |
+|---|---|
+| `frontend/src/services/api.ts` | Central Axios instance reused directly by `cartService.ts`. No new Axios instance was created. |
+| `frontend/src/context/AuthContext.tsx` | `useAuth()` hook reused by `CartContext` to access `isAuthenticated`, `user`, and `logout()`. |
+| `frontend/src/pages/CartPage.tsx` | Existing cart UI page, unchanged. Consumes `useCart()` from `CartContext` as before. |
+| `CartController.java` | Existing Spring Boot REST controller referenced for `/cart/*` endpoint contracts. |
+| `CartItemController.java` | Existing Spring Boot REST controller referenced for `/cartitem/*` endpoint contracts. |
+| Axios official documentation | [https://axios-http.com/docs/intro](https://axios-http.com/docs/intro) |
