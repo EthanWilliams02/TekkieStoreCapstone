@@ -6,9 +6,9 @@ import './ProductInfo.css';
 
 interface ProductInfoProps {
   product: ShoeProduct;
-  onAddToCart?: (size: string, quantity: number) => void;
+  onAddToCart?: (size: string, quantity: number) => void | boolean | Promise<void | boolean>;
   onProceedToCheckout?: (size: string, quantity: number) => void;
-  onBuyItNow: (size: string, quantity: number) => void;
+  onBuyItNow: (size: string, quantity: number) => void | boolean | Promise<void | boolean>;
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -30,25 +30,29 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
   };
 
   const handleDecreaseQty = () => {
-    setQuantity((prev) => Math.max(1, prev - 1));
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
   };
 
   const handleIncreaseQty = () => {
     setQuantity((prev) => prev + 1);
   };
 
-  const handleAddToCartClick = () => {
+  const handleAddToCartClick = async () => {
     if (!selectedSize) {
       setSizeError(true);
       return;
     }
     if (onAddToCart) {
-      onAddToCart(selectedSize, quantity);
+      const result = await onAddToCart(selectedSize, quantity);
+      if (result !== false) {
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 1800);
+      }
     } else if (onProceedToCheckout) {
       onProceedToCheckout(selectedSize, quantity);
     }
-    setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 1800);
   };
 
   const handleBuyNowClick = () => {

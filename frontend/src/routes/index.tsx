@@ -16,6 +16,7 @@ import { OrderConfirmation } from '../pages/OrderConfirmation';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { TermsOfService } from '../pages/TermsOfService';
 import { FAQ } from '../pages/FAQ';
+import { ContactUs } from '../pages/ContactUs';
 
 export const router = createBrowserRouter([
   {
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
       {
         path: '/faq',
         element: <FAQ />,
+      },
+      {
+        path: '/contact',
+        element: <ContactUs />,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Loader2, AlertCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { CartItemCard } from '../components/cart/CartItemCard';
 import { OrderSummary } from '../components/cart/OrderSummary';
@@ -8,7 +8,7 @@ import { CartEmpty } from '../components/cart/CartEmpty';
 import '../components/cart/CartPage.css';
 
 export const CartPage: React.FC = () => {
-  const { cart, updateQuantity, removeFromCart, clearCart, cartCount, cartTotal } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart, cartCount, cartTotal, isLoading, error } = useCart();
 
   return (
     <div className="cart-page">
@@ -41,7 +41,43 @@ export const CartPage: React.FC = () => {
       {/* MAIN BODY SECTION */}
       <main className="cart-body-section">
         <div className="cart-container">
-          {cart.length === 0 ? (
+          {error && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                backgroundColor: '#FEF2F2',
+                border: '1px solid #FECACA',
+                borderRadius: '8px',
+                padding: '0.85rem 1.25rem',
+                marginBottom: '1.5rem',
+                color: '#B91C1C',
+                fontSize: '0.9rem',
+              }}
+              role="alert"
+            >
+              <AlertCircle size={18} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {isLoading && cart.length === 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '5rem 0',
+                gap: '1rem',
+                color: 'var(--text-muted)',
+              }}
+            >
+              <Loader2 size={36} className="animate-spin" style={{ color: 'var(--brand-orange)' }} />
+              <p style={{ fontSize: '1rem', fontWeight: 600 }}>Loading your cart...</p>
+            </div>
+          ) : cart.length === 0 ? (
             <CartEmpty />
           ) : (
             <div className="cart-layout-grid">

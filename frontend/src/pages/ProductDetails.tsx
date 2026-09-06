@@ -81,14 +81,16 @@ export const ProductDetails: React.FC = () => {
     toggleWishlist(product);
   };
 
-  const handleAddToCart = (size: string, quantity: number) => {
-    addToCart(product, size, quantity);
-    // Stays on page, does not navigate
+  const handleAddToCart = async (size: string, quantity: number) => {
+    return await addToCart(product, size, quantity);
   };
 
-  const handleBuyItNow = (size: string, quantity: number) => {
-    addToCart(product, size, quantity);
-    navigate('/cart');
+  const handleBuyItNow = async (size: string, quantity: number) => {
+    const success = await addToCart(product, size, quantity);
+    if (success) {
+      navigate('/cart');
+    }
+    return success;
   };
 
   const handleBackNavigation = () => {

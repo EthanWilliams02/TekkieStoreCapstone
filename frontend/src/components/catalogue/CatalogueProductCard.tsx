@@ -7,7 +7,7 @@ import './CatalogueProductCard.css';
 
 interface CatalogueProductCardProps {
   product: ShoeProduct;
-  onQuickAdd?: (product: ShoeProduct) => void;
+  onQuickAdd?: (product: ShoeProduct) => void | boolean | Promise<void | boolean>;
   onClick?: (product: ShoeProduct) => void;
 }
 
@@ -25,13 +25,15 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
     toggleWishlist(product);
   };
 
-  const handleQuickAdd = (e: React.MouseEvent) => {
+  const handleQuickAdd = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onQuickAdd) {
-      onQuickAdd(product);
+      const result = await onQuickAdd(product);
+      if (result !== false) {
+        setAddedFeedback(true);
+        setTimeout(() => setAddedFeedback(false), 1500);
+      }
     }
-    setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 1500);
   };
 
   const handleCardClick = () => {
