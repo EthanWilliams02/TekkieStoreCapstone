@@ -175,7 +175,7 @@ export const OrderConfirmation: React.FC = () => {
   };
 
   const handleTrackMyOrder = () => {
-    navigate('/delivery-details');
+    navigate(order?.id ? `/delivery-details/${order.id}` : '/delivery-details');
   };
 
   const handleContinueShopping = () => {

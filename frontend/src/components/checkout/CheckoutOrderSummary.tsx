@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Check, ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { CartItem } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
 
@@ -138,21 +138,6 @@ export const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
           .
         </p>
 
-        {/* Trust Badges */}
-        <div className="checkout-trust-indicators" aria-label="Security and buyer protections">
-          <div className="trust-indicator-badge">
-            <Check size={13} className="trust-check" />
-            <span>3D Secure 2.0</span>
-          </div>
-          <div className="trust-indicator-badge">
-            <Check size={13} className="trust-check" />
-            <span>Buyer Protection</span>
-          </div>
-          <div className="trust-indicator-badge">
-            <ShieldCheck size={14} className="trust-shield" />
-            <span>256-Bit SSL</span>
-          </div>
-        </div>
       </div>
     </aside>
   );

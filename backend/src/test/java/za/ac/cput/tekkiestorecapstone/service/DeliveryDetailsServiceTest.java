@@ -19,6 +19,7 @@ import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 import za.ac.cput.tekkiestorecapstone.domain.Order;
 import za.ac.cput.tekkiestorecapstone.factory.DeliveryDetailsFactory;
 import za.ac.cput.tekkiestorecapstone.repository.DeliveryDetailsRepository;
+import za.ac.cput.tekkiestorecapstone.repository.OrderRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,9 @@ class DeliveryDetailsServiceTest {
     @Mock
     DeliveryDetailsRepository repo;
 
+    @Mock
+    OrderRepository orderRepo;
+
     @InjectMocks
     DeliveryDetailsService service;
     private static DeliveryDetails deliveryDetails;
@@ -46,6 +50,7 @@ class DeliveryDetailsServiceTest {
                 .setStreetName("Main Road")
                 .setSuburb("Sea Point")
                 .setCity("Cape Town")
+                .setProvince("Western Cape")
                 .setPostalCode("8005")
                 .build();
 
@@ -66,6 +71,7 @@ class DeliveryDetailsServiceTest {
         assertEquals(created.getDeliveryId(),  deliveryDetails.getDeliveryId());
         assertNotNull(created.getOrder());
         assertEquals("ORD-001", created.getOrder().getOrderId());
+        assertNotNull(created.getCreatedAt());
 
         System.out.println("Success: " + created);
     }

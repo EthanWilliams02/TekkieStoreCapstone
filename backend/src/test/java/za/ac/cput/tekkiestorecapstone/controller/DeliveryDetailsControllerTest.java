@@ -47,6 +47,7 @@ class DeliveryDetailsControllerTest {
                 .setStreetName("Main Road")
                 .setSuburb("Sea Point")
                 .setCity("Cape Town")
+                .setProvince("Western Cape")
                 .setPostalCode("8005")
                 .build();
 

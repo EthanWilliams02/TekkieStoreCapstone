@@ -88,38 +88,6 @@ export const CheckoutPage: React.FC = () => {
   const [cardErrors, setCardErrors] = useState<CardFormErrors>({});
   const [cardTouched, setCardTouched] = useState<Record<string, boolean>>({});
 
-  // Retrieve customer's latest delivery details from Spring Boot using Axios
-  useEffect(() => {
-    if (!user || !user.customerId) return;
-
-    let isMounted = true;
-    const loadLatestDelivery = async () => {
-      try {
-        const latest = await deliveryService.getLatestDeliveryDetails(user.customerId!);
-        if (latest && isMounted) {
-          setShippingData({
-            fullName: latest.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-            phone: latest.phone || user.phone || '',
-            streetNumber: latest.streetNumber || '',
-            streetName: latest.streetName || '',
-            suburb: latest.suburb || '',
-            city: latest.city || '',
-            province: latest.province || '',
-            postalCode: latest.postalCode || '',
-          });
-        }
-      } catch (err) {
-        console.warn('[CheckoutPage] Could not retrieve latest delivery details from backend:', err);
-      }
-    };
-
-    loadLatestDelivery();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user]);
-
   // Persist payment & shipping details in localStorage for client caching
   useEffect(() => {
     try {
@@ -142,6 +110,7 @@ export const CheckoutPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const mainFormRef = useRef<HTMLDivElement>(null);
+  const pendingOrderRef = useRef<any | null>(null);
 
   // Financial Calculations: Total = Subtotal + Shipping (No VAT during checkout)
   const subtotal = cartTotal;
@@ -356,7 +325,7 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
-    // 4. Successful validation: Save Delivery Details via Axios & Create Order
+    // 4. Successful validation: Create Order -> Save Delivery Details
     setIsSubmitting(true);
 
     try {
@@ -369,23 +338,27 @@ export const CheckoutPage: React.FC = () => {
       const randomTrack = Math.floor(10000000 + Math.random() * 90000000).toString();
       const trackingNumber = `DSV-ZA-${randomTrack}`;
 
-      // 1. Save Order first in Spring Boot
-      const newOrder = await createOrder({
-        items: cart,
-        shippingData,
-        recipientName,
-        paymentMethod,
-        cardLastFour,
-        cardBrand,
-        subtotal,
-        vat: 0,
-        shippingFee,
-        total: finalTotal,
-        trackingNumber,
-      });
+      // 1. Create or retrieve already created Order (prevents duplicate orders on retry)
+      let activeOrder = pendingOrderRef.current;
+      if (!activeOrder) {
+        activeOrder = await createOrder({
+          items: cart,
+          shippingData,
+          recipientName,
+          paymentMethod,
+          cardLastFour,
+          cardBrand,
+          subtotal,
+          vat: 0,
+          shippingFee,
+          total: finalTotal,
+          trackingNumber,
+        });
+        pendingOrderRef.current = activeOrder;
+      }
 
       // 2. Save DeliveryDetails linked to that Order
-      const deliveryId = `DD-${newOrder.id}`;
+      const deliveryId = `DD-${activeOrder.id}`;
 
       // Calculate estimated delivery date: 3 business days from now
       const estDate = new Date();
@@ -399,26 +372,27 @@ export const CheckoutPage: React.FC = () => {
       }
       const estimatedDeliveryDate = estDate.toISOString().split('T')[0];
 
-      try {
-        await deliveryService.saveDeliveryDetails({
-          deliveryId,
-          order: {
-            orderId: newOrder.id,
-          },
-          address: {
-            streetNumber: shippingData.streetNumber.trim(),
-            streetName: shippingData.streetName.trim(),
-            suburb: shippingData.suburb.trim(),
-            city: shippingData.city.trim(),
-            postalCode: shippingData.postalCode.trim(),
-          },
-          courier: 'DSV Express Logistics',
-          trackingNumber,
-          estimatedDeliveryDate,
-        });
-      } catch (saveErr) {
-        console.warn('[CheckoutPage] Could not save delivery details via Axios:', saveErr);
-      }
+      // 3. Save DeliveryDetails with real orderId and full address including province
+      await deliveryService.saveDeliveryDetails({
+        deliveryId,
+        order: {
+          orderId: activeOrder.id,
+        },
+        address: {
+          streetNumber: shippingData.streetNumber.trim(),
+          streetName: shippingData.streetName.trim(),
+          suburb: shippingData.suburb.trim(),
+          city: shippingData.city.trim(),
+          province: shippingData.province.trim(),
+          postalCode: shippingData.postalCode.trim(),
+        },
+        courier: 'DSV Express Logistics',
+        trackingNumber,
+        estimatedDeliveryDate,
+      });
+
+      // Clear pending order reference on success
+      pendingOrderRef.current = null;
 
       await refreshOrders();
 
@@ -427,10 +401,10 @@ export const CheckoutPage: React.FC = () => {
       setIsSubmitting(false);
 
       // Navigate to the Order Confirmation Page
-      navigate(`/order-confirmation/${newOrder.id}`);
+      navigate(`/order-confirmation/${activeOrder.id}`);
     } catch (err: any) {
-      console.error('Failed to create order:', err);
-      alert(err.message || 'Unable to place order. Please try again.');
+      console.error('[CheckoutPage] Checkout submission error:', err);
+      alert(err?.response?.data?.message || err.message || 'Unable to finalize order and delivery details. Please try again.');
       setIsSubmitting(false);
     }
   };

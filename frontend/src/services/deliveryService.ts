@@ -1,50 +1,29 @@
 import api from './api';
 
-export interface BackendAddress {
+export interface DeliveryAddressData {
   streetNumber: string;
   streetName: string;
   suburb: string;
   city: string;
+  province?: string;
   postalCode: string;
 }
 
-export interface BackendDeliveryDetailsPayload {
+export interface DeliveryDetailsData {
   deliveryId: string;
   order: {
     orderId: string;
   };
-  address: BackendAddress;
+  address: DeliveryAddressData;
   courier: string;
   trackingNumber: string;
   estimatedDeliveryDate: string; // YYYY-MM-DD
 }
 
-export interface BackendDeliveryDetailsResponse {
-  deliveryId: string;
-  order?: {
-    orderId: string;
-  };
-  address: BackendAddress;
-  courier: string;
-  trackingNumber: string;
-  estimatedDeliveryDate: string;
-}
-
-export interface DeliveryDetailsPayload {
-  deliveryId?: string;
-  customerId?: string;
-  fullName?: string;
-  phone?: string;
-  streetNumber?: string;
-  streetName?: string;
-  suburb?: string;
-  city?: string;
-  province?: string;
-  postalCode?: string;
-  courier?: string;
-  trackingNumber?: string;
-  createdAt?: string;
-}
+// Backward-compatibility aliases for components importing old type names
+export type BackendAddress = DeliveryAddressData;
+export type BackendDeliveryDetailsPayload = DeliveryDetailsData;
+export type BackendDeliveryDetailsResponse = DeliveryDetailsData;
 
 export const deliveryService = {
   /**
@@ -52,9 +31,9 @@ export const deliveryService = {
    * Endpoint: POST /deliverydetails/create
    */
   saveDeliveryDetails: async (
-    data: BackendDeliveryDetailsPayload
-  ): Promise<BackendDeliveryDetailsResponse> => {
-    const response = await api.post<BackendDeliveryDetailsResponse>('/deliverydetails/create', data);
+    data: DeliveryDetailsData
+  ): Promise<DeliveryDetailsData> => {
+    const response = await api.post<DeliveryDetailsData>('/deliverydetails/create', data);
     return response.data;
   },
 
@@ -64,9 +43,9 @@ export const deliveryService = {
    */
   getDeliveryDetailsByOrderId: async (
     orderId: string
-  ): Promise<BackendDeliveryDetailsResponse | null> => {
+  ): Promise<DeliveryDetailsData | null> => {
     try {
-      const response = await api.get<BackendDeliveryDetailsResponse>(
+      const response = await api.get<DeliveryDetailsData>(
         `/deliverydetails/order/${encodeURIComponent(orderId)}`
       );
       return response.data && response.data.deliveryId ? response.data : null;
@@ -74,12 +53,5 @@ export const deliveryService = {
       console.warn(`[deliveryService] Failed to load delivery details for order ${orderId}:`, error);
       return null;
     }
-  },
-
-  /**
-   * Legacy stub to avoid breaking existing callers
-   */
-  getLatestDeliveryDetails: async (_customerId: string): Promise<DeliveryDetailsPayload | null> => {
-    return null;
   },
 };

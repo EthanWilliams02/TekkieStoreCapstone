@@ -7,9 +7,9 @@ Date: 19 July 2026
 package za.ac.cput.tekkiestorecapstone.factory;
 
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.core.annotation.Order;
 import za.ac.cput.tekkiestorecapstone.domain.Address;
 import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 
@@ -26,49 +26,63 @@ public class DeliveryDetailsFactoryTest {
             .setStreetName("Main Road")
             .setSuburb("Sea Point")
             .setCity("Cape Town")
+            .setProvince("Western Cape")
             .setPostalCode("8005")
+            .build();
+
+    private static final za.ac.cput.tekkiestorecapstone.domain.Order order = new za.ac.cput.tekkiestorecapstone.domain.Order.Builder()
+            .setOrderId("ORD-001")
             .build();
 
     @Test
     @Order(1)
     public void createDeliveryDetails() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", LocalDate.now());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", order, address, "Aramex", "TRK-889922", LocalDate.now());
         assertNotNull(deliveryDetails);
+        assertNotNull(deliveryDetails.getOrder());
+        assertEquals("ORD-001", deliveryDetails.getOrder().getOrderId());
         System.out.println(deliveryDetails.toString());
     }
 
     @Test
     @Order(2)
     public void createDeliveryDetailsWithNullDeliveryId() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails(null, address, "Aramex", "TRK-889922", LocalDate.now());
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails(null, order, address, "Aramex", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(3)
-    public void createDeliveryDetailsWithEmptyCourier() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "", "TRK-889922", LocalDate.now());
+    public void createDeliveryDetailsWithNullOrder() {
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", null, address, "Aramex", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(4)
-    public void createDeliveryDetailsWithNullTrackingNumber() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", null, LocalDate.now());
+    public void createDeliveryDetailsWithEmptyCourier() {
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", order, address, "", "TRK-889922", LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(5)
-    public void createDeliveryDetailsWithNullAddress() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", null, "Aramex", "TRK-889922", LocalDate.now());
+    public void createDeliveryDetailsWithNullTrackingNumber() {
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", order, address, "Aramex", null, LocalDate.now());
         assertNull(deliveryDetails);
     }
 
     @Test
     @Order(6)
+    public void createDeliveryDetailsWithNullAddress() {
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", order, null, "Aramex", "TRK-889922", LocalDate.now());
+        assertNull(deliveryDetails);
+    }
+
+    @Test
+    @Order(7)
     public void createDeliveryDetailsWithNullEstimatedDeliveryDate() {
-        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", address, "Aramex", "TRK-889922", null);
+        DeliveryDetails deliveryDetails = DeliveryDetailsFactory.createDeliveryDetails("D001", order, address, "Aramex", "TRK-889922", null);
         assertNull(deliveryDetails);
     }
 
