@@ -7,14 +7,19 @@
 package za.ac.cput.tekkiestorecapstone.domain;
 
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotBlank;
 
 @Embeddable
 public class Address {
+    @NotBlank(message = "Street number cannot be blank")
     private String streetNumber;
+    @NotBlank(message = "Street name cannot be blank")
     private String streetName;
+    @NotBlank(message = "Suburb cannot be blank")
     private String suburb;
+    @NotBlank(message = "City cannot be blank")
     private String city;
-    private String province;
+    @NotBlank(message = "Postal code cannot be blank")
     private String postalCode;
 
     protected Address(){}

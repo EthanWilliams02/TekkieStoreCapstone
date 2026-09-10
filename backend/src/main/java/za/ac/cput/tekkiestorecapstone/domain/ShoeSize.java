@@ -10,10 +10,15 @@ package za.ac.cput.tekkiestorecapstone.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 @Embeddable
 public class ShoeSize {
+    @Positive(message = "Size value must be positive")
     private double sizeValue;
+
+    @NotBlank(message = "Size region cannot be blank")
     private String sizeRegion;
 
     protected ShoeSize() {}

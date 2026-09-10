@@ -8,12 +8,13 @@ Date: 19 july 2026
 
 import za.ac.cput.tekkiestorecapstone.domain.OrderItem;
 import za.ac.cput.tekkiestorecapstone.util.Helper;
+import java.math.BigDecimal;
 
 public class OrderItemFactory {
 
     public static OrderItem createOrderItem(String orderItemId,
                                             int quantity,
-                                            double unitPrice) {
+                                            BigDecimal unitPrice) {
         return createOrderItem(orderItemId, null, null, null, null, null, quantity, unitPrice);
     }
 
@@ -24,13 +25,13 @@ public class OrderItemFactory {
                                             String size,
                                             String imageUrl,
                                             int quantity,
-                                            double unitPrice) {
+                                            BigDecimal unitPrice) {
 
         if (Helper.isNullOrEmpty(orderItemId)) {
             return null;
         }
 
-        if (quantity <= 0 || unitPrice < 0) {
+        if (quantity <= 0 || unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) < 0) {
             return null;
         }
 
@@ -43,7 +44,7 @@ public class OrderItemFactory {
                 .setImageUrl(imageUrl)
                 .setQuantity(quantity)
                 .setUnitPrice(unitPrice)
-                .setSubTotal(quantity * unitPrice)
+                .setSubTotal(unitPrice.multiply(BigDecimal.valueOf(quantity)))
                 .build();
     }
 }

@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -28,10 +29,9 @@ public class Order {
     @Id
     private String orderId;
     private Date orderDate;
-    private double subtotal;
-    private double shippingFee;
-    private double vat;
-    private double totalAmount;
+    private BigDecimal subtotal;
+    private BigDecimal shippingFee;
+    private BigDecimal totalAmount;
     private String paymentMethod;
     private String paymentReference;
 
@@ -56,7 +56,6 @@ public class Order {
         this.orderDate = builder.orderDate;
         this.subtotal = builder.subtotal;
         this.shippingFee = builder.shippingFee;
-        this.vat = builder.vat;
         this.totalAmount = builder.totalAmount;
         this.paymentMethod = builder.paymentMethod;
         this.paymentReference = builder.paymentReference;
@@ -78,19 +77,15 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public double getSubtotal() {
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
-    public double getShippingFee() {
+    public BigDecimal getShippingFee() {
         return shippingFee;
     }
 
-    public double getVat() {
-        return vat;
-    }
-
-    public double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
@@ -134,7 +129,6 @@ public class Order {
                 ", orderDate=" + orderDate +
                 ", subtotal=" + subtotal +
                 ", shippingFee=" + shippingFee +
-                ", vat=" + vat +
                 ", totalAmount=" + totalAmount +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", paymentReference='" + paymentReference + '\'' +
@@ -148,10 +142,9 @@ public class Order {
 
         private String orderId;
         private Date orderDate;
-        private double subtotal;
-        private double shippingFee;
-        private double vat;
-        private double totalAmount;
+        private BigDecimal subtotal;
+        private BigDecimal shippingFee;
+        private BigDecimal totalAmount;
         private String paymentMethod;
         private String paymentReference;
         private OrderStatus status;
@@ -168,22 +161,17 @@ public class Order {
             return this;
         }
 
-        public Builder setSubtotal(double subtotal) {
+        public Builder setSubtotal(BigDecimal subtotal) {
             this.subtotal = subtotal;
             return this;
         }
 
-        public Builder setShippingFee(double shippingFee) {
+        public Builder setShippingFee(BigDecimal shippingFee) {
             this.shippingFee = shippingFee;
             return this;
         }
 
-        public Builder setVat(double vat) {
-            this.vat = vat;
-            return this;
-        }
-
-        public Builder setTotalAmount(double totalAmount) {
+        public Builder setTotalAmount(BigDecimal totalAmount) {
             this.totalAmount = totalAmount;
             return this;
         }
@@ -218,7 +206,6 @@ public class Order {
             this.orderDate = order.orderDate;
             this.subtotal = order.subtotal;
             this.shippingFee = order.shippingFee;
-            this.vat = order.vat;
             this.totalAmount = order.totalAmount;
             this.paymentMethod = order.paymentMethod;
             this.paymentReference = order.paymentReference;

@@ -20,6 +20,7 @@ import za.ac.cput.tekkiestorecapstone.repository.OrderItemRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,7 +44,7 @@ class OrderItemServiceTest {
         orderItem = OrderItemFactory.createOrderItem(
                 "OI001",
                 2,
-                750.00
+                BigDecimal.valueOf(750.00)
         );
     }
 
@@ -76,7 +77,7 @@ class OrderItemServiceTest {
         OrderItem updated = new OrderItem.Builder()
                 .copy(orderItem)
                 .setQuantity(3)
-                .setSubTotal(2250.00)
+                .setSubTotal(BigDecimal.valueOf(2250.00))
                 .build();
 
         when(repo.existsById(updated.getOrderItemId())).thenReturn(true);

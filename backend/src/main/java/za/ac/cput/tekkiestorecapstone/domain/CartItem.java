@@ -7,8 +7,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
+@Table(name = "cart_item")
 public class CartItem {
     @Id
     private String cartItemId;
@@ -32,8 +35,8 @@ public class CartItem {
     private ShoeSize shoeSize;
 
     private int quantity;
-    private double unitPrice;
-    private double subTotal;
+    private BigDecimal unitPrice;
+    private BigDecimal subTotal;
 
     protected CartItem(){
     }
@@ -70,10 +73,10 @@ public class CartItem {
     public int getQuantity(){
         return quantity;
     }
-    public double getUnitPrice(){
+    public BigDecimal getUnitPrice(){
         return unitPrice;
     }
-    public double getSubTotal(){
+    public BigDecimal getSubTotal(){
         return subTotal;
     }
 
@@ -98,8 +101,8 @@ public class CartItem {
         private ShoeVariant shoeVariant;
         private ShoeSize shoeSize;
         private int quantity;
-        private double unitPrice;
-        private double subTotal;
+        private BigDecimal unitPrice;
+        private BigDecimal subTotal;
 
         public Builder setCartItemId(String cartItemId) {
             this.cartItemId = cartItemId;
@@ -131,12 +134,12 @@ public class CartItem {
             return this;
         }
 
-        public Builder setUnitPrice(double unitPrice) {
+        public Builder setUnitPrice(BigDecimal unitPrice) {
             this.unitPrice = unitPrice;
             return this;
         }
 
-        public Builder setSubTotal(double subTotal) {
+        public Builder setSubTotal(BigDecimal subTotal) {
             this.subTotal = subTotal;
             return this;
         }

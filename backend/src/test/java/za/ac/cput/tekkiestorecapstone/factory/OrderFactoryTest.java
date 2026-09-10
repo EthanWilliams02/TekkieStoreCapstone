@@ -15,6 +15,7 @@ import za.ac.cput.tekkiestorecapstone.domain.Order;
 import za.ac.cput.tekkiestorecapstone.domain.OrderStatus;
 
 import java.util.Date;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +29,7 @@ class OrderFactoryTest {
         Order order = OrderFactory.createOrder(
                 "ORD001",
                 new Date(),
-                1500.00,
+                BigDecimal.valueOf(1500.00),
                 "PAY001"
         );
 
@@ -45,7 +46,7 @@ class OrderFactoryTest {
         Order order = OrderFactory.createOrder(
                 "ORD001",
                 new Date(),
-                1500.00,
+                BigDecimal.valueOf(1500.00),
                 ""
         );
 
@@ -59,7 +60,7 @@ class OrderFactoryTest {
         Order order = OrderFactory.createOrder(
                 "ORD001",
                 new Date(),
-                -1500.00,
+                BigDecimal.valueOf(-1500.00),
                 "PAY001"
         );
 
@@ -73,7 +74,7 @@ class OrderFactoryTest {
         Order order = OrderFactory.createOrder(
                 "ORD002",
                 new Date(),
-                2500.00,
+                BigDecimal.valueOf(2500.00),
                 null,
                 "PAY002"
         );

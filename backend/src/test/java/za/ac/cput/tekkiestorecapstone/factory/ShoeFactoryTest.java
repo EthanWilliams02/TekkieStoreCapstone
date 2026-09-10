@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import za.ac.cput.tekkiestorecapstone.domain.Shoe;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,15 +36,15 @@ class ShoeFactoryTest {
                 "Sneaker",
                 "Comfortable everyday sneaker",
                 "Unisex",
-                1999.00,
+                BigDecimal.valueOf(1999.00),
                 sampleImages
         );
         assertNotNull(shoe);
         assertEquals("S001", shoe.getShoeId());
         assertEquals("Adidas", shoe.getBrand());
-        assertEquals(1999.00, shoe.getBasePrice());
-        assertEquals(0.0, shoe.getSalePrice());
-        assertEquals(0.0, shoe.getSalePercentage());
+        assertEquals(BigDecimal.valueOf(1999.00), shoe.getBasePrice());
+        assertEquals(BigDecimal.ZERO, shoe.getSalePrice());
+        assertEquals(BigDecimal.ZERO, shoe.getSalePercentage());
         assertFalse(shoe.isOnSale());
         assertEquals(2, shoe.getImageUrls().size());
         System.out.println("Regular shoe created: " + shoe);
@@ -59,7 +60,7 @@ class ShoeFactoryTest {
                 "Sneaker",
                 "Comfortable everyday sneaker",
                 "Unisex",
-                1999.00,
+                BigDecimal.valueOf(1999.00),
                 sampleImages
         );
         assertNull(shoe);
@@ -75,15 +76,15 @@ class ShoeFactoryTest {
                 "Sneaker",
                 "Classic visible air cushioning",
                 "Unisex",
-                2000.00,
-                20.0,
+                BigDecimal.valueOf(2000.00),
+                BigDecimal.valueOf(20.0),
                 sampleImages
         );
         assertNotNull(saleShoe);
         assertEquals("S002", saleShoe.getShoeId());
-        assertEquals(2000.00, saleShoe.getBasePrice());
-        assertEquals(1600.00, saleShoe.getSalePrice());
-        assertEquals(20.0, saleShoe.getSalePercentage());
+        assertEquals(BigDecimal.valueOf(2000.00), saleShoe.getBasePrice());
+        assertEquals(new BigDecimal("1600.00"), saleShoe.getSalePrice());
+        assertEquals(BigDecimal.valueOf(20.0), saleShoe.getSalePercentage());
         assertTrue(saleShoe.isOnSale());
         System.out.println("Sale shoe created: " + saleShoe);
     }
@@ -98,8 +99,8 @@ class ShoeFactoryTest {
                 "Sneaker",
                 "Classic visible air cushioning",
                 "Unisex",
-                2000.00,
-                -15.0,
+                BigDecimal.valueOf(2000.00),
+                BigDecimal.valueOf(-15.0),
                 sampleImages
         );
         assertNull(saleShoe);
@@ -115,7 +116,7 @@ class ShoeFactoryTest {
                 "Sneaker",
                 "Classic visible air cushioning",
                 "Unisex",
-                -100.00,
+                BigDecimal.valueOf(-100.00),
                 sampleImages
         );
         assertNull(shoe);
@@ -131,13 +132,13 @@ class ShoeFactoryTest {
                 "Casual",
                 "Iconic suede silhouette",
                 "Unisex",
-                1500.00,
-                10.0,
+                BigDecimal.valueOf(1500.00),
+                BigDecimal.valueOf(10.0),
                 sampleImages
         );
         assertNotNull(shoe);
-        assertEquals(1350.00, shoe.getSalePrice());
-        assertEquals(10.0, shoe.getSalePercentage());
+        assertEquals(new BigDecimal("1350.00"), shoe.getSalePrice());
+        assertEquals(BigDecimal.valueOf(10.0), shoe.getSalePercentage());
         assertTrue(shoe.isOnSale());
     }
 }

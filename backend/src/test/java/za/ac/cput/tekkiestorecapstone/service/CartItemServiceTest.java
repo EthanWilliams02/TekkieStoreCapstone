@@ -19,6 +19,7 @@ import za.ac.cput.tekkiestorecapstone.domain.CartItem;
 import za.ac.cput.tekkiestorecapstone.factory.CartItemFactory;
 import za.ac.cput.tekkiestorecapstone.repository.CartItemRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ class CartItemServiceTest {
 
     @BeforeEach
     void setUp() {
-        cartItem = CartItemFactory.createCartItem("DD01", 2, 900.00);
+        cartItem = CartItemFactory.createCartItem("DD01", 2, BigDecimal.valueOf(900.00));
     }
 
     @Test

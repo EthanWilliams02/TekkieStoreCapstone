@@ -15,9 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import za.ac.cput.tekkiestorecapstone.domain.Cart;
+import za.ac.cput.tekkiestorecapstone.domain.Customer;
 import za.ac.cput.tekkiestorecapstone.factory.CartFactory;
 import za.ac.cput.tekkiestorecapstone.repository.CartRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +42,8 @@ class CartServiceTest {
 
     @BeforeEach
     void setUp() {
-        cart = CartFactory.createCart("CART001", 150.50);
+        Customer customer = new Customer.Builder().setCustomerId("CUST001").build();
+        cart = CartFactory.createCart("CART001", customer, BigDecimal.valueOf(150.50));
     }
 
     @Test
@@ -71,14 +74,14 @@ class CartServiceTest {
     void c_update() {
         Cart updated = new Cart.Builder()
                 .copy(cart)
-                .setTotalAmount(299.99)
+                .setTotalAmount(BigDecimal.valueOf(299.99))
                 .build();
 
         when(repo.save(any(Cart.class))).thenReturn(updated);
 
         Cart updatedCart = service.update(updated);
         assertNotNull(updatedCart);
-        assertEquals(299.99, updatedCart.getTotalAmount());
+        assertEquals(BigDecimal.valueOf(299.99), updatedCart.getTotalAmount());
 
         System.out.println("Success: " + updatedCart);
     }

@@ -21,6 +21,7 @@ import za.ac.cput.tekkiestorecapstone.factory.ShoeVariantFactory;
 import za.ac.cput.tekkiestorecapstone.repository.ShoeRepository;
 import za.ac.cput.tekkiestorecapstone.repository.ShoeVariantRepository;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,7 +53,7 @@ class ShoeVariantDataInitializerTest {
                 "Sneaker",
                 "Classic runner",
                 "Men",
-                2599.00,
+                BigDecimal.valueOf(2599.00),
                 List.of("https://example.com/nike.jpg")
         );
 
@@ -63,7 +64,7 @@ class ShoeVariantDataInitializerTest {
                 "Casual",
                 "Retro classic",
                 "Women",
-                1899.00,
+                BigDecimal.valueOf(1899.00),
                 List.of("https://example.com/adi.jpg")
         );
     }

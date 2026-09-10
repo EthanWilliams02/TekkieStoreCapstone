@@ -9,6 +9,9 @@ package za.ac.cput.tekkiestorecapstone.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class ShoeVariant {
@@ -24,8 +27,13 @@ public class ShoeVariant {
     private Shoe shoe;
 
     @Embedded
+    @Valid
     private ShoeSize size;
+
+    @NotBlank(message = "Colour cannot be blank")
     private String colour;
+
+    @PositiveOrZero(message = "Stock quantity cannot be negative")
     private int stockQuantity;
 
     protected ShoeVariant() {}

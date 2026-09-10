@@ -15,6 +15,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderBy;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +28,22 @@ import java.util.List;
 public class Shoe {
     @Id
     private String shoeId;
+    @NotBlank(message = "Brand is required")
     private String brand;
+    @NotBlank(message = "Shoe name is required")
     private String shoeName;
+    @NotBlank(message = "Category is required")
     private String category;
     private String description;
+    @NotBlank(message = "Gender is required")
     private String gender;
-    private double basePrice;
-    private double salePrice;
-    private double salePercentage;
+    
+    @PositiveOrZero(message = "Base price cannot be negative")
+    private BigDecimal basePrice;
+    @PositiveOrZero(message = "Sale price cannot be negative")
+    private BigDecimal salePrice;
+    @PositiveOrZero(message = "Sale percentage cannot be negative")
+    private BigDecimal salePercentage;
 
     // Stores multiple Cloudinary image URLs in a separate child table (shoe_images)
     @ElementCollection(fetch = FetchType.EAGER)
@@ -78,17 +91,18 @@ public class Shoe {
     public String getGender() {
         return gender;
     }
-    public double getBasePrice() {
+    public BigDecimal getBasePrice() {
         return basePrice;
     }
-    public double getSalePrice() {
+    public BigDecimal getSalePrice() {
         return salePrice;
     }
-    public double getSalePercentage() {
+    public BigDecimal getSalePercentage() {
         return salePercentage;
     }
     public boolean isOnSale() {
-        return salePercentage > 0 && salePrice > 0;
+        return salePercentage != null && salePercentage.compareTo(BigDecimal.ZERO) > 0 
+                && salePrice != null && salePrice.compareTo(BigDecimal.ZERO) > 0;
     }
     public List<String> getImageUrls() {
         return imageUrls;
@@ -103,10 +117,10 @@ public class Shoe {
                 ", category='" + category + '\'' +
                 ", description='" + description + '\'' +
                 ", gender='" + gender + '\'' +
-                ", basePrice=" + basePrice + '\'' +
-                ", salePrice=" + salePrice + '\'' +
-                ", salePercentage=" + salePercentage + '\'' +
-                ", imageUrls=" + imageUrls + '\'' +
+                ", basePrice=" + basePrice +
+                ", salePrice=" + salePrice +
+                ", salePercentage=" + salePercentage +
+                ", imageUrls=" + imageUrls +
                 '}';
     }
 
@@ -118,9 +132,9 @@ public class Shoe {
         private String category;
         private String description;
         private String gender;
-        private double basePrice;
-        private double salePrice;
-        private double salePercentage;
+        private BigDecimal basePrice;
+        private BigDecimal salePrice;
+        private BigDecimal salePercentage;
         private List<String> imageUrls = new ArrayList<>();
 
         public Builder setShoeId(String shoeId) {
@@ -147,25 +161,26 @@ public class Shoe {
             this.gender = gender;
             return this;
         }
-        public Builder setBasePrice(double basePrice) {
+        public Builder setBasePrice(BigDecimal basePrice) {
             this.basePrice = basePrice;
             return this;
         }
-        public Builder setSalePrice(double salePrice) {
+        public Builder setSalePrice(BigDecimal salePrice) {
             this.salePrice = salePrice;
             return this;
         }
-        public Builder setSalePercentage(double salePercentage) {
+        public Builder setSalePercentage(BigDecimal salePercentage) {
             this.salePercentage = salePercentage;
             return this;
         }
         // Calculates sale price automatically when a discount percentage is applied
-        public Builder setSale(double salePercentage) {
+        public Builder setSale(BigDecimal salePercentage) {
             this.salePercentage = salePercentage;
-            if (salePercentage > 0 && this.basePrice > 0) {
-                this.salePrice = Math.round(this.basePrice * (1.0 - (salePercentage / 100.0)) * 100.0) / 100.0;
+            if (salePercentage != null && salePercentage.compareTo(BigDecimal.ZERO) > 0 && this.basePrice != null && this.basePrice.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal discountFactor = BigDecimal.ONE.subtract(salePercentage.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+                this.salePrice = this.basePrice.multiply(discountFactor).setScale(2, RoundingMode.HALF_UP);
             } else {
-                this.salePrice = 0.0;
+                this.salePrice = BigDecimal.ZERO;
             }
             return this;
         }
