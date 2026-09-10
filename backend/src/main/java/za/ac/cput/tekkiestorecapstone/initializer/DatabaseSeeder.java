@@ -1,6 +1,7 @@
 package za.ac.cput.tekkiestorecapstone.initializer;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import za.ac.cput.tekkiestorecapstone.domain.Shoe;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Component
+@Order(1)
 public class DatabaseSeeder implements CommandLineRunner {
 
     @Autowired

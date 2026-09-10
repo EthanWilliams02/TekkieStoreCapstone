@@ -19,7 +19,7 @@ public class Address {
     private String suburb;
     @NotBlank(message = "City cannot be blank")
     private String city;
-    private String province;
+    @NotBlank(message = "Postal code cannot be blank")
     private String postalCode;
 
     protected Address(){}

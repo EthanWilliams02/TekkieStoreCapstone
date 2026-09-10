@@ -20,7 +20,7 @@ public class Cart {
     private String cartId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = true)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password"})
     private Customer customer;
 
