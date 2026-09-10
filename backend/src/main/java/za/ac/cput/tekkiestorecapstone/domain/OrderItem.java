@@ -65,10 +65,6 @@ public class OrderItem {
         return order;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     public String getShoeId() {
         return shoeId;
     }
@@ -99,10 +95,6 @@ public class OrderItem {
 
     public BigDecimal getSubTotal() {
         return subTotal;
-    }
-
-    public void setSubTotal(BigDecimal subTotal) {
-        this.subTotal = subTotal;
     }
 
     @Override

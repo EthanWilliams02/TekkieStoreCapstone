@@ -73,10 +73,6 @@ public class Order {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
     public BigDecimal getSubtotal() {
         return subtotal;
     }
@@ -101,24 +97,12 @@ public class Order {
         return status;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public List<OrderItem> getOrderItems() {
         return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
     }
 
     @Override

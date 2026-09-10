@@ -42,21 +42,34 @@ public class OrderService implements IOrderService {
             return null;
         }
 
-        order.setCustomer(customer);
-        order.setStatus(OrderStatus.PENDING);
+        Order.Builder orderBuilder = new Order.Builder()
+                .copy(order)
+                .setCustomer(customer)
+                .setStatus(OrderStatus.PENDING);
 
         if (order.getOrderDate() == null) {
-            order.setOrderDate(new Date());
+            orderBuilder.setOrderDate(new Date());
         }
 
-        if (order.getOrderItems() != null) {
-            for (OrderItem item : order.getOrderItems()) {
-                item.setOrder(order);
-                item.setSubTotal(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        Order builtOrder = orderBuilder.build();
+
+        if (builtOrder.getOrderItems() != null) {
+            java.util.List<OrderItem> updatedItems = new java.util.ArrayList<>();
+            for (OrderItem item : builtOrder.getOrderItems()) {
+                OrderItem updatedItem = new OrderItem.Builder()
+                        .copy(item)
+                        .setOrder(builtOrder)
+                        .setSubTotal(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                        .build();
+                updatedItems.add(updatedItem);
             }
+            builtOrder = new Order.Builder()
+                    .copy(builtOrder)
+                    .setOrderItems(updatedItems)
+                    .build();
         }
 
-        return this.repo.save(order);
+        return this.repo.save(builtOrder);
     }
 
     @Override

@@ -72,80 +72,40 @@ public class DeliveryDetails {
         return deliveryId;
     }
 
-    public void setDeliveryId(String deliveryId) {
-        this.deliveryId = deliveryId;
-    }
-
     public Order getOrder() {
         return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public Address getAddress() {
         return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public String getCourier() {
         return courier;
     }
 
-    public void setCourier(String courier) {
-        this.courier = courier;
-    }
-
     public String getTrackingNumber() {
         return trackingNumber;
-    }
-
-    public void setTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
     }
 
     public LocalDate getEstimatedDeliveryDate() {
         return estimatedDeliveryDate;
     }
 
-    public void setEstimatedDeliveryDate(LocalDate estimatedDeliveryDate) {
-        this.estimatedDeliveryDate = estimatedDeliveryDate;
-    }
-
     public String getFullName() {
         return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     @Override

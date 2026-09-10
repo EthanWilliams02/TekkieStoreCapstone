@@ -19,6 +19,8 @@ public class Address {
     private String suburb;
     @NotBlank(message = "City cannot be blank")
     private String city;
+    @NotBlank(message = "Province cannot be blank")
+    private String province;
     @NotBlank(message = "Postal code cannot be blank")
     private String postalCode;
 
@@ -37,48 +39,24 @@ public class Address {
         return streetNumber;
     }
 
-    public void setStreetNumber(String streetNumber) {
-        this.streetNumber = streetNumber;
-    }
-
     public String getStreetName() {
         return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
     }
 
     public String getSuburb() {
         return suburb;
     }
 
-    public void setSuburb(String suburb) {
-        this.suburb = suburb;
-    }
-
     public String getCity() {
         return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getProvince() {
         return province;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
     public String getPostalCode() {
         return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
     }
 
     @Override
