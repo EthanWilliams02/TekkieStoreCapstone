@@ -929,35 +929,6 @@
   color: var(--brand-orange);
 }
 
-.checkout-trust-indicators {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.25rem;
-  flex-wrap: wrap;
-}
-
-.trust-indicator-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: #4B5563;
-  background-color: #F9FAFB;
-  border: 1px solid #E5E7EB;
-  padding: 0.25rem 0.55rem;
-  border-radius: 4px;
-}
-
-.trust-check {
-  color: #10B981;
-}
-
-.trust-shield {
-  color: var(--brand-orange);
-}
 
 /* --------------------------------------------------------------------------
    ORDER CONFIRMATION STATE

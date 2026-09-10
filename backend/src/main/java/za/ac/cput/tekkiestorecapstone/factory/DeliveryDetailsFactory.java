@@ -42,28 +42,4 @@ public class DeliveryDetailsFactory {
                 .setEstimatedDeliveryDate(estimatedDeliveryDate)
                 .build();
     }
-
-    public static DeliveryDetails createDeliveryDetails(String deliveryId, Address address, String courier, String trackingNumber, LocalDate estimatedDeliveryDate) {
-        if (Helper.isNullOrEmpty(deliveryId)
-                || Helper.isNullOrEmpty(courier)
-                || Helper.isNullOrEmpty(trackingNumber)) {
-            return null;
-        }
-
-        if (address == null) {
-            return null;
-        }
-
-        if (estimatedDeliveryDate == null) {
-            return null;
-        }
-
-        return new DeliveryDetails.Builder()
-                .setDeliveryId(deliveryId)
-                .setAddress(address)
-                .setCourier(courier)
-                .setTrackingNumber(trackingNumber)
-                .setEstimatedDeliveryDate(estimatedDeliveryDate)
-                .build();
-    }
 }

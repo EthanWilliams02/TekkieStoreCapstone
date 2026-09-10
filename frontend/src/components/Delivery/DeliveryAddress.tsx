@@ -28,7 +28,7 @@ export const DeliveryAddress: React.FC<DeliveryAddressProps> = ({ deliveryData }
     ? `${activeOrder.shippingAddress.suburb}, ${activeOrder.shippingAddress.city}`
     : 'Gardens, Cape Town';
   const postalLine = deliveryData?.address
-    ? `${deliveryData.address.postalCode}, South Africa`
+    ? `${deliveryData.address.postalCode}${deliveryData.address.province ? `, ${deliveryData.address.province}` : ''}, South Africa`
     : activeOrder
     ? `${activeOrder.shippingAddress.postalCode}, ${activeOrder.shippingAddress.province}, South Africa`
     : '8001, Western Cape, South Africa';

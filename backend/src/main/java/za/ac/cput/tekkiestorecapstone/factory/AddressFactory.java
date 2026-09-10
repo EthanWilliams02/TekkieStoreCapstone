@@ -16,6 +16,7 @@ public class AddressFactory {
             String streetName,
             String suburb,
             String city,
+            String province,
             String postalCode) {
 
         if (Helper.isNullOrEmpty(streetNumber)
@@ -31,7 +32,17 @@ public class AddressFactory {
                 .setStreetName(streetName)
                 .setSuburb(suburb)
                 .setCity(city)
+                .setProvince(province)
                 .setPostalCode(postalCode)
                 .build();
+    }
+
+    public static Address createAddress(
+            String streetNumber,
+            String streetName,
+            String suburb,
+            String city,
+            String postalCode) {
+        return createAddress(streetNumber, streetName, suburb, city, null, postalCode);
     }
 }
