@@ -16,8 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import za.ac.cput.tekkiestorecapstone.domain.Cart;
+import za.ac.cput.tekkiestorecapstone.domain.Customer;
 import za.ac.cput.tekkiestorecapstone.factory.CartFactory;
+import za.ac.cput.tekkiestorecapstone.factory.CustomerFactory;
 import za.ac.cput.tekkiestorecapstone.service.CartService;
+import java.math.BigDecimal;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +40,11 @@ class CartControllerTest {
 
     @BeforeEach
     void setUp() {
-        cart = CartFactory.createCart("CART001", 150.50);
+        Customer customer = CustomerFactory.createCustomer(
+                "CUST001", "John", "M", "Doe", "john.doe@example.com", "0821234567",
+                "123", "Main St", "Central", "Cape Town", "8001"
+        );
+        cart = CartFactory.createCart("CART001", customer, BigDecimal.valueOf(150.50));
     }
 
     @Test
@@ -61,7 +68,7 @@ class CartControllerTest {
 
         assertNotNull(found);
         assertEquals("CART001", found.getCartId());
-        assertEquals(150.50, found.getTotalAmount());
+        assertEquals(BigDecimal.valueOf(150.50), found.getTotalAmount());
 
         System.out.println("Cart found: " + found);
     }
@@ -70,7 +77,7 @@ class CartControllerTest {
     void c_update() {
         Cart updated = new Cart.Builder()
                 .copy(cart)
-                .setTotalAmount(299.99)
+                .setTotalAmount(BigDecimal.valueOf(299.99))
                 .build();
 
         when(service.update(any(Cart.class))).thenReturn(updated);
@@ -78,7 +85,7 @@ class CartControllerTest {
         Cart updatedCart = controller.update(updated);
 
         assertNotNull(updatedCart);
-        assertEquals(299.99, updatedCart.getTotalAmount());
+        assertEquals(BigDecimal.valueOf(299.99), updatedCart.getTotalAmount());
 
         System.out.println("Cart updated: " + updatedCart);
     }

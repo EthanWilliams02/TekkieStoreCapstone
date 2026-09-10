@@ -8,6 +8,7 @@ package za.ac.cput.tekkiestorecapstone.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import za.ac.cput.tekkiestorecapstone.domain.Shoe;
 import za.ac.cput.tekkiestorecapstone.service.ShoeService;
 
@@ -26,7 +27,7 @@ public class ShoeController {
 
     // POST: Add a new shoe to the database
     @PostMapping("/create")
-    public Shoe create(@RequestBody Shoe shoe) {
+    public Shoe create(@Valid @RequestBody Shoe shoe) {
         return service.create(shoe);
     }
 
@@ -38,7 +39,7 @@ public class ShoeController {
 
     // POST: Save updates to an existing shoe
     @PostMapping("/update")
-    public Shoe update(@RequestBody Shoe shoe) {
+    public Shoe update(@Valid @RequestBody Shoe shoe) {
         return service.update(shoe);
     }
 

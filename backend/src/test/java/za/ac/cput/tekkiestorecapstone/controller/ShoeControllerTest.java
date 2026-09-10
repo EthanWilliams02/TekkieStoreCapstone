@@ -18,6 +18,7 @@ import za.ac.cput.tekkiestorecapstone.domain.Shoe;
 import za.ac.cput.tekkiestorecapstone.factory.ShoeFactory;
 import za.ac.cput.tekkiestorecapstone.service.ShoeService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +46,7 @@ class ShoeControllerTest {
                 "Sneaker",
                 "Comfortable running shoe",
                 "Unisex",
-                2500.00,
+                BigDecimal.valueOf(2500.00),
                 List.of("https://res.cloudinary.com/test/nike-air-max.jpg")
         );
     }

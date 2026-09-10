@@ -7,11 +7,14 @@
 package za.ac.cput.tekkiestorecapstone.domain;
 
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotBlank;
 
 @Embeddable
 public class Name {
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
     private String middleName;
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
     protected Name(){}

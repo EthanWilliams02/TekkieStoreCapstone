@@ -20,6 +20,7 @@ import za.ac.cput.tekkiestorecapstone.domain.CartItem;
 import za.ac.cput.tekkiestorecapstone.factory.CartItemFactory;
 import za.ac.cput.tekkiestorecapstone.service.CartItemService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ class CartItemControllerTest {
         cartItem = CartItemFactory.createCartItem(
                 "D001",
                 2,
-                900.00
+                BigDecimal.valueOf(900.00)
         );
     }
 
@@ -76,7 +77,7 @@ class CartItemControllerTest {
         CartItem updated = new CartItem.Builder()
                 .copy(cartItem)
                 .setQuantity(3)
-                .setSubTotal(1450.00)
+                .setSubTotal(BigDecimal.valueOf(1450.00))
                 .build();
 
         when(service.update(any(CartItem.class))).thenReturn(updated);
@@ -122,4 +123,4 @@ class CartItemControllerTest {
 
         System.out.println("Cart Items by Cart ID: " + cartItems);
     }
-}
+}

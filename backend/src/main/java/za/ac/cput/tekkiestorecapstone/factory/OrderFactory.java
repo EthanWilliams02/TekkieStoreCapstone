@@ -14,19 +14,20 @@ import za.ac.cput.tekkiestorecapstone.util.Helper;
 
 import java.util.Date;
 import java.util.List;
+import java.math.BigDecimal;
 
 public class OrderFactory {
 
     public static Order createOrder(String orderId,
                                     Date orderDate,
-                                    double totalAmount,
+                                    BigDecimal totalAmount,
                                     String paymentReference) {
         return createOrder(orderId, orderDate, totalAmount, OrderStatus.PENDING, paymentReference);
     }
 
     public static Order createOrder(String orderId,
                                     Date orderDate,
-                                    double totalAmount,
+                                    BigDecimal totalAmount,
                                     OrderStatus status,
                                     String paymentReference) {
 
@@ -36,7 +37,7 @@ public class OrderFactory {
             return null;
         }
 
-        if (totalAmount < 0) {
+        if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) < 0) {
             return null;
         }
 
@@ -54,10 +55,9 @@ public class OrderFactory {
 
     public static Order createOrder(String orderId,
                                     Date orderDate,
-                                    double subtotal,
-                                    double shippingFee,
-                                    double vat,
-                                    double totalAmount,
+                                    BigDecimal subtotal,
+                                    BigDecimal shippingFee,
+                                    BigDecimal totalAmount,
                                     String paymentMethod,
                                     String paymentReference,
                                     OrderStatus status,
@@ -70,7 +70,7 @@ public class OrderFactory {
             return null;
         }
 
-        if (totalAmount < 0 || subtotal < 0) {
+        if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) < 0 || subtotal == null || subtotal.compareTo(BigDecimal.ZERO) < 0) {
             return null;
         }
 
@@ -81,7 +81,6 @@ public class OrderFactory {
                 .setOrderDate(orderDate)
                 .setSubtotal(subtotal)
                 .setShippingFee(shippingFee)
-                .setVat(vat)
                 .setTotalAmount(totalAmount)
                 .setPaymentMethod(paymentMethod)
                 .setPaymentReference(paymentReference)

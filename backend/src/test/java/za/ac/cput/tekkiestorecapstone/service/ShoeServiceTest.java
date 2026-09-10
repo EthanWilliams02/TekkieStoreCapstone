@@ -18,6 +18,7 @@ import za.ac.cput.tekkiestorecapstone.domain.Shoe;
 import za.ac.cput.tekkiestorecapstone.factory.ShoeFactory;
 import za.ac.cput.tekkiestorecapstone.repository.ShoeRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,7 @@ class ShoeServiceTest {
                 "Sneaker",
                 "Cheaper shoes with the same comfortability",
                 "Unisex",
-                320.00,
+                BigDecimal.valueOf(320.00),
                 List.of("https://res.cloudinary.com/test/shoe.jpg")
         );
     }

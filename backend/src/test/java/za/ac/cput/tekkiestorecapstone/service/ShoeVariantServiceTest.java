@@ -22,6 +22,7 @@ import za.ac.cput.tekkiestorecapstone.factory.ShoeSizeFactory;
 import za.ac.cput.tekkiestorecapstone.factory.ShoeVariantFactory;
 import za.ac.cput.tekkiestorecapstone.repository.ShoeVariantRepository;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +55,7 @@ class ShoeVariantServiceTest {
                 "Sneaker",
                 "Iconic lifestyle sneaker",
                 "Men",
-                2499.00,
+                BigDecimal.valueOf(2499.00),
                 List.of("https://res.cloudinary.com/test/nike.jpg")
         );
 

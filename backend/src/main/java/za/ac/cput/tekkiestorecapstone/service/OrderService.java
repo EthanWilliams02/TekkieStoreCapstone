@@ -15,6 +15,7 @@ import za.ac.cput.tekkiestorecapstone.domain.OrderStatus;
 import za.ac.cput.tekkiestorecapstone.repository.CustomerRepository;
 import za.ac.cput.tekkiestorecapstone.repository.OrderRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class OrderService implements IOrderService {
         if (order.getOrderItems() != null) {
             for (OrderItem item : order.getOrderItems()) {
                 item.setOrder(order);
-                item.setSubTotal(item.getQuantity() * item.getUnitPrice());
+                item.setSubTotal(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             }
         }
 

@@ -9,6 +9,7 @@ package za.ac.cput.tekkiestorecapstone.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import za.ac.cput.tekkiestorecapstone.domain.Customer;
 import za.ac.cput.tekkiestorecapstone.service.CustomerService;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CustomerController {
     private final CustomerService service;
 
@@ -25,7 +27,7 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public Customer create(@RequestBody Customer customer) {
+    public Customer create(@Valid @RequestBody Customer customer) {
         return service.create(customer);
     }
 
@@ -35,7 +37,7 @@ public class CustomerController {
     }
 
     @PostMapping("/update")
-    public Customer update(@RequestBody Customer customer) {
+    public Customer update(@Valid @RequestBody Customer customer) {
         return service.update(customer);
     }
 

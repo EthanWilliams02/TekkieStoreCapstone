@@ -138,57 +138,35 @@ public class ShoeVariantDataInitializer implements ApplicationRunner {
         }
     }
 
-    /**
-     * Extracts colour from shoe name or falls back to "Original".
-     */
     public static String extractColour(String shoeName) {
         if (shoeName == null || shoeName.trim().isEmpty()) {
             return "Original";
         }
-        String lower = shoeName.toLowerCase(Locale.ROOT);
 
-        // Check common colours ordered appropriately
-        if (lower.contains("metallic silver") || lower.contains("silver")) {
-            return "Silver";
-        }
-        if (lower.contains("triple black") || lower.contains("black")) {
-            return "Black";
-        }
-        if (lower.contains("triple white") || lower.contains("white")) {
-            return "White";
-        }
-        if (lower.contains("red")) {
-            return "Red";
-        }
-        if (lower.contains("blue") || lower.contains("navy")) {
-            return "Blue";
-        }
-        if (lower.contains("green")) {
-            return "Green";
-        }
-        if (lower.contains("grey") || lower.contains("gray")) {
-            return "Grey";
-        }
-        if (lower.contains("orange")) {
-            return "Orange";
-        }
-        if (lower.contains("yellow") || lower.contains("gold")) {
-            return "Yellow";
-        }
-        if (lower.contains("pink")) {
-            return "Pink";
-        }
-        if (lower.contains("purple")) {
-            return "Purple";
-        }
-        if (lower.contains("brown")) {
-            return "Brown";
-        }
-        if (lower.contains("beige") || lower.contains("cream") || lower.contains("sail")) {
-            return "Cream";
-        }
+        String[] words = shoeName.trim().split("\\s+");
+        String lastWord = words[words.length - 1].toLowerCase(Locale.ROOT);
 
-        return "Original";
+        switch (lastWord) {
+            case "black": return "Black";
+            case "white": return "White";
+            case "red": return "Red";
+            case "blue":
+            case "navy": return "Blue";
+            case "green": return "Green";
+            case "grey":
+            case "gray": return "Grey";
+            case "orange": return "Orange";
+            case "yellow":
+            case "gold": return "Yellow";
+            case "pink": return "Pink";
+            case "purple": return "Purple";
+            case "brown": return "Brown";
+            case "beige":
+            case "cream":
+            case "sail": return "Cream";
+            case "silver": return "Silver";
+            default: return "Original";
+        }
     }
 
     /**

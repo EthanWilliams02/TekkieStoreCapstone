@@ -20,6 +20,7 @@ import za.ac.cput.tekkiestorecapstone.service.OrderService;
 
 import java.util.Date;
 import java.util.List;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +43,7 @@ class OrderControllerTest {
         order = OrderFactory.createOrder(
                 "ORD001",
                 new Date(),
-                1500.00,
+                BigDecimal.valueOf(1500.00),
                 "PAY001"
         );
     }

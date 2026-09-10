@@ -10,6 +10,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import za.ac.cput.tekkiestorecapstone.domain.OrderItem;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,12 +24,12 @@ class OrderItemFactoryTest {
         OrderItem orderItem = OrderItemFactory.createOrderItem(
                 "OI001",
                 2,
-                750.00
+                BigDecimal.valueOf(750.00)
         );
 
         assertNotNull(orderItem);
-        assertEquals(1500.00, orderItem.getSubTotal());
-        assertEquals(orderItem.getQuantity() * orderItem.getUnitPrice(), orderItem.getSubTotal());
+        assertEquals(BigDecimal.valueOf(1500.00), orderItem.getSubTotal());
+        assertEquals(BigDecimal.valueOf(orderItem.getQuantity()).multiply(orderItem.getUnitPrice()), orderItem.getSubTotal());
         System.out.println(orderItem.toString());
     }
 
@@ -39,7 +40,7 @@ class OrderItemFactoryTest {
         OrderItem orderItem = OrderItemFactory.createOrderItem(
                 "OI002",
                 2,
-                -750.00
+                BigDecimal.valueOf(-750.00)
         );
 
         assertNull(orderItem);
@@ -52,7 +53,7 @@ class OrderItemFactoryTest {
         OrderItem orderItem = OrderItemFactory.createOrderItem(
                 "OI003",
                 0,
-                750.00
+                BigDecimal.valueOf(750.00)
         );
 
         assertNull(orderItem);
@@ -65,7 +66,7 @@ class OrderItemFactoryTest {
         OrderItem orderItem = OrderItemFactory.createOrderItem(
                 "OI004",
                 -1,
-                750.00
+                BigDecimal.valueOf(750.00)
         );
 
         assertNull(orderItem);
@@ -78,7 +79,7 @@ class OrderItemFactoryTest {
         OrderItem orderItem = OrderItemFactory.createOrderItem(
                 "",
                 2,
-                750.00
+                BigDecimal.valueOf(750.00)
         );
 
         assertNull(orderItem);
