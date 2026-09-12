@@ -20,6 +20,7 @@ export interface ShoeProduct {
   images?: string[];
   isNewDrop?: boolean;
   tag?: string;
+  quantity?: number;
 }
 
 export interface CatalogueFilterState {

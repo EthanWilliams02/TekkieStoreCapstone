@@ -2,6 +2,7 @@ import React from 'react';
 import { Heart } from 'lucide-react';
 import { ShoeProduct } from '../../types/catalogue';
 import { getShoeGalleryImages } from '../../utils/productImages';
+import { ProductImage } from '../shared/ProductImage';
 import './ProductGallery.css';
 
 interface ProductGalleryProps {
@@ -28,7 +29,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
       <div className="main-image-container">
         {/* Product Tag / Badge */}
         {product.isOnSale ? (
-          <span className="product-gallery-tag tag-orange">SALE</span>
+          <span className="product-gallery-tag tag-sale">SALE</span>
         ) : product.tag ? (
           <span className={`product-gallery-tag ${product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
             {product.tag}
@@ -53,14 +54,11 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
 
         {/* Main Image */}
         <div className="main-image-viewport">
-          <img
+          <ProductImage
             key={currentImage.url}
             src={currentImage.url}
             alt={`${product.brand} ${product.name} - ${currentImage.label}`}
             className="main-gallery-image"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-            }}
           />
         </div>
 
@@ -83,13 +81,10 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
               title={img.label}
               aria-label={`View ${img.label}`}
             >
-              <img
+              <ProductImage
                 src={img.url}
                 alt={`${product.name} thumbnail ${index + 1}`}
                 className="thumbnail-img"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-                }}
               />
               <span className="thumbnail-label">{img.label}</span>
             </button>

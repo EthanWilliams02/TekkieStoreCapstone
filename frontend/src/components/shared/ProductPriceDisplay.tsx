@@ -27,6 +27,7 @@ export const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   className = '',
 }) => {
   const discount = getDiscountPercentage(product);
+  const isOutOfStock = product.quantity === 0;
 
   if (product.isOnSale && product.salePrice) {
     return (
@@ -37,6 +38,7 @@ export const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
           {discount > 0 && (
             <span className="sale-discount-percentage">{discount}% OFF</span>
           )}
+          {isOutOfStock && <span className="out-of-stock-badge">OUT OF STOCK</span>}
         </div>
       </div>
     );
@@ -44,7 +46,10 @@ export const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
 
   return (
     <div className={`product-price-container ${className}`}>
-      <span className="product-price">{formatPrice(product.price)}</span>
+      <div className="product-price-regular-row">
+        <span className="product-price">{formatPrice(product.price)}</span>
+        {isOutOfStock && <span className="out-of-stock-badge">OUT OF STOCK</span>}
+      </div>
     </div>
   );
 };

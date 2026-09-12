@@ -1,5 +1,8 @@
-/* CloudinaryTempCleanupTest.java
-Temporary test runner to clean up / delete Cloudinary folders or categories on demand
+/* CloudinaryCleanupTool.java
+Manual utility to clean up / delete Cloudinary folders or categories on demand.
+Named *Tool (not *Test) and @Disabled on purpose: mvn test's default Surefire
+pattern picks up any *Test.java file automatically, and this one deletes real
+uploaded images - it must only ever be run one method at a time from the IDE.
 Author: Lyle Solomons (230123872)
 */
 
@@ -7,26 +10,21 @@ package za.ac.cput.tekkiestorecapstone.service;
 
 import com.cloudinary.Cloudinary;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CloudinaryTempCleanupTest {
+@Disabled("Manual utility - deletes real Cloudinary images. Remove @Disabled locally and run one method at a time from your IDE, never via mvn test.")
+public class CloudinaryCleanupTool {
 
     private CloudinaryService cloudinaryService;
 
     @BeforeEach
     void setUp() {
-        Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", "nuivwupa");
-        config.put("api_key", "477249257479995");
-        config.put("api_secret", "sCDDOSxRy3sBcLLhs8bQrtzjAcQ");
-        config.put("secure", "true");
-
-        Cloudinary cloudinary = new Cloudinary(config);
+        Cloudinary cloudinary = new Cloudinary(CloudinaryTestConfig.loadCloudinaryConfig());
         this.cloudinaryService = new CloudinaryService(cloudinary);
     }
 

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,14 +25,7 @@ public class CloudinaryServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize Cloudinary with your credentials
-        Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", "nuivwupa");
-        config.put("api_key", "477249257479995");
-        config.put("api_secret", "sCDDOSxRy3sBcLLhs8bQrtzjAcQ");
-        config.put("secure", "true");
-
-        Cloudinary cloudinary = new Cloudinary(config);
+        Cloudinary cloudinary = new Cloudinary(CloudinaryTestConfig.loadCloudinaryConfig());
         this.cloudinaryService = new CloudinaryService(cloudinary);
     }
 

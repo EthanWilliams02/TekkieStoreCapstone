@@ -6,6 +6,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { ProductPriceDisplay } from '../shared/ProductPriceDisplay';
 import { SizeSelector } from '../shared/SizeSelector';
+import { ProductImage } from '../shared/ProductImage';
 import './CatalogueProductCard.css';
 
 interface CatalogueProductCardProps {
@@ -68,7 +69,7 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
         <div className="product-image-container">
           {/* Product Tag / Badge */}
           {product.isOnSale ? (
-            <span className="product-tag tag-orange">SALE</span>
+            <span className="product-tag tag-sale">SALE</span>
           ) : product.tag ? (
             <span className={`product-tag ${product.tag === 'JUST DROPPED' ? 'tag-orange' : ''}`}>
               {product.tag}
@@ -92,14 +93,11 @@ export const CatalogueProductCard: React.FC<CatalogueProductCardProps> = ({
           </button>
 
           {/* Product Image */}
-          <img
+          <ProductImage
             src={product.image}
             alt={`${product.brand} ${product.name} in ${product.colour}`}
             className="product-image"
             loading="lazy"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-            }}
           />
 
           {/* Cart Plus Action Button */}
