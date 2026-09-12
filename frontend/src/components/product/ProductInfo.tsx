@@ -154,24 +154,17 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         return {
           inStock: true,
           text:
-            selectedVariant.stockQuantity <= 3
-              ? `Only ${selectedVariant.stockQuantity} left in stock - order soon!`
+            selectedVariant.stockQuantity <= 5
+              ? `Only ${selectedVariant.stockQuantity} left in stock`
               : `${selectedVariant.stockQuantity} in stock`,
           count: selectedVariant.stockQuantity,
         };
       }
       return { inStock: false, text: 'Out of Stock', count: 0 };
     }
-    // No specific size selected yet: sum of in-stock items for current colour
-    const totalInStock = colourVariants.reduce(
-      (sum, v) => sum + Math.max(0, v.stockQuantity || 0),
-      0
-    );
-    if (totalInStock > 0) {
-      return { inStock: true, text: `${totalInStock} items available in stock`, count: totalInStock };
-    }
-    return { inStock: false, text: 'Out of stock in this colour', count: 0 };
-  }, [variantsLoading, variantsError, hasVariants, selectedVariant, colourVariants]);
+    // No size selected yet: don't reveal stock count until a size is chosen
+    return { inStock: false, text: '', count: undefined };
+  }, [variantsLoading, variantsError, hasVariants, selectedVariant]);
 
   // Quantity control bounds
   const maxStock = selectedVariant ? Math.max(1, selectedVariant.stockQuantity) : 1;
@@ -450,13 +443,13 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({
         )}
 
         {/* STOCK QUANTITY BADGE */}
-        {!variantsLoading && (
+        {!variantsLoading && stockInfo.text && (
           <div className="stock-status-row">
             <span
               className={`stock-indicator-badge ${
                 !stockInfo.inStock
                   ? 'out-of-stock'
-                  : stockInfo.count !== undefined && stockInfo.count <= 3
+                  : stockInfo.count !== undefined && stockInfo.count <= 5
                   ? 'low-stock'
                   : 'in-stock'
               }`}

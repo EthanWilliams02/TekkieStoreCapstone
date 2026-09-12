@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { ImageOff } from 'lucide-react';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { limitFit } from '@cloudinary/url-gen/actions/resize';
+import { AdvancedImage } from '@cloudinary/react';
 import './ProductImage.css';
 
 interface ProductImageProps {
@@ -9,13 +12,18 @@ interface ProductImageProps {
   loading?: 'lazy' | 'eager';
 }
 
-// Renders the product image straight from the database URL.
-// If the URL fails to load, shows a plain "Image unavailable" placeholder
-// instead of swapping in an unrelated local photo.
+// Extracts cloud name and public ID from a Cloudinary delivery URL
+const parseCloudinaryUrl = (url: string): { cloudName: string; publicId: string } | null => {
+  const match = url.match(/res\.cloudinary\.com\/([^/]+)\/image\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+$/);
+  if (!match) return null;
+  return { cloudName: match[1], publicId: match[2] };
+};
+
 export const ProductImage: React.FC<ProductImageProps> = ({ src, alt, className = '', loading }) => {
   const [failed, setFailed] = useState(false);
+  const parsed = src ? parseCloudinaryUrl(src) : null;
 
-  if (!src || failed) {
+  if (!parsed || failed) {
     return (
       <div className={`product-image-placeholder ${className}`}>
         <ImageOff size={24} />
@@ -24,9 +32,16 @@ export const ProductImage: React.FC<ProductImageProps> = ({ src, alt, className 
     );
   }
 
+  const cld = new Cloudinary({ cloud: { cloudName: parsed.cloudName } });
+  const cldImage = cld
+    .image(parsed.publicId)
+    .format('auto')
+    .quality('auto')
+    .resize(limitFit(800, 800));
+
   return (
-    <img
-      src={src}
+    <AdvancedImage
+      cldImg={cldImage}
       alt={alt}
       className={className}
       loading={loading}

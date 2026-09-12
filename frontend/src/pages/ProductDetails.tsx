@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, SearchX, Sparkles } from 'lucide-react';
 import Skeleton from '@mui/material/Skeleton';
-import { fetchShoeById, fetchAllShoes } from '../services/shoeService';
+import { fetchShoeById } from '../services/shoeService';
+import { useShoes } from '../hooks/useShoes';
 import { shoeVariantService, ShoeVariant } from '../services/shoeVariantService';
 import { ShoeProduct } from '../types/catalogue';
 import { useWishlist } from '../context/WishlistContext';
@@ -27,7 +28,7 @@ export const ProductDetails: React.FC = () => {
   // Variants fetch error state
   const [variantsError, setVariantsError] = useState<boolean>(false);
   // Full shoe list for recommendations
-  const [allProducts, setAllProducts] = useState<ShoeProduct[]>([]);
+  const { shoes: allProducts } = useShoes();
   // Selected image thumbnail index in the gallery
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   // Loading state while fetching from cloud database
@@ -77,24 +78,21 @@ export const ProductDetails: React.FC = () => {
       setVariantsLoading(false);
     }
 
-    // GET all shoes for "You might also like" suggestions
-    fetchAllShoes().then((shoes) => {
-      if (isMounted) {
-        setAllProducts(shoes);
-      }
-    });
-
     return () => {
       isMounted = false;
     };
   }, [id]);
 
-  // Pick up to 3 related kicks from the same brand or category
-  const relatedProducts = React.useMemo(() => {
-    if (!product) return [];
-    return allProducts
-      .filter((p) => p.id !== product.id && (p.brand === product.brand || p.category === product.category))
-      .slice(0, 3);
+  // Pick 4 random shoes from the same brand only
+  const [relatedProducts, setRelatedProducts] = useState<ShoeProduct[]>([]);
+
+  useEffect(() => {
+    if (!product) {
+      setRelatedProducts([]);
+      return;
+    }
+    const sameBrand = allProducts.filter((p) => p.id !== product.id && p.brand === product.brand);
+    setRelatedProducts([...sameBrand].sort(() => Math.random() - 0.5).slice(0, 4));
   }, [product, allProducts]);
 
   // Handle Loading Skeleton State while communicating with cloud DB
