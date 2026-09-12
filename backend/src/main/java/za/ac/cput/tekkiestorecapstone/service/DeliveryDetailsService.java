@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.tekkiestorecapstone.domain.DeliveryDetails;
 import za.ac.cput.tekkiestorecapstone.repository.DeliveryDetailsRepository;
-import za.ac.cput.tekkiestorecapstone.repository.OrderRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +20,7 @@ public class DeliveryDetailsService implements IDeliveryDetailsService {
     private final DeliveryDetailsRepository repo;
 
     @Autowired
-    public DeliveryDetailsService(DeliveryDetailsRepository repo, OrderRepository orderRepo) {
+    public DeliveryDetailsService(DeliveryDetailsRepository repo) {
         this.repo = repo;
     }
 

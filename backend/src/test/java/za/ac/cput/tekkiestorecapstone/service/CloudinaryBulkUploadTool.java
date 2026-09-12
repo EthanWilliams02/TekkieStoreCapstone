@@ -1,5 +1,8 @@
-/* CloudinaryBulkUploadTest.java
-Temporary test runner to upload sneaker photos to Cloudinary per brand or per file
+/* CloudinaryBulkUploadTool.java
+Manual utility to upload sneaker photos to Cloudinary per brand or per file.
+Named *Tool (not *Test) on purpose: mvn test's default Surefire pattern picks
+up any *Test.java file automatically, and this one uploads real images to a
+real account - it must only ever be run one method at a time from the IDE.
 Author: Lyle Solomons (230123872)
 */
 
@@ -7,32 +10,27 @@ package za.ac.cput.tekkiestorecapstone.service;
 
 import com.cloudinary.Cloudinary;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CloudinaryBulkUploadTest {
+@Disabled("Manual utility - uploads real images to Cloudinary. Remove @Disabled locally and run one method at a time from your IDE, never via mvn test.")
+public class CloudinaryBulkUploadTool {
 
     private CloudinaryService cloudinaryService;
     private File baseDir;
 
     @BeforeEach
     void setUp() {
-        Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", "nuivwupa");
-        config.put("api_key", "477249257479995");
-        config.put("api_secret", "sCDDOSxRy3sBcLLhs8bQrtzjAcQ");
-        config.put("secure", "true");
-
-        Cloudinary cloudinary = new Cloudinary(config);
+        Cloudinary cloudinary = new Cloudinary(CloudinaryTestConfig.loadCloudinaryConfig());
         this.cloudinaryService = new CloudinaryService(cloudinary);
 
         // Find frontend/public directory

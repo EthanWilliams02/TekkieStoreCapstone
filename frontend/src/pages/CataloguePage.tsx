@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import { fetchAllShoes } from '../services/shoeService';
+import { useShoes } from '../hooks/useShoes';
 import { ShoeBrand, ShoeCategory, ShoeProduct, RouteMode } from '../types/catalogue';
 import { CatalogueFilters } from '../components/catalogue/CatalogueFilters';
 import { CatalogueToolbar } from '../components/catalogue/CatalogueToolbar';
@@ -14,6 +14,28 @@ import '../components/catalogue/CataloguePage.css';
 const MIN_PRICE = 1000;
 const MAX_PRICE = 4000;
 const ITEMS_PER_PAGE = 12;
+const FILTERS_STORAGE_KEY = 'tekkie_catalogue_filters';
+
+type SortOption = 'latest' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
+
+interface StoredFilters {
+  selectedBrands: ShoeBrand[];
+  selectedCategories: ShoeCategory[];
+  selectedSizes: string[];
+  currentMaxPrice: number;
+  sortBy: SortOption;
+  currentPage: number;
+}
+
+// Reads filters saved from a previous visit, so pressing "back" restores them
+const loadStoredFilters = (): StoredFilters | null => {
+  try {
+    const raw = sessionStorage.getItem(FILTERS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
 
 export const CataloguePage = () => {
   const location = useLocation();
@@ -69,14 +91,28 @@ export const CataloguePage = () => {
     }
   }, [routeMode]);
 
-  // Sidebar Filter States
-  const [selectedBrands, setSelectedBrands] = useState<ShoeBrand[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<ShoeCategory[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [currentMaxPrice, setCurrentMaxPrice] = useState<number>(MAX_PRICE);
-  const [sortBy, setSortBy] = useState<'latest' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'>('latest');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // Sidebar Filter States (restored from sessionStorage so "back" keeps them)
+  const [storedFilters] = useState(() => loadStoredFilters());
+  const [selectedBrands, setSelectedBrands] = useState<ShoeBrand[]>(storedFilters?.selectedBrands || []);
+  const [selectedCategories, setSelectedCategories] = useState<ShoeCategory[]>(storedFilters?.selectedCategories || []);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(storedFilters?.selectedSizes || []);
+  const [currentMaxPrice, setCurrentMaxPrice] = useState<number>(storedFilters?.currentMaxPrice ?? MAX_PRICE);
+  const [sortBy, setSortBy] = useState<SortOption>(storedFilters?.sortBy || 'latest');
+  const [currentPage, setCurrentPage] = useState<number>(storedFilters?.currentPage || 1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Save filters whenever they change, so navigating back to this page restores them
+  useEffect(() => {
+    const filters: StoredFilters = {
+      selectedBrands,
+      selectedCategories,
+      selectedSizes,
+      currentMaxPrice,
+      sortBy,
+      currentPage,
+    };
+    sessionStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(filters));
+  }, [selectedBrands, selectedCategories, selectedSizes, currentMaxPrice, sortBy, currentPage]);
 
   // Search Query from URL parameter
   const searchQuery = searchParams.get('search') || '';
@@ -123,7 +159,7 @@ export const CataloguePage = () => {
     setCurrentPage(1);
   };
 
-  const handleChangeSort = (sort: 'latest' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc') => {
+  const handleChangeSort = (sort: SortOption) => {
     setSortBy(sort);
     setCurrentPage(1);
   };
@@ -154,28 +190,7 @@ export const CataloguePage = () => {
     selectedSizes.length +
     (currentMaxPrice < MAX_PRICE ? 1 : 0);
 
-  // Stores all shoes fetched from the database
-  const [allProducts, setAllProducts] = useState<ShoeProduct[]>([]);
-  // Loading state while fetching catalogue from cloud database
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // Fetch the full shoe catalogue when page loads
-  useEffect(() => {
-    let isMounted = true;
-    fetchAllShoes()
-      .then((shoes) => {
-        if (isMounted) {
-          setAllProducts(shoes);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setLoading(false);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { shoes: allProducts, loading } = useShoes();
 
   // 1. Filter shoes by page route (e.g. /sale, /men, /women, /new-drops)
   const baseProducts = useMemo(() => {

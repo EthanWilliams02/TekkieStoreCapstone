@@ -34,17 +34,17 @@
 }
 
 .catalogue-product-card .product-image {
-  width: 88%;
-  height: 88%;
+  width: 92%;
+  height: 92%;
   object-fit: cover;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .catalogue-product-card:hover .product-image {
-  transform: scale(1.06);
+  transform: scale(1.03);
 }
 
-/* Badges / Tags: SALE & JUST DROPPED unified in brand orange */
+/* Badges / Tags */
 .catalogue-product-card .product-tag {
   position: absolute;
   top: 1rem;
@@ -61,9 +61,14 @@
   pointer-events: none;
 }
 
-.catalogue-product-card .product-tag.tag-orange,
-.catalogue-product-card .product-tag.tag-sale {
+.catalogue-product-card .product-tag.tag-orange {
   background-color: var(--brand-orange);
+  color: var(--pure-white);
+  box-shadow: none;
+}
+
+.catalogue-product-card .product-tag.tag-sale {
+  background-color: #E02B20;
   color: var(--pure-white);
   box-shadow: none;
 }

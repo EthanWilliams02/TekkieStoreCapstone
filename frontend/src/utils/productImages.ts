@@ -12,7 +12,7 @@ export interface ProductImageView {
  */
 export const getShoeGalleryImages = (product: ShoeProduct): ProductImageView[] => {
   if (product.images && product.images.length > 0) {
-    const labels = ['Primary View', 'Side Profile', 'Detail & Angle', 'Alternate View'];
+    const labels = ['Primary View', 'Secondary View', 'Third View'];
     return product.images.map((url, idx) => ({
       id: `view-${idx + 1}`,
       label: labels[idx] || `View ${idx + 1}`,

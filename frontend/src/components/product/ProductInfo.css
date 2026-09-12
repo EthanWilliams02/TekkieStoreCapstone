@@ -495,9 +495,9 @@
 }
 
 .stock-indicator-badge.low-stock {
-  color: #B45309;
-  background-color: #FFFBEB;
-  border: 1px solid #FDE68A;
+  color: #B91C1C;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
 }
 
 .stock-indicator-badge.out-of-stock {

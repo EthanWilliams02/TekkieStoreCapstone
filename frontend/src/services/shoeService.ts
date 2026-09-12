@@ -15,17 +15,6 @@ export interface BackendShoe {
   imageUrls: string[];
 }
 
-// Auto-converts raw Cloudinary uploads to fast WebP/AVIF and resizes to 800px
-export const optimizeCloudinaryUrl = (url: string, width = 800): string => {
-  if (!url || typeof url !== 'string') return url;
-  if (url.includes('cloudinary.com') && url.includes('/upload/')) {
-    if (!url.includes('/upload/f_auto')) {
-      return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
-    }
-  }
-  return url;
-};
-
 // Make sure the main front photo is always first, before alternate views like _2 or _3
 export const sortShoeImages = (urls: string[]): string[] => {
   if (!urls || urls.length <= 1) return urls || [];
@@ -57,10 +46,9 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
   else if (cleanBrand === 'asics') brand = 'Asics';
   else if (cleanBrand === 'reebok') brand = 'Reebok';
 
-  // Get images from the database and make sure the main photo is first
-  const rawImages = sortShoeImages(shoe.imageUrls || []);
-  const optimizedImages = rawImages.map((u) => optimizeCloudinaryUrl(u, 800));
-  const primaryImage = optimizedImages[0] || '';
+  // Get images straight from the database, main photo first
+  const images = sortShoeImages(shoe.imageUrls || []);
+  const primaryImage = images[0] || '';
 
   // Gender classification
   let gender: ShoeGender = 'Unisex';
@@ -100,13 +88,14 @@ export const mapBackendShoeToProduct = (shoe: BackendShoe): ShoeProduct => {
     description: shoe.description,
     gender: gender,
     image: primaryImage,
-    images: optimizedImages,
+    images: images,
     isNewDrop: isNewDrop,
     tag: tag,
   };
 };
 
-// GET: Fetch all shoes from the backend REST API
+// GET: Fetches the entire shoe catalogue from the Spring Boot backend.
+// Note: This data is heavily cached on the frontend to prevent excessive database queries.
 export const fetchAllShoes = async (): Promise<ShoeProduct[]> => {
   try {
     const response = await api.get<BackendShoe[]>('/shoe/getAll');
@@ -120,7 +109,7 @@ export const fetchAllShoes = async (): Promise<ShoeProduct[]> => {
   }
 };
 
-// GET: Fetch a single shoe by ID
+// GET: Fetches a single shoe record by its ID from the backend
 export const fetchShoeById = async (id: string): Promise<ShoeProduct | undefined> => {
   try {
     const response = await api.get<BackendShoe>(`/shoe/read/${id}`);
@@ -133,7 +122,7 @@ export const fetchShoeById = async (id: string): Promise<ShoeProduct | undefined
   return undefined;
 };
 
-// POST: Send a new shoe to Spring Boot to persist in the database
+// POST: Sends payload to the backend to persist a new shoe record in the database
 export const createShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null> => {
   try {
     const response = await api.post<BackendShoe>('/shoe/create', shoe);
@@ -144,7 +133,7 @@ export const createShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null>
   }
 };
 
-// POST: Send updated shoe details to Spring Boot
+// POST: Sends updated shoe details to the backend to modify an existing record
 export const updateShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null> => {
   try {
     const response = await api.post<BackendShoe>('/shoe/update', shoe);
@@ -155,7 +144,7 @@ export const updateShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null>
   }
 };
 
-// DELETE: Delete a shoe by ID
+// DELETE: Removes a shoe record from the database by its ID
 export const deleteShoe = async (id: string): Promise<boolean> => {
   try {
     const response = await api.delete<boolean>(`/shoe/delete/${id}`);
