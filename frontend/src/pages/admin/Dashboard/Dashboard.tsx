@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useShoes } from '../../../hooks/useShoes';
 import { shoeVariantService, ShoeVariant } from '../../../services/shoeVariantService';
-import { DashboardHeader } from './DashboardHeader';
-import { KpiCards } from './KpiCards';
-import { SalesOverview } from './SalesOverview';
-import { RecentOrders, DashboardOrder } from './RecentOrders';
-import { InventoryStatus } from './InventoryStatus';
-import { TopProducts } from './TopProducts';
-import { WarehouseSync } from './WarehouseSync';
+import { DashboardHeader } from '../../../components/admin/dashboard/DashboardHeader';
+import { KpiCards } from '../../../components/admin/dashboard/KpiCards';
+import { SalesOverview } from '../../../components/admin/dashboard/SalesOverview';
+import { RecentOrders, DashboardOrder } from '../../../components/admin/dashboard/RecentOrders';
+import { InventoryStatus } from '../../../components/admin/dashboard/InventoryStatus';
+import { TopProducts } from '../../../components/admin/dashboard/TopProducts';
+import { WarehouseSync } from '../../../components/admin/dashboard/WarehouseSync';
 import api from '../../../services/api';
 import './Dashboard.css';
 

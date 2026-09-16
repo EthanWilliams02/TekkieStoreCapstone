@@ -1,0 +1,14 @@
+/* ==========================================================================
+   RecentOrders.css - Admin Recent Orders Component
+   ========================================================================== */
+
+.recent-orders-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.recent-orders-card .table-responsive {
+  flex: 1;
+  overflow-x: auto;
+}

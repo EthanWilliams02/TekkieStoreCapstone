@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatPrice } from '../../../utils/formatters';
+import './RecentOrders.css';
 
 export interface DashboardOrder {
   orderNumber: string;
@@ -123,3 +124,5 @@ export const RecentOrders: React.FC<RecentOrdersProps> = ({ orders = DEFAULT_ORD
     </div>
   );
 };
+
+export default RecentOrders;

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Package, ShoppingBag, TrendingUp, Users } from 'lucide-react';
 import { formatPrice } from '../../../utils/formatters';
-import { StatCard } from '../../../components/shared/StatCard';
+import { StatCard } from '../../shared/StatCard';
+import './KpiCards.css';
 
 interface KpiCardsProps {
   totalShoes: number;
@@ -66,3 +67,5 @@ export const KpiCards: React.FC<KpiCardsProps> = ({
     </div>
   );
 };
+
+export default KpiCards;

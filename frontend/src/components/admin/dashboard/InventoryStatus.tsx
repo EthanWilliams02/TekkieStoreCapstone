@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoeVariant, ShoeSize } from '../../../types/shoeVariant';
 import { ShoeProduct } from '../../../types/catalogue';
+import './InventoryStatus.css';
 
 export interface InventoryItemDisplay {
   id: string;
@@ -176,3 +177,5 @@ export const InventoryStatus: React.FC<InventoryStatusProps> = ({ variants = [],
     </div>
   );
 };
+
+export default InventoryStatus;

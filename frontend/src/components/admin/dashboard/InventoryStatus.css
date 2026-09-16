@@ -1,0 +1,14 @@
+/* ==========================================================================
+   InventoryStatus.css - Admin Inventory Status Component
+   ========================================================================== */
+
+.inventory-status-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.inventory-status-card .table-responsive {
+  flex: 1;
+  overflow-x: auto;
+}

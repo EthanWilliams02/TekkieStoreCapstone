@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RefreshCw, CheckCircle2, FileText, Check } from 'lucide-react';
+import './WarehouseSync.css';
 
 interface WarehouseSyncProps {
   onSync?: () => Promise<void> | void;
@@ -144,3 +145,5 @@ export const WarehouseSync: React.FC<WarehouseSyncProps> = ({ onSync }) => {
     </>
   );
 };
+
+export default WarehouseSync;

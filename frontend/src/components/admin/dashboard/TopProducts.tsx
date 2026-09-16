@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoeProduct } from '../../../types/catalogue';
-import { CatalogueProductCard } from '../../../components/catalogue/CatalogueProductCard';
+import { CatalogueProductCard } from '../../catalogue/CatalogueProductCard';
+import './TopProducts.css';
 
 interface TopProductsProps {
   products: ShoeProduct[];
@@ -11,7 +12,7 @@ interface TopProductsProps {
 export const TopProducts: React.FC<TopProductsProps> = ({ products, loading = false }) => {
   const navigate = useNavigate();
 
-  // Take top 3 or 4 shoes
+  // Take top 3 shoes
   const topList = products.slice(0, 3);
 
   const handleProductClick = (product: ShoeProduct) => {
@@ -47,3 +48,5 @@ export const TopProducts: React.FC<TopProductsProps> = ({ products, loading = fa
     </div>
   );
 };
+
+export default TopProducts;
