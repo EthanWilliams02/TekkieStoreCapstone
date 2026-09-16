@@ -129,7 +129,7 @@ export const createShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null>
     return response.data ? mapBackendShoeToProduct(response.data) : null;
   } catch (error) {
     console.error('Failed to create shoe via backend API:', error);
-    return null;
+    throw error;
   }
 };
 
