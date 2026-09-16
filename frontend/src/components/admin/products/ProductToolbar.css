@@ -1,0 +1,164 @@
+/* ProductToolbar.css - Admin Product Management Toolbar */
+
+.product-toolbar-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+}
+
+.product-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.product-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 420px;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.product-search-box:focus-within {
+  background-color: var(--pure-white);
+  border-color: var(--brand-orange);
+  box-shadow: 0 0 0 3px rgba(253, 103, 1, 0.12);
+}
+
+.product-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  width: 100%;
+  color: var(--text-main);
+  font-family: inherit;
+}
+
+.product-search-box input::placeholder {
+  color: var(--text-muted);
+}
+
+.product-search-box .search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.search-clear-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.search-clear-btn:hover {
+  color: var(--obsidian);
+  background-color: #E4E4E7;
+}
+
+.product-count-badge {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.product-count-badge strong {
+  color: var(--obsidian);
+  font-weight: 700;
+}
+
+.product-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.product-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.product-filter-group label {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.825rem;
+}
+
+.product-brand-select {
+  padding: 0.55rem 0.95rem;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  background-color: var(--pure-white);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  outline: none;
+  min-width: 160px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+
+.product-brand-select:hover {
+  border-color: #D1D5DB;
+}
+
+.product-brand-select:focus {
+  border-color: var(--brand-orange);
+  box-shadow: 0 0 0 3px rgba(253, 103, 1, 0.12);
+}
+
+@media (max-width: 768px) {
+  .product-toolbar-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .product-toolbar-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .product-search-box {
+    max-width: 100%;
+  }
+
+  .product-toolbar-right {
+    justify-content: space-between;
+  }
+
+  .product-filter-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .product-brand-select {
+    flex: 1;
+  }
+}
