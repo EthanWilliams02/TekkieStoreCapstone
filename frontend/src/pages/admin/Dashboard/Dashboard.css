@@ -183,6 +183,9 @@
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card-header-row {
@@ -207,12 +210,20 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. ROW TWO: SALES OVERVIEW (1.5fr) + RECENT ORDERS (1.1fr)
+   3. ROW TWO: SALES OVERVIEW (1fr) + RECENT ORDERS (1fr) - EQUAL SIZE & HEIGHT
    -------------------------------------------------------------------------- */
 .dashboard-grid-row-two {
   display: grid;
-  grid-template-columns: 1.5fr 1.1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  align-items: stretch;
+}
+
+.grid-cell-sales,
+.grid-cell-orders {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Period Selector */
@@ -272,7 +283,8 @@
 
 /* Sales Chart Visualization */
 .sales-chart-wrapper {
-  height: 220px;
+  flex: 1;
+  min-height: 220px;
   display: flex;
   align-items: flex-end;
   padding-top: 1.5rem;
@@ -355,6 +367,13 @@
    -------------------------------------------------------------------------- */
 .table-responsive {
   overflow-x: auto;
+}
+
+.recent-orders-card .table-responsive,
+.inventory-status-card .table-responsive {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-table {
@@ -484,22 +503,34 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. ROW THREE: INVENTORY STATUS (1.3fr) + TOP PRODUCTS (1.1fr)
+   4. ROW THREE: INVENTORY STATUS (1fr) + TOP PRODUCTS (1fr) - EQUAL SIZE & HEIGHT
    -------------------------------------------------------------------------- */
 .dashboard-grid-row-three {
   display: grid;
-  grid-template-columns: 1.3fr 1.1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  align-items: stretch;
+}
+
+.grid-cell-inventory,
+.grid-cell-top-products {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .admin-top-products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  flex: 1;
+  align-items: stretch;
 }
 
 .admin-product-card-wrapper {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Adjust reused CatalogueProductCard sizing inside admin panel */
@@ -507,6 +538,7 @@
   margin-bottom: 0;
   border: 1px solid #E4E4E7;
   box-shadow: none;
+  height: 100%;
 }
 
 .admin-product-card-wrapper .product-image-container {

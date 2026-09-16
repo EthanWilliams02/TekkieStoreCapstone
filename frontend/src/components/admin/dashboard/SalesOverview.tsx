@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatPrice } from '../../../utils/formatters';
+import './SalesOverview.css';
 
 type Period = '7d' | '30d' | '12m';
 
@@ -148,3 +149,5 @@ export const SalesOverview: React.FC = () => {
     </div>
   );
 };
+
+export default SalesOverview;

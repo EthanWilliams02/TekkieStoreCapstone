@@ -1,0 +1,47 @@
+/* ==========================================================================
+   TopProducts.css - Admin Top Products Component
+   ========================================================================== */
+
+.top-products-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.admin-top-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  flex: 1;
+  align-items: stretch;
+}
+
+.admin-product-card-wrapper {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-product-card-wrapper .catalogue-product-card {
+  margin-bottom: 0;
+  border: 1px solid #E4E4E7;
+  box-shadow: none;
+  height: 100%;
+}
+
+.admin-product-card-wrapper .product-image-container {
+  height: 160px;
+}
+
+.admin-loading-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .admin-top-products-grid {
+    grid-template-columns: 1fr;
+  }
+}
