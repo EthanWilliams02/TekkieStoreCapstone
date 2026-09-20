@@ -1,151 +1,217 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import Skeleton from '@mui/material/Skeleton';
 import { formatPrice } from '../../../utils/formatters';
+import { BackendOrder } from '../../../services/orderService';
 import './SalesOverview.css';
 
-type Period = '7d' | '30d' | '12m';
+type Period = '7d' | '4w' | '12m';
 
-interface SalesDataPoint {
-  label: string;
-  amount: number;
-  orders: number;
+interface SalesOverviewProps {
+  orders: BackendOrder[];
+  loading?: boolean;
+  error?: boolean;
 }
 
-const SALES_DATA: Record<Period, { points: SalesDataPoint[]; total: number; avgOrder: number }> = {
-  '7d': {
-    points: [
-      { label: 'Mon', amount: 14200, orders: 8 },
-      { label: 'Tue', amount: 18500, orders: 11 },
-      { label: 'Wed', amount: 22400, orders: 14 },
-      { label: 'Thu', amount: 19800, orders: 12 },
-      { label: 'Fri', amount: 31200, orders: 19 },
-      { label: 'Sat', amount: 38900, orders: 24 },
-      { label: 'Sun', amount: 26500, orders: 16 },
-    ],
-    total: 171500,
-    avgOrder: 1650,
-  },
-  '30d': {
-    points: [
-      { label: 'Week 1', amount: 54000, orders: 34 },
-      { label: 'Week 2', amount: 62500, orders: 39 },
-      { label: 'Week 3', amount: 71200, orders: 45 },
-      { label: 'Week 4', amount: 60950, orders: 38 },
-    ],
-    total: 248650,
-    avgOrder: 1590,
-  },
-  '12m': {
-    points: [
-      { label: 'Oct', amount: 112000, orders: 70 },
-      { label: 'Nov', amount: 145000, orders: 92 },
-      { label: 'Dec', amount: 230000, orders: 145 },
-      { label: 'Jan', amount: 128000, orders: 81 },
-      { label: 'Feb', amount: 139000, orders: 88 },
-      { label: 'Mar', amount: 156000, orders: 98 },
-      { label: 'Apr', amount: 142000, orders: 90 },
-      { label: 'May', amount: 168000, orders: 106 },
-      { label: 'Jun', amount: 175000, orders: 110 },
-      { label: 'Jul', amount: 189000, orders: 119 },
-      { label: 'Aug', amount: 204000, orders: 128 },
-      { label: 'Sep', amount: 248650, orders: 156 },
-    ],
-    total: 2036650,
-    avgOrder: 1720,
-  },
+interface Bucket {
+  label: string;
+  amount: number;
+  orderCount: number;
+}
+
+const parseOrderDate = (raw: string | number): Date | null => {
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
 };
 
-export const SalesOverview: React.FC = () => {
-  const [period, setPeriod] = useState<Period>('30d');
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+// Buckets real orders into the last N calendar days.
+const buildDailyBuckets = (orders: BackendOrder[], days: number): Bucket[] => {
+  const today = startOfDay(new Date());
+  const buckets: Bucket[] = Array.from({ length: days }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (days - 1 - i));
+    return { label: d.toLocaleDateString('en-ZA', { weekday: 'short' }), amount: 0, orderCount: 0 };
+  });
+
+  orders.forEach((o) => {
+    const d = parseOrderDate(o.orderDate);
+    if (!d) return;
+    const diffDays = Math.round((today.getTime() - startOfDay(d).getTime()) / 86400000);
+    if (diffDays >= 0 && diffDays < days) {
+      const bucket = buckets[days - 1 - diffDays];
+      bucket.amount += o.totalAmount || 0;
+      bucket.orderCount += 1;
+    }
+  });
+
+  return buckets;
+};
+
+// Buckets real orders into the last N calendar weeks (Sun-Sat aligned by "days ago / 7").
+const buildWeeklyBuckets = (orders: BackendOrder[], weeks: number): Bucket[] => {
+  const today = startOfDay(new Date());
+  const buckets: Bucket[] = Array.from({ length: weeks }, (_, i) => ({
+    label: `Week ${i + 1}`,
+    amount: 0,
+    orderCount: 0,
+  }));
+
+  orders.forEach((o) => {
+    const d = parseOrderDate(o.orderDate);
+    if (!d) return;
+    const diffDays = Math.round((today.getTime() - startOfDay(d).getTime()) / 86400000);
+    const weeksAgo = Math.floor(diffDays / 7);
+    if (weeksAgo >= 0 && weeksAgo < weeks) {
+      const bucket = buckets[weeks - 1 - weeksAgo];
+      bucket.amount += o.totalAmount || 0;
+      bucket.orderCount += 1;
+    }
+  });
+
+  return buckets;
+};
+
+// Buckets real orders into the last N calendar months.
+const buildMonthlyBuckets = (orders: BackendOrder[], months: number): Bucket[] => {
+  const now = new Date();
+  const buckets: Bucket[] = Array.from({ length: months }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (months - 1 - i), 1);
+    return { label: d.toLocaleDateString('en-ZA', { month: 'short' }), amount: 0, orderCount: 0 };
+  });
+
+  orders.forEach((o) => {
+    const d = parseOrderDate(o.orderDate);
+    if (!d) return;
+    const monthsAgo = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
+    if (monthsAgo >= 0 && monthsAgo < months) {
+      const bucket = buckets[months - 1 - monthsAgo];
+      bucket.amount += o.totalAmount || 0;
+      bucket.orderCount += 1;
+    }
+  });
+
+  return buckets;
+};
+
+export const SalesOverview: React.FC<SalesOverviewProps> = ({ orders, loading = false, error = false }) => {
+  const [period, setPeriod] = useState<Period>('7d');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
-  const activeData = SALES_DATA[period];
-  const maxAmount = Math.max(...activeData.points.map((p) => p.amount), 1);
+  // Cancelled orders were never fulfilled sales — excluded from revenue.
+  const validOrders = useMemo(() => orders.filter((o) => o.status !== 'CANCELLED'), [orders]);
+
+  const buckets = useMemo(() => {
+    if (period === '7d') return buildDailyBuckets(validOrders, 7);
+    if (period === '4w') return buildWeeklyBuckets(validOrders, 4);
+    return buildMonthlyBuckets(validOrders, 12);
+  }, [validOrders, period]);
+
+  const periodTotal = buckets.reduce((sum, b) => sum + b.amount, 0);
+  const periodOrderCount = buckets.reduce((sum, b) => sum + b.orderCount, 0);
+  const avgOrderValue = periodOrderCount > 0 ? periodTotal / periodOrderCount : 0;
+  const maxAmount = Math.max(...buckets.map((b) => b.amount), 1);
 
   return (
     <div className="dashboard-card sales-overview-card">
       <div className="card-header-row">
-        <div>
-          <h2 className="card-title">Sales Overview</h2>
-          <p className="card-subtitle">Monthly revenue and sales performance</p>
-        </div>
+        <h2 className="card-title">Sales Overview</h2>
 
-        {/* Period Selector */}
         <div className="period-selector" role="group" aria-label="Sales time period">
-          <button
-            type="button"
-            className={`period-btn ${period === '7d' ? 'active' : ''}`}
-            onClick={() => setPeriod('7d')}
-          >
+          <button type="button" className={`period-btn ${period === '7d' ? 'active' : ''}`} onClick={() => setPeriod('7d')}>
             7 Days
           </button>
-          <button
-            type="button"
-            className={`period-btn ${period === '30d' ? 'active' : ''}`}
-            onClick={() => setPeriod('30d')}
-          >
-            30 Days
+          <button type="button" className={`period-btn ${period === '4w' ? 'active' : ''}`} onClick={() => setPeriod('4w')}>
+            4 Weeks
           </button>
-          <button
-            type="button"
-            className={`period-btn ${period === '12m' ? 'active' : ''}`}
-            onClick={() => setPeriod('12m')}
-          >
+          <button type="button" className={`period-btn ${period === '12m' ? 'active' : ''}`} onClick={() => setPeriod('12m')}>
             12 Months
           </button>
         </div>
       </div>
 
-      {/* Summary Row */}
-      <div className="sales-stats-row">
-        <div className="sales-stat-item">
-          <span className="stat-label">Period Revenue</span>
-          <span className="stat-value">{formatPrice(activeData.total)}</span>
-        </div>
-        <div className="sales-stat-item">
-          <span className="stat-label">Avg Order Value</span>
-          <span className="stat-value">{formatPrice(activeData.avgOrder)}</span>
-        </div>
-        <div className="sales-stat-item">
-          <span className="stat-label">Conversion Rate</span>
-          <span className="stat-value">3.4%</span>
-        </div>
-      </div>
-
-      {/* CSS / SVG Visual Bar Chart */}
-      <div className="sales-chart-wrapper" aria-label="Sales Chart">
-        <div className="chart-bars-container">
-          {activeData.points.map((pt, idx) => {
-            const heightPercent = Math.max(12, Math.round((pt.amount / maxAmount) * 100));
-            const isHovered = hoveredIdx === idx;
-
-            return (
-              <div
-                key={pt.label}
-                className="chart-col"
-                onMouseEnter={() => setHoveredIdx(idx)}
-                onMouseLeave={() => setHoveredIdx(null)}
-              >
-                {/* Tooltip on hover */}
-                {isHovered && (
-                  <div className="chart-tooltip">
-                    <span className="tooltip-amount">{formatPrice(pt.amount)}</span>
-                    <span className="tooltip-orders">{pt.orders} orders</span>
-                  </div>
-                )}
-
-                <div className="bar-track">
-                  <div
-                    className={`bar-fill ${isHovered ? 'hovered' : ''}`}
-                    style={{ height: `${heightPercent}%` }}
-                  />
-                </div>
-
-                <span className="col-label">{pt.label}</span>
+      {loading ? (
+        <>
+          <div className="sales-stats-row">
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <div className="sales-stat-item" key={idx}>
+                <Skeleton variant="text" width={90} height={16} animation="wave" />
+                <Skeleton variant="text" width={70} height={24} animation="wave" />
               </div>
-            );
-          })}
-        </div>
-      </div>
+            ))}
+          </div>
+          <div className="sales-chart-wrapper" aria-hidden="true">
+            <div className="chart-bars-container">
+              {Array.from({ length: 7 }).map((_, idx) => (
+                <div className="chart-col" key={idx} style={{ justifyContent: 'flex-end' }}>
+                  <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height={60 + ((idx * 23) % 120)}
+                    animation="wave"
+                    sx={{ borderRadius: '6px 6px 0 0', maxWidth: 42 }}
+                  />
+                  <Skeleton variant="text" width={28} height={16} animation="wave" sx={{ mt: 0.5 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : error ? (
+        <div className="dashboard-empty-state dashboard-empty-state-error">Unable to load orders from the server.</div>
+      ) : validOrders.length === 0 ? (
+        <div className="dashboard-empty-state">No sales recorded yet.</div>
+      ) : (
+        <>
+          <div className="sales-stats-row">
+            <div className="sales-stat-item">
+              <span className="sales-stat-label">Period Revenue</span>
+              <span className="sales-stat-value">{formatPrice(periodTotal)}</span>
+            </div>
+            <div className="sales-stat-item">
+              <span className="sales-stat-label">Orders in Period</span>
+              <span className="sales-stat-value">{periodOrderCount}</span>
+            </div>
+            <div className="sales-stat-item">
+              <span className="sales-stat-label">Avg Order Value</span>
+              <span className="sales-stat-value">{formatPrice(avgOrderValue)}</span>
+            </div>
+          </div>
+
+          <div className="sales-chart-wrapper" aria-label="Sales chart">
+            <div className="chart-bars-container">
+              {buckets.map((b, idx) => {
+                const heightPercent = b.amount > 0 ? Math.max(6, Math.round((b.amount / maxAmount) * 100)) : 2;
+                const isHovered = hoveredIdx === idx;
+
+                return (
+                  <div
+                    key={`${b.label}-${idx}`}
+                    className="chart-col"
+                    onMouseEnter={() => setHoveredIdx(idx)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                  >
+                    {isHovered && (
+                      <div className="chart-tooltip">
+                        <span className="tooltip-amount">{formatPrice(b.amount)}</span>
+                        <span className="tooltip-orders">
+                          {b.orderCount} order{b.orderCount === 1 ? '' : 's'}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="bar-track">
+                      <div className={`bar-fill ${isHovered ? 'hovered' : ''}`} style={{ height: `${heightPercent}%` }} />
+                    </div>
+
+                    <span className="col-label">{b.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -22,6 +22,7 @@ import { AboutUs } from '../pages/AboutUs';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { Dashboard } from '../pages/admin/Dashboard/Dashboard';
 import { Products } from '../pages/admin/Products/Products';
+import { Inventory } from '../pages/admin/Inventory/Inventory';
 import { Orders } from '../pages/admin/Orders/Orders';
 import { Customers } from '../pages/admin/Customers/Customers';
 
@@ -121,6 +122,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'products', element: <Products /> },
+      { path: 'inventory', element: <Inventory /> },
       { path: 'orders', element: <Orders /> },
       { path: 'customers', element: <Customers /> },
     ],

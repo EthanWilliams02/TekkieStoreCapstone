@@ -1,0 +1,142 @@
+/* ==========================================================================
+   Customers.css - Admin Customers Page
+
+   This page previously had no CSS file of its own — it only rendered
+   correctly by accident, relying on .dashboard-card/.admin-table/.status-pill
+   etc. from Dashboard.css and other pages happening to be bundled alongside
+   it. Everything here is scoped with a "cust-" prefix (own toolbar/table
+   card, no reuse of other pages' classes), styled to match the Orders/
+   Inventory page tables exactly.
+   ========================================================================== */
+
+.customers-toolbar-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  padding: 0.85rem 1.15rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.customers-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  border-radius: 7px;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  max-width: 420px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.customers-search-box:focus-within {
+  border-color: var(--brand-orange);
+  background-color: var(--pure-white);
+}
+
+.customers-search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.85rem;
+  width: 100%;
+  color: var(--obsidian);
+}
+
+.customers-search-box input::placeholder {
+  color: var(--text-muted);
+}
+
+.customers-search-box .search-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.customers-table-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cust-table-responsive {
+  overflow-x: auto;
+}
+
+.customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.customers-table th {
+  padding: 0.85rem 1rem;
+  background-color: #FAFAFA;
+  border-bottom: 1px solid #E4E4E7;
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.customers-table td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid #F4F4F5;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.customers-table tr:last-child td {
+  border-bottom: none;
+}
+
+.customers-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.customers-table tbody tr:hover {
+  background-color: #F8FAFC;
+}
+
+.cust-name {
+  font-weight: 600;
+  color: var(--obsidian);
+}
+
+.cust-obsidian {
+  color: var(--obsidian);
+}
+
+.cust-text-muted {
+  color: var(--text-muted);
+}
+
+.cust-text-sm {
+  font-size: 0.8rem;
+}
+
+.cust-font-semibold {
+  font-weight: 600;
+}
+
+.cust-empty-row {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.cust-empty-row-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #B91C1C;
+}

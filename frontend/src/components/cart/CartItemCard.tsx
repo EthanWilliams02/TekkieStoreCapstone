@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { CartItem } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
+import { ProductImage } from '../shared/ProductImage';
 import './CartItemCard.css';
 
 interface CartItemCardProps {
@@ -42,14 +43,11 @@ export const CartItemCard: React.FC<CartItemCardProps> = ({
           </span>
         ) : null}
         <Link to={`/product/${product.id}`} className="cart-item-image-link" tabIndex={-1}>
-          <img
+          <ProductImage
             src={product.image}
             alt={`${product.brand} ${product.name}`}
             className="cart-item-image"
             loading="lazy"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-            }}
           />
         </Link>
       </div>

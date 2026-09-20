@@ -6,6 +6,7 @@ import { MOCK_ORDERS } from '../../data/mockOrders';
 import { useAuth } from '../../context/AuthContext';
 import { orderService, formatOrderStatus } from '../../services/orderService';
 import { useOrder } from '../../context/OrderContext';
+import { ProductImage } from '../shared/ProductImage';
 
 interface RecentOrdersProps {
   orders?: Order[];
@@ -179,15 +180,7 @@ export const RecentOrders: React.FC<RecentOrdersProps> = ({ orders: propOrders }
                 {order.items.map((item) => (
                   <div key={item.id} className="order-product-row">
                     <div className="product-thumb-wrapper">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="product-thumb-img"
-                        onError={(e) => {
-                          // Fallback to default tekkies image if asset path not found
-                          (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-                        }}
-                      />
+                      <ProductImage src={item.image} alt={item.name} className="product-thumb-img" />
                     </div>
                     <div className="product-details">
                       <span className="product-brand">{item.brand}</span>

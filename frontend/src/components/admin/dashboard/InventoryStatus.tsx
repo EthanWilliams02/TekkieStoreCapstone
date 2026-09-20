@@ -1,179 +1,110 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import Skeleton from '@mui/material/Skeleton';
 import { ShoeVariant, ShoeSize } from '../../../types/shoeVariant';
-import { ShoeProduct } from '../../../types/catalogue';
 import './InventoryStatus.css';
 
-export interface InventoryItemDisplay {
-  id: string;
-  shoeName: string;
-  brand: string;
-  colour: string;
-  size: ShoeSize | string;
-  stockQuantity: number;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-}
-
 interface InventoryStatusProps {
-  variants?: ShoeVariant[];
-  shoes?: ShoeProduct[];
+  variants: ShoeVariant[];
+  loading?: boolean;
+  error?: boolean;
 }
 
-export const InventoryStatus: React.FC<InventoryStatusProps> = ({ variants = [], shoes = [] }) => {
-  // Map incoming ShoeVariant items or derive items from existing ShoeProducts
-  const items: InventoryItemDisplay[] = React.useMemo(() => {
-    if (variants && variants.length > 0) {
-      return variants.slice(0, 6).map((v) => {
-        let status: 'In Stock' | 'Low Stock' | 'Out of Stock' = 'In Stock';
-        if (v.stockQuantity === 0) status = 'Out of Stock';
-        else if (v.stockQuantity <= 5) status = 'Low Stock';
+type StockStatus = 'In Stock' | 'Low Stock' | 'Out of Stock';
 
-        const shoeName = v.shoe?.shoeName || shoes.find((s) => s.id === v.shoe?.shoeId)?.name || 'Sneaker';
-        const brand = v.shoe?.brand || shoes.find((s) => s.id === v.shoe?.shoeId)?.brand || 'Tekkie';
+const LOW_STOCK_THRESHOLD = 5;
 
-        return {
-          id: v.variantId,
-          shoeName,
-          brand,
-          colour: v.colour,
-          size: v.size,
-          stockQuantity: v.stockQuantity,
-          status,
-        };
-      });
-    }
+const getStockStatus = (qty: number): StockStatus => {
+  if (qty <= 0) return 'Out of Stock';
+  if (qty <= LOW_STOCK_THRESHOLD) return 'Low Stock';
+  return 'In Stock';
+};
 
-    // Fallback: Generate real representation from loaded ShoeProduct catalogue
-    if (shoes && shoes.length > 0) {
-      return shoes.slice(0, 5).map((shoe, idx) => {
-        // Vary stock quantities realistically to showcase In Stock, Low Stock, and Out of Stock
-        const quantities = [18, 4, 22, 0, 8];
-        const qty = quantities[idx % quantities.length];
-        let status: 'In Stock' | 'Low Stock' | 'Out of Stock' = 'In Stock';
-        if (qty === 0) status = 'Out of Stock';
-        else if (qty <= 5) status = 'Low Stock';
+const getStockBadgeClass = (status: StockStatus): string => {
+  switch (status) {
+    case 'In Stock':
+      return 'stock-badge-in';
+    case 'Low Stock':
+      return 'stock-badge-low';
+    case 'Out of Stock':
+      return 'stock-badge-out';
+  }
+};
 
-        return {
-          id: `var-${shoe.id}`,
-          shoeName: shoe.name,
-          brand: shoe.brand,
-          colour: shoe.colour || 'Original',
-          size: { sizeRegion: 'UK', sizeValue: 7 + (idx % 4) },
-          stockQuantity: qty,
-          status,
-        };
-      });
-    }
+const renderSize = (size: ShoeSize): string => `${size.sizeRegion} ${size.sizeValue}`;
 
-    // Sensible defaults if neither variants nor shoes are loaded yet
-    return [
-      {
-        id: 'var-1',
-        shoeName: 'Air Max 90',
-        brand: 'Nike',
-        colour: 'White/Infrared',
-        size: { sizeRegion: 'UK', sizeValue: 8 },
-        stockQuantity: 24,
-        status: 'In Stock',
-      },
-      {
-        id: 'var-2',
-        shoeName: 'Samba OG',
-        brand: 'adidas',
-        colour: 'Core Black/White',
-        size: { sizeRegion: 'UK', sizeValue: 9 },
-        stockQuantity: 3,
-        status: 'Low Stock',
-      },
-      {
-        id: 'var-3',
-        shoeName: '550 Vintage',
-        brand: 'New Balance',
-        colour: 'White/Grey',
-        size: { sizeRegion: 'UK', sizeValue: 10 },
-        stockQuantity: 0,
-        status: 'Out of Stock',
-      },
-      {
-        id: 'var-4',
-        shoeName: 'Palermo Leather',
-        brand: 'PUMA',
-        colour: 'Alpine Snow',
-        size: { sizeRegion: 'UK', sizeValue: 7 },
-        stockQuantity: 12,
-        status: 'In Stock',
-      },
-      {
-        id: 'var-5',
-        shoeName: 'GEL-KAYANO 14',
-        brand: 'Asics',
-        colour: 'Silver/Cream',
-        size: { sizeRegion: 'UK', sizeValue: 8 },
-        stockQuantity: 4,
-        status: 'Low Stock',
-      },
-    ];
-  }, [variants, shoes]);
-
-  const renderSize = (size: ShoeSize | string) => {
-    if (typeof size === 'string') return size;
-    return `${size.sizeRegion} ${size.sizeValue}`;
-  };
-
-  const getStockBadgeClass = (status: string) => {
-    switch (status) {
-      case 'In Stock':
-        return 'stock-badge-in';
-      case 'Low Stock':
-        return 'stock-badge-low';
-      case 'Out of Stock':
-        return 'stock-badge-out';
-      default:
-        return 'stock-badge-in';
-    }
-  };
+export const InventoryStatus: React.FC<InventoryStatusProps> = ({ variants, loading = false, error = false }) => {
+  // Lowest stock first, so what actually needs attention surfaces at the top.
+  const sorted = useMemo(
+    () => [...variants].sort((a, b) => a.stockQuantity - b.stockQuantity).slice(0, 5),
+    [variants]
+  );
 
   return (
     <div className="dashboard-card inventory-status-card">
       <div className="card-header-row">
-        <div>
-          <h2 className="card-title">Inventory Status</h2>
-          <p className="card-subtitle">Real-time stock across shoe variants and sizes</p>
-        </div>
+        <h2 className="card-title">Inventory Status</h2>
+        <Link to="/admin/inventory" className="card-view-all-link">
+          View All <ArrowRight size={14} />
+        </Link>
       </div>
 
-      <div className="table-responsive">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Shoe</th>
-              <th>Colour</th>
-              <th>Size</th>
-              <th>Quantity</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <div className="shoe-cell">
-                    <span className="shoe-name">{item.shoeName}</span>
-                    <span className="shoe-brand-tag">{item.brand}</span>
-                  </div>
-                </td>
-                <td className="text-muted text-sm">{item.colour}</td>
-                <td className="font-semibold text-obsidian text-sm">{renderSize(item.size)}</td>
-                <td className="font-semibold text-sm">{item.stockQuantity} units</td>
-                <td>
-                  <span className={`status-pill ${getStockBadgeClass(item.status)}`}>
-                    {item.status}
-                  </span>
-                </td>
+      {error ? (
+        <div className="dashboard-empty-state dashboard-empty-state-error">Unable to load shoe variants from the server.</div>
+      ) : !loading && sorted.length === 0 ? (
+        <div className="dashboard-empty-state">No shoe variants recorded yet.</div>
+      ) : (
+        <div className="table-responsive">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Shoe</th>
+                <th>Colour</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {loading
+                ? Array.from({ length: 5 }).map((_, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <div className="shoe-cell">
+                          <Skeleton variant="text" width={120} animation="wave" />
+                          <Skeleton variant="text" width={60} height={14} animation="wave" />
+                        </div>
+                      </td>
+                      <td><Skeleton variant="text" width={80} animation="wave" /></td>
+                      <td><Skeleton variant="text" width={50} animation="wave" /></td>
+                      <td><Skeleton variant="text" width={60} animation="wave" /></td>
+                      <td><Skeleton variant="rounded" width={90} height={22} animation="wave" sx={{ borderRadius: '99px' }} /></td>
+                    </tr>
+                  ))
+                : sorted.map((v) => {
+                const status = getStockStatus(v.stockQuantity);
+                return (
+                  <tr key={v.variantId}>
+                    <td>
+                      <div className="shoe-cell">
+                        <span className="shoe-name">{v.shoe?.shoeName || 'Unknown shoe'}</span>
+                        <span className="shoe-brand-tag">{v.shoe?.brand || '—'}</span>
+                      </div>
+                    </td>
+                    <td className="text-muted text-sm">{v.colour}</td>
+                    <td className="font-semibold text-obsidian text-sm">{renderSize(v.size)}</td>
+                    <td className="font-semibold text-sm">{v.stockQuantity} units</td>
+                    <td>
+                      <span className={`status-pill ${getStockBadgeClass(status)}`}>{status}</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

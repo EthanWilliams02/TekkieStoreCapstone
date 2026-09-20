@@ -14,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OrderBy;
+import org.hibernate.annotations.BatchSize;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -45,11 +46,17 @@ public class Shoe {
     @PositiveOrZero(message = "Sale percentage cannot be negative")
     private BigDecimal salePercentage;
 
-    // Stores multiple Cloudinary image URLs in a separate child table (shoe_images)
+    // Stores multiple Cloudinary image URLs in a separate child table (shoe_images).
+    // EAGER means Hibernate loads this the moment a Shoe is loaded, via its own
+    // SELECT — @BatchSize lets it batch that load across several Shoe rows in one
+    // query (e.g. IN (shoe_id1, shoe_id2, ...)) instead of one query per shoe,
+    // which matters whenever many Shoe entities load in the same request (e.g.
+    // every distinct shoe behind a large ShoeVariant list).
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shoe_images", joinColumns = @JoinColumn(name = "shoe_id"))
     @Column(name = "image_url")
     @OrderBy
+    @BatchSize(size = 50)
     private List<String> imageUrls = new ArrayList<>();
 
     // Required default constructor for JPA

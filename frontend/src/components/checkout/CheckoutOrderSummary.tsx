@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { CartItem } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
+import { ProductImage } from '../shared/ProductImage';
 
 interface CheckoutOrderSummaryProps {
   cart: CartItem[];
@@ -49,14 +50,10 @@ export const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
           cart.map((item) => (
             <div key={item.cartId} className="checkout-item-row" role="listitem">
               <div className="checkout-item-thumb-wrapper">
-                <img
+                <ProductImage
                   src={item.product.image}
                   alt={item.product.name}
                   className="checkout-item-thumb"
-                  onError={(e) => {
-                    // Fallback to placeholder if image fails to load
-                    (e.target as HTMLImageElement).src = '/hero.png';
-                  }}
                 />
                 <span className="checkout-item-qty-badge">{item.quantity}</span>
               </div>

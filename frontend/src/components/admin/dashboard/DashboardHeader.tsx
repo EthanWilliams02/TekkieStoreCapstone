@@ -1,24 +1,13 @@
-import React, { useState } from 'react';
-import { SlidersHorizontal } from 'lucide-react';
+import React from 'react';
+import { RefreshCw } from 'lucide-react';
 import './DashboardHeader.css';
 
 interface DashboardHeaderProps {
-  onFilterChange?: (filter: string) => void;
+  onRefresh: () => void;
+  refreshing?: boolean;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-  onFilterChange,
-}) => {
-  const [filterActive, setFilterActive] = useState(false);
-
-  const handleFilterToggle = () => {
-    const nextState = !filterActive;
-    setFilterActive(nextState);
-    if (onFilterChange) {
-      onFilterChange(nextState ? 'all_channels' : 'default');
-    }
-  };
-
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onRefresh, refreshing = false }) => {
   return (
     <div className="dashboard-header-container">
       <div className="dashboard-header-left">
@@ -29,12 +18,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <div className="dashboard-header-actions">
         <button
           type="button"
-          className={`admin-btn-secondary ${filterActive ? 'active' : ''}`}
-          onClick={handleFilterToggle}
-          title="Filter dashboard time ranges and metrics"
+          className="admin-btn-secondary"
+          onClick={onRefresh}
+          disabled={refreshing}
+          title="Reload dashboard data from the server"
         >
-          <SlidersHorizontal size={16} />
-          <span>{filterActive ? 'Filtered (All Channels)' : 'Filter Data'}</span>
+          <RefreshCw size={16} className={refreshing ? 'spinning' : ''} />
+          <span>{refreshing ? 'Refreshing…' : 'Refresh'}</span>
         </button>
       </div>
     </div>
