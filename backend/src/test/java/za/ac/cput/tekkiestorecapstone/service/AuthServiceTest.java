@@ -111,4 +111,100 @@ class AuthServiceTest {
             authService.login("nonexistent@example.com", "anyPassword");
         });
     }
+
+    @Test
+    void testRegisterAdminSuccess() {
+        Customer admin = new Customer.Builder()
+                .setEmail("manager@tekkies.com")
+                .setPassword("plainPassword123")
+                .setRole("ADMIN")
+                .setMobileNumber("+27 82 555 1234")
+                .build();
+
+        when(customerRepository.findByEmail("manager@tekkies.com")).thenReturn(Optional.empty());
+        when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AuthResponse response = authService.register(admin);
+
+        assertNotNull(response);
+        assertEquals("manager@tekkies.com", response.getEmail());
+        assertEquals("ADMIN", response.getRole());
+        assertTrue(jwtUtil.validateToken(response.getToken()));
+        assertEquals("ADMIN", jwtUtil.extractRole(response.getToken()));
+    }
+
+    @Test
+    void testRegisterAdminFailureInvalidDomain() {
+        Customer adminWithGmail = new Customer.Builder()
+                .setEmail("admin@gmail.com")
+                .setPassword("plainPassword123")
+                .setRole("ADMIN")
+                .setMobileNumber("+27 82 555 1234")
+                .build();
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            authService.register(adminWithGmail);
+        });
+        assertTrue(ex.getMessage().contains("@tekkies.com"));
+    }
+
+    @Test
+    void testLoginAdminSuccess() {
+        String rawPassword = "adminPassword123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        Customer admin = new Customer.Builder()
+                .setCustomerId("A001")
+                .setEmail("admin@tekkies.com")
+                .setPassword(encodedPassword)
+                .setRole("ADMIN")
+                .build();
+
+        when(customerRepository.findByEmail("admin@tekkies.com")).thenReturn(Optional.of(admin));
+
+        AuthResponse response = authService.login("admin@tekkies.com", rawPassword);
+
+        assertNotNull(response);
+        assertEquals("ADMIN", response.getRole());
+        assertEquals("ADMIN", jwtUtil.extractRole(response.getToken()));
+    }
+
+    @Test
+    void testLoginAdminFailureInvalidDomain() {
+        String rawPassword = "password123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        Customer invalidAdmin = new Customer.Builder()
+                .setEmail("admin@gmail.com")
+                .setPassword(encodedPassword)
+                .setRole("ADMIN")
+                .build();
+
+        when(customerRepository.findByEmail("admin@gmail.com")).thenReturn(Optional.of(invalidAdmin));
+
+        assertThrows(BadCredentialsException.class, () -> {
+            authService.login("admin@gmail.com", rawPassword);
+        });
+    }
+
+    @Test
+    void testLegacyUserWithoutRoleDefaultsToCustomer() {
+        String rawPassword = "password123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        // legacy user with null role
+        Customer legacyCustomer = new Customer.Builder()
+                .setCustomerId("LEGACY01")
+                .setEmail("legacy@example.com")
+                .setPassword(encodedPassword)
+                .build();
+
+        when(customerRepository.findByEmail("legacy@example.com")).thenReturn(Optional.of(legacyCustomer));
+
+        AuthResponse response = authService.login("legacy@example.com", rawPassword);
+
+        assertNotNull(response);
+        assertEquals("CUSTOMER", response.getRole());
+        assertEquals("CUSTOMER", jwtUtil.extractRole(response.getToken()));
+    }
 }

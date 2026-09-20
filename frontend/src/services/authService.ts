@@ -5,6 +5,7 @@ export interface AuthResponse {
   email: string;
   name: string;
   token: string;
+  role?: 'CUSTOMER' | 'ADMIN';
 }
 
 export interface RegisterPayload {
@@ -15,6 +16,7 @@ export interface RegisterPayload {
   lastName?: string;
   phone?: string;
   mobileNumber?: string;
+  role?: 'CUSTOMER' | 'ADMIN';
 }
 
 export const authService = {

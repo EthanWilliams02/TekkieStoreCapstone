@@ -4,6 +4,7 @@ export interface UserProfile {
   lastName: string;
   email: string;
   phone: string;
+  role?: 'CUSTOMER' | 'ADMIN';
 }
 
 export type OrderStatus = 'Delivered' | 'In Transit' | 'Processing' | 'Cancelled';
