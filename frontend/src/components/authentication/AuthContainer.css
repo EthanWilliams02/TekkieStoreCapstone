@@ -208,9 +208,66 @@
   text-decoration: underline;
 }
 
+.roleSelectorGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.roleSelectorLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.roleToggleContainer {
+  display: flex;
+  background-color: var(--off-white);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+  border: 1.5px solid transparent;
+}
+
+.roleToggleBtn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.roleToggleBtn.active {
+  background: var(--pure-white);
+  color: var(--obsidian);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.roleToggleBtn:hover:not(.active) {
+  color: var(--text-main);
+}
+
+.roleHint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
 @media (max-width: 480px) {
   .authCard {
     padding: 2.25rem 1.5rem;
     border-radius: 20px;
   }
 }
+

@@ -37,6 +37,19 @@ public class AuthService {
             throw new IllegalArgumentException("Email and password are required");
         }
 
+        String rawRole = customer.getRole();
+        String role = (rawRole != null && !rawRole.isBlank()) ? rawRole.trim().toUpperCase() : "CUSTOMER";
+        if (!"CUSTOMER".equals(role) && !"ADMIN".equals(role)) {
+            role = "CUSTOMER";
+        }
+
+        if ("ADMIN".equals(role)) {
+            String email = customer.getEmail().trim().toLowerCase();
+            if (!email.endsWith("@tekkies.com")) {
+                throw new IllegalArgumentException("Admin accounts must use an @tekkies.com email address");
+            }
+        }
+
         if (customerRepository.findByEmail(customer.getEmail()).isPresent()) {
             throw new IllegalArgumentException("An account with this email already exists");
         }
@@ -54,11 +67,12 @@ public class AuthService {
                 .setCustomerId(customerId)
                 .setPassword(encodedPassword)
                 .setMobileNumber(customer.getMobileNumber())
+                .setRole(role)
                 .build();
 
         Customer saved = customerRepository.save(toSave);
 
-        String token = jwtUtil.generateToken(saved.getEmail());
+        String token = jwtUtil.generateToken(saved.getEmail(), saved.getRole());
         String name = "";
         if (saved.getName() != null) {
             String first = saved.getName().getFirstName() != null ? saved.getName().getFirstName() : "";
@@ -66,7 +80,7 @@ public class AuthService {
             name = (first + " " + last).trim();
         }
 
-        return new AuthResponse(saved.getCustomerId(), saved.getEmail(), name, token);
+        return new AuthResponse(saved.getCustomerId(), saved.getEmail(), name, token, saved.getRole());
     }
 
     public AuthResponse login(String email, String rawPassword) {
@@ -81,7 +95,14 @@ public class AuthService {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(customer.getEmail());
+        String role = customer.getRole();
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            if (!email.trim().toLowerCase().endsWith("@tekkies.com")) {
+                throw new BadCredentialsException("Admin accounts must have an @tekkies.com email address");
+            }
+        }
+
+        String token = jwtUtil.generateToken(customer.getEmail(), role);
         String name = "";
         if (customer.getName() != null) {
             String first = customer.getName().getFirstName() != null ? customer.getName().getFirstName() : "";
@@ -89,6 +110,6 @@ public class AuthService {
             name = (first + " " + last).trim();
         }
 
-        return new AuthResponse(customer.getCustomerId(), customer.getEmail(), name, token);
+        return new AuthResponse(customer.getCustomerId(), customer.getEmail(), name, token, role);
     }
 }

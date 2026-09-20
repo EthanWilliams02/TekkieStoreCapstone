@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 export const SignUp = () => {
   const navigate = useNavigate();
   const { signup } = useAuth();
+  const [role, setRole] = useState<'CUSTOMER' | 'ADMIN'>('CUSTOMER');
   const [form, setForm] = useState({
     fullName: '',
     email: '',
@@ -64,16 +65,28 @@ export const SignUp = () => {
       setError('Passwords do not match');
       return;
     }
+
+    if (role === 'ADMIN' && !form.email.trim().toLowerCase().endsWith('@tekkies.com')) {
+      setError('Admin accounts must use an @tekkies.com email address');
+      return;
+    }
+
     setError(null);
     setLoading(true);
     try {
-      await signup({
+      const response = await signup({
         fullName: form.fullName,
         email: form.email,
         phone: form.phone,
         password: form.password,
+        role,
       });
-      navigate('/catalogue');
+
+      if (response?.role === 'ADMIN' || role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/catalogue');
+      }
     } catch (err: any) {
       const message =
         err.response?.data?.message || err.message || 'Registration failed. Please try again.';
@@ -97,6 +110,39 @@ export const SignUp = () => {
             {error}
           </div>
         )}
+
+        <div className="roleSelectorGroup">
+          <label className="roleSelectorLabel">Account Type</label>
+          <div className="roleToggleContainer" role="radiogroup" aria-label="Account Type">
+            <button
+              type="button"
+              className={`roleToggleBtn ${role === 'CUSTOMER' ? 'active' : ''}`}
+              onClick={() => {
+                setRole('CUSTOMER');
+                if (error) setError(null);
+              }}
+              role="radio"
+              aria-checked={role === 'CUSTOMER'}
+            >
+              Customer
+            </button>
+            <button
+              type="button"
+              className={`roleToggleBtn ${role === 'ADMIN' ? 'active' : ''}`}
+              onClick={() => {
+                setRole('ADMIN');
+                if (error) setError(null);
+              }}
+              role="radio"
+              aria-checked={role === 'ADMIN'}
+            >
+              Admin
+            </button>
+          </div>
+          {role === 'ADMIN' && (
+            <span className="roleHint">Admin accounts require an @tekkies.com email address</span>
+          )}
+        </div>
 
         <AuthField
           id="signup-name"

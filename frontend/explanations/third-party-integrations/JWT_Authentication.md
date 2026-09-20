@@ -23,3 +23,20 @@ JWTs are stateless, meaning the backend doesn't have to remember sessions in the
 **Reference / How we figured this out:**  
 We learned how to implement the JWT filters and configure Spring Security 6 from the popular Baeldung Java tutorials, which provided a great step-by-step breakdown.  
 Link: [Spring Security and JWT Guide by Baeldung](https://www.baeldung.com/spring-security-oauth-jwt)
+
+---
+
+## Role-Based Access Control (RBAC)
+
+### Admin Logout Flow
+
+- **What:** A logout button was added to the bottom of the admin sidebar in `AdminLayout.tsx`, positioned below the "Live Storefront" link and separated by a divider, mirroring the customer `ProfileSidebar` pattern. A matching logout button in the top navbar was also added in the same component.
+- **Why:** Previously the admin dashboard had no way to end the authenticated session. The only way out was closing the tab, which left the JWT active in `localStorage` until its 24-hour expiry (per `jwt.expiration=86400000` in `application.properties`).
+- **How:** The button calls `AuthContext.logout()`, which clears `tekkie_token` and `tekkie_store_auth` from `localStorage` and resets the auth state. Navigation uses `navigate('/login', { replace: true })` guarded by an `isLoggingOut` ref — the same pattern used in `Profile.tsx` — to prevent `AdminProtectedRoute` from racing the redirect and firing its own `/login` navigation first.
+- **Where:**
+  - `frontend/src/components/layout/AdminLayout.tsx` (sidebar button + top-navbar button, shared `handleLogout` handler, `isLoggingOut` ref)
+  - `frontend/src/components/layout/AdminLayout.css` (`.admin-nav-link.logout-link` sidebar styling; `.admin-logout-btn` top-navbar styling)
+  - `frontend/src/context/AuthContext.tsx` (`logout()` — reused, not modified)
+  - `frontend/src/components/profile/ProfileSidebar.tsx` (the pattern this mirrors)
+
+

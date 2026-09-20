@@ -39,6 +39,8 @@ public class Customer {
     @Valid
     private Address address;
 
+    private String role;
+
     protected Customer(){}
 
     private Customer(Builder builder){
@@ -48,6 +50,7 @@ public class Customer {
         this.name= builder.name;
         this.mobileNumber= builder.mobileNumber;
         this.address= builder.address;
+        this.role = builder.role;
     }
 
     public String getCustomerId() {
@@ -74,6 +77,10 @@ public class Customer {
         return address;
     }
 
+    public String getRole() {
+        return (role != null && !role.isBlank()) ? role : "CUSTOMER";
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
@@ -82,6 +89,7 @@ public class Customer {
                 ", name=" + name +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", address=" + address +
+                ", role='" + getRole() + '\'' +
                 '}';
     }
 
@@ -92,6 +100,7 @@ public class Customer {
        private Name name;
        private String mobileNumber;
        private Address address;
+       private String role;
 
        public Builder setCustomerId(String customerId) {
            this.customerId = customerId;
@@ -123,6 +132,11 @@ public class Customer {
            return this;
        }
 
+       public Builder setRole(String role) {
+           this.role = role;
+           return this;
+       }
+
        public Builder copy(Customer customer){
            this.customerId= customer.customerId;
            this.email= customer.email;
@@ -130,6 +144,7 @@ public class Customer {
            this.name= customer.name;
            this.mobileNumber=customer.mobileNumber;
            this.address=customer.address;
+           this.role=customer.role;
            return this;
        }
        public Customer build(){return new Customer(this);}

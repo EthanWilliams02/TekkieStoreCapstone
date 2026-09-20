@@ -30,11 +30,16 @@ public class JwtUtil {
     }
 
     public String generateToken(String email) {
+        return generateToken(email, "CUSTOMER");
+    }
+
+    public String generateToken(String email, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .subject(email)
+                .claim("role", (role != null && !role.isBlank()) ? role : "CUSTOMER")
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key)
@@ -60,5 +65,19 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.getSubject();
+    }
+
+    public String extractRole(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            Object role = claims.get("role");
+            return (role != null && !role.toString().isBlank()) ? role.toString() : "CUSTOMER";
+        } catch (Exception e) {
+            return "CUSTOMER";
+        }
     }
 }

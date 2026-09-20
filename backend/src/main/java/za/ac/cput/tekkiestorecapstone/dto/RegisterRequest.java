@@ -15,16 +15,22 @@ public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String mobileNumber;
+    private String role;
 
     public RegisterRequest() {}
 
     public RegisterRequest(String email, String password, String fullName, String firstName, String lastName, String mobileNumber) {
+        this(email, password, fullName, firstName, lastName, mobileNumber, "CUSTOMER");
+    }
+
+    public RegisterRequest(String email, String password, String fullName, String firstName, String lastName, String mobileNumber, String role) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.mobileNumber = mobileNumber;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -85,6 +91,14 @@ public class RegisterRequest {
         }
     }
 
+    public String getRole() {
+        return (role != null && !role.isBlank()) ? role : "CUSTOMER";
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public Customer toCustomer() {
         String first = this.firstName;
         String last = this.lastName;
@@ -105,6 +119,7 @@ public class RegisterRequest {
                 .setPassword(this.password)
                 .setName(name)
                 .setMobileNumber(this.mobileNumber != null ? this.mobileNumber : "")
+                .setRole(this.role != null && !this.role.isBlank() ? this.role : "CUSTOMER")
                 .build();
     }
 }
