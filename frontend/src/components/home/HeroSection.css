@@ -120,13 +120,13 @@
   margin-top: 3.5rem;
 }
 
-.stat-item {
+.hero-stat-item {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.stat-value {
+.hero-stat-value {
   font-family: 'Anton', sans-serif;
   font-size: 1.8rem;
   line-height: 1;
@@ -134,7 +134,7 @@
   letter-spacing: 0.02em;
 }
 
-.stat-label {
+.hero-stat-label {
   font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
@@ -142,7 +142,7 @@
   letter-spacing: 0.05em;
 }
 
-.stat-divider {
+.hero-stat-divider {
   width: 1px;
   height: 30px;
   background-color: rgba(255, 255, 255, 0.2);

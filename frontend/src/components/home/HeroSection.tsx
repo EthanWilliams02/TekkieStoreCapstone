@@ -32,19 +32,19 @@ export const HeroSection = () => {
           </div>
 
           <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-value">100%</span>
-              <span className="stat-label">Authentic</span>
+            <div className="hero-stat-item">
+              <span className="hero-stat-value">100%</span>
+              <span className="hero-stat-label">Authentic</span>
             </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-value">30 Day</span>
-              <span className="stat-label">Free Returns</span>
+            <div className="hero-stat-divider"></div>
+            <div className="hero-stat-item">
+              <span className="hero-stat-value">30 Day</span>
+              <span className="hero-stat-label">Free Returns</span>
             </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-value">24/7</span>
-              <span className="stat-label">Support</span>
+            <div className="hero-stat-divider"></div>
+            <div className="hero-stat-item">
+              <span className="hero-stat-value">24/7</span>
+              <span className="hero-stat-label">Support</span>
             </div>
           </div>
         </div>
