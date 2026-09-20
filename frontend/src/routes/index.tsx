@@ -20,6 +20,7 @@ import { ContactUs } from '../pages/ContactUs';
 import { AboutUs } from '../pages/AboutUs';
 
 import { AdminLayout } from '../components/layout/AdminLayout';
+import { AdminProtectedRoute } from '../components/authentication/AdminProtectedRoute';
 import { Dashboard } from '../pages/admin/Dashboard/Dashboard';
 import { Products } from '../pages/admin/Products/Products';
 import { Orders } from '../pages/admin/Orders/Orders';
@@ -117,7 +118,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: (
+      <AdminProtectedRoute>
+        <AdminLayout />
+      </AdminProtectedRoute>
+    ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'products', element: <Products /> },

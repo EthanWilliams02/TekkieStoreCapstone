@@ -43,6 +43,7 @@ class AuthControllerTest {
         assertNotNull(response.getBody());
         assertEquals("ethan@example.com", response.getBody().getEmail());
         assertEquals("jwt-token-xyz", response.getBody().getToken());
+        assertEquals("CUSTOMER", response.getBody().getRole());
     }
 
     @Test
@@ -57,6 +58,7 @@ class AuthControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("jwt-token-xyz", response.getBody().getToken());
+        assertEquals("CUSTOMER", response.getBody().getRole());
     }
 
     @Test

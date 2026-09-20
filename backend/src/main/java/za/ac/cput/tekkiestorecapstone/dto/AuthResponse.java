@@ -10,14 +10,20 @@ public class AuthResponse {
     private String email;
     private String name;
     private String token;
+    private String role;
 
     public AuthResponse() {}
 
     public AuthResponse(String customerId, String email, String name, String token) {
+        this(customerId, email, name, token, "CUSTOMER");
+    }
+
+    public AuthResponse(String customerId, String email, String name, String token, String role) {
         this.customerId = customerId;
         this.email = email;
         this.name = name;
         this.token = token;
+        this.role = (role != null && !role.isBlank()) ? role : "CUSTOMER";
     }
 
     public String getCustomerId() {
@@ -50,5 +56,13 @@ public class AuthResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getRole() {
+        return (role != null && !role.isBlank()) ? role : "CUSTOMER";
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

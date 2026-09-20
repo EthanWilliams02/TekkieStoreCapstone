@@ -23,8 +23,12 @@ export const Login = () => {
     setError(null);
     setLoading(true);
     try {
-      await login(form.email, form.password);
-      navigate('/catalogue');
+      const response = await login(form.email, form.password);
+      if (response?.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/catalogue');
+      }
     } catch (err: any) {
       const message =
         err.response?.data?.message || err.message || 'Invalid email or password. Please try again.';

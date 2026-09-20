@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Package,
@@ -9,11 +9,30 @@ import {
   ExternalLink,
   ShieldCheck,
   Bell,
+  LogOut,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
 
 export const AdminLayout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const isLoggingOut = useRef(false);
+
+  const handleLogout = () => {
+    isLoggingOut.current = true;
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  const displayName = user?.firstName || user?.lastName
+    ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
+    : 'Admin';
+  const displayEmail = user?.email || 'Store Administrator';
+  const initials = (
+    (user?.firstName?.[0] || '') + (user?.lastName?.[0] || '')
+  ).toUpperCase() || 'AD';
 
   // Helper to determine active section for breadcrumbs
   const getPageTitle = () => {
@@ -89,6 +108,19 @@ export const AdminLayout: React.FC = () => {
             <span>Live Storefront</span>
             <ExternalLink size={14} className="external-badge-icon" />
           </Link>
+
+          <div className="admin-nav-divider" />
+
+          <button
+            type="button"
+            className="admin-nav-link logout-link"
+            onClick={handleLogout}
+            title="Log out of admin session"
+            aria-label="Log out of admin session"
+          >
+            <LogOut size={20} className="admin-nav-icon" />
+            <span>Logout</span>
+          </button>
         </nav>
 
         <div className="admin-sidebar-footer">
@@ -127,10 +159,10 @@ export const AdminLayout: React.FC = () => {
             </button>
 
             <div className="admin-profile-pill">
-              <div className="admin-avatar">AD</div>
+              <div className="admin-avatar">{initials}</div>
               <div className="admin-user-info">
-                <span className="admin-name">Admin Manager</span>
-                <span className="admin-role">Store Administrator</span>
+                <span className="admin-name">{displayName}</span>
+                <span className="admin-role">{displayEmail}</span>
               </div>
             </div>
           </div>

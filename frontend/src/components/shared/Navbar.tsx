@@ -142,9 +142,6 @@ export const Navbar = () => {
                 <Link to="/profile" className="profileAvatar" aria-label="My Account" title="My Account">
                   <User className="actionIcon" strokeWidth={1.75} />
                 </Link>
-                <Link to="/admin" className="navAuthBtn navAdminBtn" aria-label="Admin Dashboard" title="Admin Dashboard">
-                  Admin
-                </Link>
               </div>
             ) : (
               <div className="navAuthGroup">
