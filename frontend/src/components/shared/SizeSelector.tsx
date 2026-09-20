@@ -4,6 +4,7 @@ import { ShoeProduct } from '../../types/catalogue';
 import { ShoeVariant } from '../../types/shoeVariant';
 import { shoeVariantService } from '../../services/shoeVariantService';
 import { ProductPriceDisplay } from './ProductPriceDisplay';
+import { ProductImage } from './ProductImage';
 import './SizeSelector.css';
 
 export interface SizeOption {
@@ -179,14 +180,7 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
         {/* HEADER */}
         <div className="size-selector-header">
           <div className="size-selector-product-preview">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="size-selector-thumb"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-              }}
-            />
+            <ProductImage src={product.image} alt={product.name} className="size-selector-thumb" />
             <div className="size-selector-product-info">
               <span className="size-selector-brand">{product.brand}</span>
               <h4 className="size-selector-name">{product.name}</h4>

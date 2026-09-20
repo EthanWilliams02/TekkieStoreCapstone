@@ -2,6 +2,7 @@ import React from 'react';
 import { Package, Tag, Shield } from 'lucide-react';
 import { formatPrice } from '../../utils/formatters';
 import { useOrder } from '../../context/OrderContext';
+import { ProductImage } from '../shared/ProductImage';
 import airMax90 from '../../assets/Nike/Nike Air Max 90.jpg';
 import mr530 from '../../assets/New Balance/MR530 White_Grey.jpg';
 import './ShipmentItems.css';
@@ -91,13 +92,10 @@ export const ShipmentItems: React.FC = () => {
               {item.tag && (
                 <span className="shipment-item-tag">{item.tag}</span>
               )}
-              <img
+              <ProductImage
                 src={item.image}
                 alt={`${item.brand} ${item.name}`}
                 className="shipment-thumb-img"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-                }}
               />
             </div>
 

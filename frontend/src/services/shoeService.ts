@@ -133,6 +133,24 @@ export const createShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null>
   }
 };
 
+// POST: Uploads a single product image file, returns its hosted URL to store
+// in Shoe.imageUrls. Where that file actually ends up (Cloudinary) is a backend
+// implementation detail — callers just get a URL back.
+export const uploadShoeImage = async (file: File, brand: string): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('brand', brand);
+
+  const response = await api.post<{ url: string }>('/shoe/upload-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  if (!response.data?.url) {
+    throw new Error('Upload succeeded but no image URL was returned.');
+  }
+  return response.data.url;
+};
+
 // POST: Sends updated shoe details to the backend to modify an existing record
 export const updateShoe = async (shoe: BackendShoe): Promise<ShoeProduct | null> => {
   try {

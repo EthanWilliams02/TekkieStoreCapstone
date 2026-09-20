@@ -189,6 +189,17 @@
   justify-content: center;
 }
 
+/* Table card — matches the Orders/Inventory page table exactly: white card,
+   border, radius, subtle shadow, header flush to the edges (no card padding,
+   so the grey header background reaches the card's corners). */
+.products-table-card {
+  background-color: var(--pure-white);
+  border: 1px solid #E4E4E7;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
 /* Table Responsive Container */
 .table-responsive {
   width: 100%;
@@ -203,23 +214,27 @@
 }
 
 .admin-table th {
-  padding: 0.85rem 1.25rem;
+  padding: 0.85rem 1rem;
   background-color: #FAFAFA;
   border-bottom: 1px solid #E4E4E7;
-  font-size: 0.75rem;
+  font-size: 0.725rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
 .admin-table td {
-  padding: 1rem 1.25rem;
+  padding: 0.95rem 1rem;
   border-bottom: 1px solid #F4F4F5;
   font-size: 0.875rem;
   color: var(--text-main);
   vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
 }
 
 .admin-table tbody tr {
@@ -228,6 +243,15 @@
 
 .admin-table tbody tr:hover {
   background-color: #F8FAFC;
+}
+
+.product-row {
+  cursor: pointer;
+}
+
+.product-row:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: -2px;
 }
 
 .admin-prod-cell {
@@ -276,15 +300,24 @@
   font-weight: 600;
 }
 
-/* Status Badges */
+/* Status Badges — same dot-badge shape as the Orders page's OrderStatusBadge */
 .status-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.25rem 0.65rem;
   border-radius: 99px;
   font-size: 0.75rem;
   font-weight: 700;
-  text-align: center;
   white-space: nowrap;
+}
+
+.status-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
 }
 
 .status-badge-processing {

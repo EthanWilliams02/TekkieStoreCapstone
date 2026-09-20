@@ -1,108 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Search, UserCheck } from 'lucide-react';
-import api from '../../../services/api';
-
-interface CustomerRow {
-  customerId: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  totalOrders: number;
-  status: string;
-}
-
-const DEFAULT_CUSTOMERS: CustomerRow[] = [
-  {
-    customerId: 'CUST-001',
-    fullName: 'Ethan Williams',
-    email: 'ethan.w@example.com',
-    phone: '+27 82 123 4567',
-    totalOrders: 6,
-    status: 'Active',
-  },
-  {
-    customerId: 'CUST-002',
-    fullName: 'Solly Hendricks',
-    email: 'solly.h@example.com',
-    phone: '+27 83 234 5678',
-    totalOrders: 4,
-    status: 'Active',
-  },
-  {
-    customerId: 'CUST-003',
-    fullName: 'Redah Gamieldien',
-    email: 'redah.g@example.com',
-    phone: '+27 84 345 6789',
-    totalOrders: 3,
-    status: 'Active',
-  },
-  {
-    customerId: 'CUST-004',
-    fullName: 'Angelo Jacobs',
-    email: 'angelo.j@example.com',
-    phone: '+27 82 456 7890',
-    totalOrders: 2,
-    status: 'Active',
-  },
-  {
-    customerId: 'CUST-005',
-    fullName: 'Rameez Karriem',
-    email: 'rameez.k@example.com',
-    phone: '+27 81 567 8901',
-    totalOrders: 5,
-    status: 'Active',
-  },
-];
+import React, { useMemo, useState } from 'react';
+import Skeleton from '@mui/material/Skeleton';
+import { Search, AlertCircle } from 'lucide-react';
+import { useCustomers } from '../../../hooks/useCustomers';
+import { useAdminOrders } from '../../../hooks/useAdminOrders';
+import './Customers.css';
 
 export const Customers: React.FC = () => {
-  const [customers, setCustomers] = useState<CustomerRow[]>(DEFAULT_CUSTOMERS);
+  const { customers, loading: customersLoading, error: customersError } = useCustomers();
+  const { orders, loading: ordersLoading } = useAdminOrders();
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      try {
-        const res = await api.get('/customer/getAll');
-        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-          const mapped: CustomerRow[] = res.data.map((c: any) => {
-            const name = c.name ? `${c.name.firstName || ''} ${c.name.lastName || ''}`.trim() : 'Customer';
-            return {
-              customerId: c.customerId || 'CUST',
-              fullName: name,
-              email: c.email || 'N/A',
-              phone: c.mobileNumber || '+27 00 000 0000',
-              totalOrders: 1,
-              status: 'Active',
-            };
-          });
-          setCustomers(mapped);
-        }
-      } catch (e) {
-        console.warn('Using default customers fallback:', e);
-      }
-    };
-    fetchCustomers();
-  }, []);
+  const loading = customersLoading || ordersLoading;
 
-  const filtered = customers.filter((c) => {
-    return (
-      c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.customerId.toLowerCase().includes(searchTerm.toLowerCase())
+  // Real order counts per customer, derived from actual orders — not a
+  // fabricated placeholder.
+  const orderCountByCustomer = useMemo(() => {
+    const counts = new Map<string, number>();
+    orders.forEach((o) => {
+      const id = o.customer?.customerId;
+      if (!id) return;
+      counts.set(id, (counts.get(id) || 0) + 1);
+    });
+    return counts;
+  }, [orders]);
+
+  const filtered = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return customers;
+    return customers.filter(
+      (c) =>
+        c.fullName.toLowerCase().includes(term) ||
+        c.email.toLowerCase().includes(term) ||
+        c.customerId.toLowerCase().includes(term)
     );
-  });
+  }, [customers, searchTerm]);
 
   return (
     <div className="admin-page-container">
       <div className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Registered Customers</h1>
-          <p className="admin-page-subtitle">View and manage TekkieStore verified customer profiles</p>
+          <p className="admin-page-subtitle">View TekkieStore's registered customer accounts.</p>
         </div>
       </div>
 
-      <div className="admin-toolbar-card">
-        <div className="admin-search-box">
-          <Search size={16} className="search-icon" />
+      <div className="customers-toolbar-card">
+        <div className="customers-search-box">
+          <Search size={16} className="search-icon" aria-hidden="true" />
           <input
             type="text"
             placeholder="Search by customer name, email or ID..."
@@ -112,9 +56,9 @@ export const Customers: React.FC = () => {
         </div>
       </div>
 
-      <div className="dashboard-card">
-        <div className="table-responsive">
-          <table className="admin-table">
+      <div className="customers-table-card">
+        <div className="cust-table-responsive">
+          <table className="customers-table">
             <thead>
               <tr>
                 <th>Customer ID</th>
@@ -122,29 +66,55 @@ export const Customers: React.FC = () => {
                 <th>Email Address</th>
                 <th>Phone Number</th>
                 <th>Total Orders</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((c) => (
-                <tr key={c.customerId}>
-                  <td className="font-semibold text-obsidian">{c.customerId}</td>
-                  <td>
-                    <div className="customer-cell">
-                      <span className="customer-name">{c.fullName}</span>
-                    </div>
-                  </td>
-                  <td className="text-muted text-sm">{c.email}</td>
-                  <td className="text-sm">{c.phone}</td>
-                  <td className="font-semibold text-sm">{c.totalOrders} orders</td>
-                  <td>
-                    <span className="status-pill stock-badge-in">
-                      <UserCheck size={12} style={{ display: 'inline', marginRight: 4 }} />
-                      {c.status}
-                    </span>
+              {loading ? (
+                Array.from({ length: 6 }).map((_, idx) => (
+                  <tr key={idx}>
+                    <td>
+                      <Skeleton variant="text" width={80} animation="wave" />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={130} animation="wave" />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={170} animation="wave" />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={110} animation="wave" />
+                    </td>
+                    <td>
+                      <Skeleton variant="text" width={60} animation="wave" />
+                    </td>
+                  </tr>
+                ))
+              ) : customersError ? (
+                <tr>
+                  <td colSpan={5} className="cust-empty-row cust-empty-row-error">
+                    <AlertCircle size={16} />
+                    <span>Unable to load customers from the server.</span>
                   </td>
                 </tr>
-              ))}
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="cust-empty-row">
+                    {customers.length === 0 ? 'No customers registered yet.' : 'No customers match your search.'}
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((c) => (
+                  <tr key={c.customerId}>
+                    <td className="cust-font-semibold cust-obsidian">{c.customerId}</td>
+                    <td className="cust-name">{c.fullName}</td>
+                    <td className="cust-text-muted cust-text-sm">{c.email}</td>
+                    <td className="cust-text-sm">{c.phone}</td>
+                    <td className="cust-font-semibold cust-text-sm">
+                      {orderCountByCustomer.get(c.customerId) || 0} orders
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

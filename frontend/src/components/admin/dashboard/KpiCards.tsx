@@ -4,52 +4,25 @@ import { formatPrice } from '../../../utils/formatters';
 import { StatCard } from '../../shared/StatCard';
 import './KpiCards.css';
 
-interface KpiCardsProps {
-  totalShoes: number;
-  totalOrders: number;
-  totalRevenue: number;
-  totalCustomers: number;
+interface KpiMetric {
+  value: number;
+  loading?: boolean;
+  error?: boolean;
 }
 
-export const KpiCards: React.FC<KpiCardsProps> = ({
-  totalShoes,
-  totalOrders,
-  totalRevenue,
-  totalCustomers,
-}) => {
+interface KpiCardsProps {
+  shoes: KpiMetric;
+  orders: KpiMetric;
+  revenue: KpiMetric;
+  customers: KpiMetric;
+}
+
+export const KpiCards: React.FC<KpiCardsProps> = ({ shoes, orders, revenue, customers }) => {
   const cards = [
-    {
-      id: 'shoes',
-      label: 'Total Shoes',
-      value: totalShoes.toString(),
-      trend: '+4 this month',
-      trendPositive: true,
-      icon: Package,
-    },
-    {
-      id: 'orders',
-      label: 'Total Orders',
-      value: totalOrders.toString(),
-      trend: '+12.5% vs last month',
-      trendPositive: true,
-      icon: ShoppingBag,
-    },
-    {
-      id: 'revenue',
-      label: 'Total Sales Revenue',
-      value: formatPrice(totalRevenue),
-      trend: '+18.4% vs last month',
-      trendPositive: true,
-      icon: TrendingUp,
-    },
-    {
-      id: 'customers',
-      label: 'Total Customers',
-      value: totalCustomers.toString(),
-      trend: '+8 new this week',
-      trendPositive: true,
-      icon: Users,
-    },
+    { id: 'shoes', label: 'Catalogue Size', icon: Package, metric: shoes, format: (v: number) => v.toString() },
+    { id: 'orders', label: 'Total Orders', icon: ShoppingBag, metric: orders, format: (v: number) => v.toString() },
+    { id: 'revenue', label: 'Total Revenue', icon: TrendingUp, metric: revenue, format: formatPrice },
+    { id: 'customers', label: 'Registered Customers', icon: Users, metric: customers, format: (v: number) => v.toString() },
   ];
 
   return (
@@ -59,9 +32,9 @@ export const KpiCards: React.FC<KpiCardsProps> = ({
           key={card.id}
           icon={card.icon}
           label={card.label}
-          value={card.value}
-          trend={card.trend}
-          trendPositive={card.trendPositive}
+          value={card.format(card.metric.value)}
+          loading={card.metric.loading}
+          error={card.metric.error}
         />
       ))}
     </div>

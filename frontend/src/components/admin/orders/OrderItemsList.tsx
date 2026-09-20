@@ -1,33 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BackendOrderItem } from '../../../services/orderService';
 import { formatPrice } from '../../../utils/formatters';
-import { Package, ImageOff } from 'lucide-react';
+import { Package } from 'lucide-react';
+import { ProductImage } from '../../shared/ProductImage';
 
 interface OrderItemsListProps {
   items: BackendOrderItem[];
 }
 
-const OrderItemThumbnail: React.FC<{ src?: string; alt: string }> = ({ src, alt }) => {
-  const [hasError, setHasError] = useState(false);
-
-  if (!src || hasError) {
-    return (
-      <div className="order-item-fallback-thumb" title={alt}>
-        <ImageOff size={16} className="text-muted" />
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className="order-item-thumb-img"
-      loading="lazy"
-      onError={() => setHasError(true)}
-    />
-  );
-};
+const OrderItemThumbnail: React.FC<{ src?: string; alt: string }> = ({ src, alt }) => (
+  <ProductImage src={src || ''} alt={alt} className="order-item-thumb-img" loading="lazy" />
+);
 
 export const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
   if (!items || items.length === 0) {

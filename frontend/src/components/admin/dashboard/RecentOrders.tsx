@@ -1,126 +1,114 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import Skeleton from '@mui/material/Skeleton';
 import { formatPrice } from '../../../utils/formatters';
+import { BackendOrder, formatOrderStatus } from '../../../services/orderService';
 import './RecentOrders.css';
 
-export interface DashboardOrder {
-  orderNumber: string;
-  customerName: string;
-  customerEmail?: string;
-  date: string;
-  amount: number;
-  status: 'Processing' | 'Dispatched' | 'Delivered' | 'Cancelled';
-}
-
 interface RecentOrdersProps {
-  orders?: DashboardOrder[];
+  orders: BackendOrder[];
+  loading?: boolean;
+  error?: boolean;
 }
 
-const DEFAULT_ORDERS: DashboardOrder[] = [
-  {
-    orderNumber: '#ORD-9412',
-    customerName: 'Ethan Williams',
-    customerEmail: 'ethan.w@example.com',
-    date: '15 Sep 2026',
-    amount: 2899,
-    status: 'Processing',
-  },
-  {
-    orderNumber: '#ORD-9411',
-    customerName: 'Solly Hendricks',
-    customerEmail: 'solly.h@example.com',
-    date: '15 Sep 2026',
-    amount: 3499,
-    status: 'Dispatched',
-  },
-  {
-    orderNumber: '#ORD-9410',
-    customerName: 'Redah Gamieldien',
-    customerEmail: 'redah.g@example.com',
-    date: '14 Sep 2026',
-    amount: 1999,
-    status: 'Delivered',
-  },
-  {
-    orderNumber: '#ORD-9409',
-    customerName: 'Angelo Jacobs',
-    customerEmail: 'angelo.j@example.com',
-    date: '13 Sep 2026',
-    amount: 2599,
-    status: 'Delivered',
-  },
-  {
-    orderNumber: '#ORD-9408',
-    customerName: 'Rameez Karriem',
-    customerEmail: 'rameez.k@example.com',
-    date: '12 Sep 2026',
-    amount: 4199,
-    status: 'Cancelled',
-  },
-];
+const getStatusBadgeClass = (status?: string): string => {
+  switch (status?.toUpperCase()) {
+    case 'PENDING':
+      return 'status-badge-pending';
+    case 'PAID':
+    case 'PACKED':
+      return 'status-badge-processing';
+    case 'SHIPPED':
+      return 'status-badge-dispatched';
+    case 'DELIVERED':
+      return 'status-badge-delivered';
+    case 'CANCELLED':
+      return 'status-badge-cancelled';
+    default:
+      return 'status-badge-pending';
+  }
+};
 
-export const RecentOrders: React.FC<RecentOrdersProps> = ({ orders = DEFAULT_ORDERS }) => {
-  const displayOrders = orders.length > 0 ? orders.slice(0, 5) : DEFAULT_ORDERS;
+const formatOrderDate = (raw: string | number): string => {
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return 'Unknown date';
+  return d.toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' });
+};
 
-  const getStatusBadgeClass = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'processing':
-        return 'status-badge-processing';
-      case 'dispatched':
-      case 'in transit':
-        return 'status-badge-dispatched';
-      case 'delivered':
-        return 'status-badge-delivered';
-      case 'cancelled':
-        return 'status-badge-cancelled';
-      default:
-        return 'status-badge-default';
-    }
-  };
+const customerName = (o: BackendOrder): string => {
+  const first = o.customer?.name?.firstName || '';
+  const last = o.customer?.name?.lastName || '';
+  const full = `${first} ${last}`.trim();
+  return full || o.customer?.email || 'Unknown customer';
+};
+
+export const RecentOrders: React.FC<RecentOrdersProps> = ({ orders, loading = false, error = false }) => {
+  const recent = [...orders]
+    .sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime())
+    .slice(0, 5);
 
   return (
     <div className="dashboard-card recent-orders-card">
       <div className="card-header-row">
-        <div>
-          <h2 className="card-title">Recent Orders</h2>
-          <p className="card-subtitle">Latest incoming store transactions</p>
-        </div>
+        <h2 className="card-title">Recent Orders</h2>
+        <Link to="/admin/orders" className="card-view-all-link">
+          View All <ArrowRight size={14} />
+        </Link>
       </div>
 
-      <div className="table-responsive">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Customer</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayOrders.map((ord) => (
-              <tr key={ord.orderNumber}>
-                <td className="font-semibold text-obsidian">{ord.orderNumber}</td>
-                <td>
-                  <div className="customer-cell">
-                    <span className="customer-name">{ord.customerName}</span>
-                    {ord.customerEmail && (
-                      <span className="customer-sub">{ord.customerEmail}</span>
-                    )}
-                  </div>
-                </td>
-                <td className="text-muted text-sm">{ord.date}</td>
-                <td className="font-semibold text-obsidian">{formatPrice(ord.amount)}</td>
-                <td>
-                  <span className={`status-pill ${getStatusBadgeClass(ord.status)}`}>
-                    {ord.status}
-                  </span>
-                </td>
+      {error ? (
+        <div className="dashboard-empty-state dashboard-empty-state-error">Unable to load orders from the server.</div>
+      ) : !loading && recent.length === 0 ? (
+        <div className="dashboard-empty-state">No orders yet.</div>
+      ) : (
+        <div className="table-responsive">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {loading
+                ? Array.from({ length: 5 }).map((_, idx) => (
+                    <tr key={idx}>
+                      <td><Skeleton variant="text" width={60} animation="wave" /></td>
+                      <td>
+                        <div className="customer-cell">
+                          <Skeleton variant="text" width={110} animation="wave" />
+                          <Skeleton variant="text" width={140} height={14} animation="wave" />
+                        </div>
+                      </td>
+                      <td><Skeleton variant="text" width={80} animation="wave" /></td>
+                      <td><Skeleton variant="text" width={70} animation="wave" /></td>
+                      <td><Skeleton variant="rounded" width={90} height={22} animation="wave" sx={{ borderRadius: '99px' }} /></td>
+                    </tr>
+                  ))
+                : recent.map((ord) => (
+                <tr key={ord.orderId}>
+                  <td className="font-semibold text-obsidian">#{ord.orderId}</td>
+                  <td>
+                    <div className="customer-cell">
+                      <span className="customer-name">{customerName(ord)}</span>
+                      {ord.customer?.email && <span className="customer-sub">{ord.customer.email}</span>}
+                    </div>
+                  </td>
+                  <td className="text-muted text-sm">{formatOrderDate(ord.orderDate)}</td>
+                  <td className="font-semibold text-obsidian">{formatPrice(ord.totalAmount || 0)}</td>
+                  <td>
+                    <span className={`status-pill ${getStatusBadgeClass(ord.status)}`}>{formatOrderStatus(ord.status)}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
