@@ -199,6 +199,14 @@
   box-shadow: 0 0 0 3px rgba(253, 103, 1, 0.12);
 }
 
+/* Auto-generated / auto-calculated fields (Shoe ID, computed Sale Price) —
+   visibly non-interactive rather than looking like a normal editable input */
+.form-group input.readonly-field {
+  background-color: #F4F4F5;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
 .form-group input.input-error,
 .form-group select.input-error {
   border-color: #EF4444;
@@ -239,80 +247,126 @@
   color: var(--text-muted);
 }
 
-.image-inputs-list {
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.image-preview-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #E4E4E7;
+  background-color: var(--pure-white);
+}
+
+.image-preview-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-preview-tile.error img {
+  opacity: 0.4;
+}
+
+.primary-image-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background-color: var(--obsidian);
+  color: var(--pure-white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.image-tile-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-}
-
-.image-input-row {
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.35rem;
+  background-color: rgba(11, 13, 20, 0.55);
+  color: var(--pure-white);
 }
 
-.image-row-number {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  width: 26px;
-  flex-shrink: 0;
+.image-tile-overlay.error {
+  background-color: rgba(239, 68, 68, 0.85);
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
-.image-input-row input {
-  flex: 1;
+.image-tile-actions {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  display: flex;
+  gap: 0.35rem;
 }
 
-.remove-image-btn {
-  background: transparent;
-  border: 1px solid #E4E4E7;
-  color: #EF4444;
+.image-tile-action-btn {
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
-  padding: 0.55rem;
+  border: none;
+  background-color: rgba(11, 13, 20, 0.65);
+  color: var(--pure-white);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
-  background-color: var(--pure-white);
+  transition: background-color 0.15s ease;
 }
 
-.remove-image-btn:hover:not(:disabled) {
-  background-color: #FEF2F2;
-  border-color: #FCA5A5;
+.image-tile-action-btn:hover:not(:disabled) {
+  background-color: var(--brand-orange);
 }
 
-.remove-image-btn:disabled {
+.image-tile-action-btn.remove:hover:not(:disabled) {
+  background-color: #DC2626;
+}
+
+.image-tile-action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.add-image-btn {
-  display: inline-flex;
+.image-upload-dropzone {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  margin-top: 0.65rem;
-  padding: 0.5rem 0.85rem;
-  border-radius: 6px;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  border-radius: 8px;
   border: 1px dashed #D1D5DB;
   background-color: var(--pure-white);
-  color: var(--obsidian);
+  color: var(--text-muted);
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  position: relative;
 }
 
-.add-image-btn:hover:not(:disabled) {
+.image-upload-dropzone:hover,
+.image-upload-dropzone.dragging {
   border-color: var(--brand-orange);
   color: var(--brand-orange);
   background-color: #FFF7ED;
 }
 
-.add-image-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.hidden-file-input {
+  display: none;
 }
 
 /* Modal Actions Footer */

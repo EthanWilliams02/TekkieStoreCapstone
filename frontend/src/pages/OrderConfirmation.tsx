@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useOrder, Order } from '../context/OrderContext';
 import { formatPrice } from '../utils/formatters';
+import { ProductImage } from '../components/shared/ProductImage';
 import './OrderConfirmation.css';
 
 export const OrderConfirmation: React.FC = () => {
@@ -254,14 +255,7 @@ export const OrderConfirmation: React.FC = () => {
                   {order.items.map((item) => (
                     <div key={item.id} className="purchased-item-row" role="listitem">
                       <div className="item-image-wrapper">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="item-product-thumb"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/hero.png';
-                          }}
-                        />
+                        <ProductImage src={item.image} alt={item.name} className="item-product-thumb" />
                         <span className="item-qty-tag">{item.quantity}</span>
                       </div>
 

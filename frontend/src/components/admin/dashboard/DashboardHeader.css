@@ -30,6 +30,16 @@
   gap: 0.75rem;
 }
 
+.dashboard-header-actions .spinning {
+  animation: dashboardSpin 1s linear infinite;
+}
+
+@keyframes dashboardSpin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-header-container {
     flex-direction: column;

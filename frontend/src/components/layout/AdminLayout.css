@@ -220,36 +220,15 @@
   gap: 1.25rem;
 }
 
-.admin-status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #047857;
-  background-color: #ECFDF5;
-  border: 1px solid #A7F3D0;
-  padding: 0.35rem 0.75rem;
-  border-radius: 99px;
-}
-
-.status-dot-pulse {
-  width: 7px;
-  height: 7px;
-  background-color: #10B981;
-  border-radius: 50%;
-  display: inline-block;
-}
-
 .admin-quick-store-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-main);
-  background-color: #F4F4F5;
-  border: 1px solid #E4E4E7;
+  color: var(--pure-white);
+  background-color: var(--obsidian);
+  border: 1px solid var(--obsidian);
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
   text-decoration: none;
@@ -257,40 +236,22 @@
 }
 
 .admin-quick-store-btn:hover {
-  background-color: #E5E7EB;
-  color: var(--brand-orange);
-}
-
-.admin-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  border: 1px solid #E4E4E7;
-  background-color: var(--pure-white);
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.admin-icon-btn:hover {
-  color: var(--obsidian);
-  border-color: #D1D5DB;
+  background-color: var(--brand-orange);
+  border-color: var(--brand-orange);
+  color: var(--pure-white);
 }
 
 .admin-profile-pill {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding-left: 0.5rem;
+  gap: 0.6rem;
+  padding-left: 1rem;
   border-left: 1px solid #E4E4E7;
 }
 
 .admin-avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: var(--obsidian);
   color: var(--pure-white);
@@ -299,24 +260,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.admin-user-info {
-  display: flex;
-  flex-direction: column;
+  border: 2px solid var(--brand-orange);
 }
 
 .admin-name {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--obsidian);
-  line-height: 1.2;
-}
-
-.admin-role {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--text-muted);
 }
 
 /* --------------------------------------------------------------------------

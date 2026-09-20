@@ -3,6 +3,7 @@ import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-do
 import {
   LayoutDashboard,
   Package,
+  Boxes,
   ShoppingBag,
   Users,
   Store,
@@ -38,6 +39,7 @@ export const AdminLayout: React.FC = () => {
   const getPageTitle = () => {
     const path = location.pathname;
     if (path.includes('/admin/products')) return 'Products Management';
+    if (path.includes('/admin/inventory')) return 'Inventory Management';
     if (path.includes('/admin/orders')) return 'Customer Orders';
     if (path.includes('/admin/customers')) return 'Customers Directory';
     return 'Dashboard';
@@ -78,6 +80,16 @@ export const AdminLayout: React.FC = () => {
           >
             <Package size={20} className="admin-nav-icon" />
             <span>Products</span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/inventory"
+            className={({ isActive }) =>
+              `admin-nav-link ${isActive ? 'active' : ''}`
+            }
+          >
+            <Boxes size={20} className="admin-nav-icon" />
+            <span>Inventory</span>
           </NavLink>
 
           <NavLink
@@ -122,13 +134,6 @@ export const AdminLayout: React.FC = () => {
             <span>Logout</span>
           </button>
         </nav>
-
-        <div className="admin-sidebar-footer">
-          <div className="admin-security-pill">
-            <ShieldCheck size={16} className="security-icon" />
-            <span>Secure Admin Session</span>
-          </div>
-        </div>
       </aside>
 
       {/* 2. ADMIN MAIN WRAPPER */}
@@ -144,19 +149,10 @@ export const AdminLayout: React.FC = () => {
           </div>
 
           <div className="admin-top-right">
-            <div className="admin-status-indicator">
-              <span className="status-dot-pulse" />
-              <span className="status-text">Store Online</span>
-            </div>
-
             <Link to="/" className="admin-quick-store-btn" title="Go to Customer Storefront">
               <Store size={16} />
               <span>View Store</span>
             </Link>
-
-            <button type="button" className="admin-icon-btn" aria-label="Notifications" title="System Notifications">
-              <Bell size={18} />
-            </button>
 
             <div className="admin-profile-pill">
               <div className="admin-avatar">{initials}</div>
@@ -176,3 +172,5 @@ export const AdminLayout: React.FC = () => {
     </div>
   );
 };
+
+export default AdminLayout;

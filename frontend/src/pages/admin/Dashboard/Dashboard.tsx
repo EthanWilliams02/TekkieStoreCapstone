@@ -1,124 +1,67 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useShoes } from '../../../hooks/useShoes';
-import { shoeVariantService, ShoeVariant } from '../../../services/shoeVariantService';
+import { useShoeVariants } from '../../../hooks/useShoeVariants';
+import { useAdminOrders } from '../../../hooks/useAdminOrders';
+import { useCustomerCount } from '../../../hooks/useCustomerCount';
 import { DashboardHeader } from '../../../components/admin/dashboard/DashboardHeader';
 import { KpiCards } from '../../../components/admin/dashboard/KpiCards';
 import { SalesOverview } from '../../../components/admin/dashboard/SalesOverview';
-import { RecentOrders, DashboardOrder } from '../../../components/admin/dashboard/RecentOrders';
+import { RecentOrders } from '../../../components/admin/dashboard/RecentOrders';
 import { InventoryStatus } from '../../../components/admin/dashboard/InventoryStatus';
 import { TopProducts } from '../../../components/admin/dashboard/TopProducts';
-import { WarehouseSync } from '../../../components/admin/dashboard/WarehouseSync';
-import api from '../../../services/api';
 import './Dashboard.css';
 
 export const Dashboard: React.FC = () => {
-  const { shoes, loading: shoesLoading, refresh: refreshShoes } = useShoes();
-  const [variants, setVariants] = useState<ShoeVariant[]>([]);
-  const [orders, setOrders] = useState<DashboardOrder[]>([]);
-  const [totalRevenue, setTotalRevenue] = useState<number>(248650);
-  const [totalCustomers, setTotalCustomers] = useState<number>(84);
+  // Every metric on this page comes from a real backend call — no invented
+  // fallback numbers. Each source is cached in-memory (module-level, one
+  // fetch per session) via its own hook, same pattern as useShoes, so
+  // navigating back to the dashboard doesn't refetch everything again.
+  const { shoes, loading: shoesLoading, error: shoesError, refresh: refreshShoes } = useShoes();
+  const { variants, loading: variantsLoading, error: variantsError, refresh: refreshVariants } = useShoeVariants();
+  const { orders, loading: ordersLoading, error: ordersError, refresh: refreshOrders } = useAdminOrders();
+  const { count: customerCount, loading: customersLoading, error: customersError, refresh: refreshCustomerCount } = useCustomerCount();
 
-  // Load backend variants, orders, and customer data with graceful fallbacks
-  const loadDashboardData = useCallback(async () => {
-    try {
-      // 1. Shoe Variants for Inventory Status
-      const loadedVariants = await shoeVariantService.getAllVariants();
-      if (Array.isArray(loadedVariants) && loadedVariants.length > 0) {
-        setVariants(loadedVariants);
-      }
-    } catch (e) {
-      console.warn('Dashboard: Could not load shoe variants, using fallback', e);
-    }
+  const [refreshing, setRefreshing] = useState(false);
 
-    try {
-      // 2. Orders for Recent Orders & Revenue
-      const ordersRes = await api.get('/order/getAll');
-      if (ordersRes.data && Array.isArray(ordersRes.data) && ordersRes.data.length > 0) {
-        const mappedOrders: DashboardOrder[] = ordersRes.data.map((o: any) => {
-          let custName = 'Customer';
-          if (o.customer?.name) {
-            custName = `${o.customer.name.firstName || ''} ${o.customer.name.lastName || ''}`.trim() || 'Customer';
-          }
-          return {
-            orderNumber: `#${o.orderId || 'ORD'}`,
-            customerName: custName,
-            customerEmail: o.customer?.email,
-            date: typeof o.orderDate === 'string' ? o.orderDate.split('T')[0] : 'Today',
-            amount: o.totalAmount || 0,
-            status: (o.status === 'PAID' ? 'Processing' : o.status === 'SHIPPED' ? 'Dispatched' : o.status === 'DELIVERED' ? 'Delivered' : 'Processing') as any,
-          };
-        });
-        setOrders(mappedOrders);
-
-        // Sum revenue
-        const rev = ordersRes.data.reduce((sum: number, o: any) => sum + (o.totalAmount || 0), 0);
-        if (rev > 0) setTotalRevenue(rev);
-      }
-    } catch (e) {
-      console.warn('Dashboard: Could not load backend orders, using fallback', e);
-    }
-
-    try {
-      // 3. Customers count
-      const custRes = await api.get('/customer/getAll');
-      if (custRes.data && Array.isArray(custRes.data)) {
-        setTotalCustomers(custRes.data.length);
-      }
-    } catch (e) {
-      console.warn('Dashboard: Could not load customers count, using fallback', e);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadDashboardData();
-  }, [loadDashboardData]);
-
-  // Handler for Warehouse Sync
-  const handleWarehouseSync = async () => {
-    await refreshShoes();
-    await loadDashboardData();
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refreshShoes(), refreshVariants(), refreshOrders(), refreshCustomerCount()]);
+    setRefreshing(false);
   };
 
-  const totalOrdersCount = orders.length > 0 ? orders.length : 142;
+  // Cancelled orders were never fulfilled sales — excluded from revenue.
+  const totalRevenue = orders.filter((o) => o.status !== 'CANCELLED').reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
   return (
     <div className="admin-dashboard-page">
-      {/* 1. DASHBOARD HEADER */}
-      <DashboardHeader />
+      <DashboardHeader onRefresh={handleRefresh} refreshing={refreshing} />
 
-      {/* 2. KPI CARDS */}
       <KpiCards
-        totalShoes={shoes.length || 24}
-        totalOrders={totalOrdersCount}
-        totalRevenue={totalRevenue}
-        totalCustomers={totalCustomers}
+        shoes={{ value: shoes.length, loading: shoesLoading, error: Boolean(shoesError) }}
+        orders={{ value: orders.length, loading: ordersLoading, error: ordersError }}
+        revenue={{ value: totalRevenue, loading: ordersLoading, error: ordersError }}
+        customers={{ value: customerCount, loading: customersLoading, error: customersError }}
       />
 
-      {/* 3. ROW 2: SALES OVERVIEW + RECENT ORDERS */}
       <div className="dashboard-grid-row-two">
         <div className="grid-cell-sales">
-          <SalesOverview />
+          <SalesOverview orders={orders} loading={ordersLoading} error={ordersError} />
         </div>
         <div className="grid-cell-orders">
-          <RecentOrders orders={orders} />
+          <RecentOrders orders={orders} loading={ordersLoading} error={ordersError} />
         </div>
       </div>
 
-      {/* 4. ROW 3: INVENTORY STATUS + TOP PRODUCTS */}
       <div className="dashboard-grid-row-three">
         <div className="grid-cell-inventory">
-          <InventoryStatus variants={variants} shoes={shoes} />
+          <InventoryStatus variants={variants} loading={variantsLoading} error={variantsError} />
         </div>
         <div className="grid-cell-top-products">
-          <TopProducts products={shoes} loading={shoesLoading} />
+          <TopProducts orders={orders} loading={ordersLoading} error={ordersError} />
         </div>
-      </div>
-
-      {/* 5. ROW 4: WAREHOUSE SYNC */}
-      <div className="dashboard-grid-row-four">
-        <WarehouseSync onSync={handleWarehouseSync} />
       </div>
     </div>
   );
 };
+
 export default Dashboard;

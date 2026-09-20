@@ -6,6 +6,7 @@ import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
 import { ProductPriceDisplay } from '../shared/ProductPriceDisplay';
 import { SizeSelector } from '../shared/SizeSelector';
+import { ProductImage } from '../shared/ProductImage';
 import './WishlistCard.css';
 
 interface WishlistCardProps {
@@ -95,14 +96,11 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
           </button>
 
           {/* Product Image */}
-          <img
+          <ProductImage
             src={product.image}
             alt={`${product.brand} ${product.name} in ${product.colour}`}
             className="wishlist-card-image"
             loading="lazy"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/trending_shoe_1_1788049696433.jpg';
-            }}
           />
 
           {/* Cart Plus Action Button - Opens size selector */}

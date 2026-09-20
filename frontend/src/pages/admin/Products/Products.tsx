@@ -4,6 +4,7 @@ import { formatPrice } from '../../../utils/formatters';
 import { ProductImage } from '../../../components/shared/ProductImage';
 import { ProductToolbar } from '../../../components/admin/products/ProductToolbar';
 import { AddShoeModal } from '../../../components/admin/products/AddShoeModal';
+import { ShoeProduct } from '../../../types/catalogue';
 import { Plus, SearchX, CheckCircle2, AlertCircle, RefreshCw, X } from 'lucide-react';
 import './Products.css';
 
@@ -11,7 +12,8 @@ export const Products: React.FC = () => {
   const { shoes, loading, error, refresh } = useShoes();
   const [searchTerm, setSearchTerm] = useState('');
   const [brandFilter, setBrandFilter] = useState('All');
-  const [showAddShoeModal, setShowAddShoeModal] = useState(false);
+  const [showShoeModal, setShowShoeModal] = useState(false);
+  const [editingShoe, setEditingShoe] = useState<ShoeProduct | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   // Auto-dismiss success notification after 4 seconds
@@ -49,11 +51,29 @@ export const Products: React.FC = () => {
     return ['All', ...uniqueBrands];
   }, [shoes]);
 
-  // Handler invoked by AddShoeModal on successful product creation
-  const handleShoeCreated = useCallback(async () => {
+  const handleAddNew = () => {
+    setEditingShoe(null);
+    setShowShoeModal(true);
+  };
+
+  const handleEditShoe = (shoe: ShoeProduct) => {
+    setEditingShoe(shoe);
+    setShowShoeModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowShoeModal(false);
+    setEditingShoe(null);
+  };
+
+  // Handler invoked by AddShoeModal on successful create OR update — editingShoe
+  // is still set to whichever shoe was being edited at this point (it's only
+  // cleared by handleCloseModal, which fires after this).
+  const handleShoeSaved = useCallback(async () => {
     await refresh();
-    setSuccessToast('Shoe added successfully.');
-  }, [refresh]);
+    setSuccessToast(editingShoe ? 'Shoe updated successfully.' : 'Shoe added successfully.');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refresh, editingShoe]);
 
   return (
     <div className="admin-page-container">
@@ -69,7 +89,7 @@ export const Products: React.FC = () => {
         <button
           type="button"
           className="admin-btn-primary"
-          onClick={() => setShowAddShoeModal(true)}
+          onClick={handleAddNew}
           id="add-new-shoe-btn"
         >
           <Plus size={18} />
@@ -125,7 +145,7 @@ export const Products: React.FC = () => {
       />
 
       {/* Products Table / State Container */}
-      <div className="dashboard-card">
+      <div className="products-table-card">
         {loading ? (
           <div className="admin-loading-state">
             <RefreshCw size={24} className="spinning loading-icon" />
@@ -174,7 +194,19 @@ export const Products: React.FC = () => {
               </thead>
               <tbody>
                 {filtered.map((shoe) => (
-                  <tr key={shoe.id}>
+                  <tr
+                    key={shoe.id}
+                    className="product-row"
+                    onClick={() => handleEditShoe(shoe)}
+                    tabIndex={0}
+                    title={`Edit ${shoe.name}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleEditShoe(shoe);
+                      }
+                    }}
+                  >
                     <td>
                       <div className="admin-prod-cell">
                         <div className="admin-prod-img-box">
@@ -193,10 +225,14 @@ export const Products: React.FC = () => {
                     <td>
                       {shoe.isOnSale ? (
                         <span className="status-pill status-badge-processing">
+                          <span className="status-pill-dot" />
                           {shoe.salePercentage}% OFF
                         </span>
                       ) : (
-                        <span className="status-pill stock-badge-in">Standard</span>
+                        <span className="status-pill stock-badge-in">
+                          <span className="status-pill-dot" />
+                          Standard
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -207,11 +243,13 @@ export const Products: React.FC = () => {
         )}
       </div>
 
-      {/* Add Shoe Modal Component */}
+      {/* Add / Edit Shoe Modal Component */}
       <AddShoeModal
-        isOpen={showAddShoeModal}
-        onClose={() => setShowAddShoeModal(false)}
-        onShoeCreated={handleShoeCreated}
+        isOpen={showShoeModal}
+        onClose={handleCloseModal}
+        onSaved={handleShoeSaved}
+        shoes={shoes}
+        editingShoe={editingShoe}
       />
     </div>
   );
