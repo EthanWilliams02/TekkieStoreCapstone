@@ -269,6 +269,16 @@
   color: var(--obsidian);
 }
 
+.admin-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-role {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 /* --------------------------------------------------------------------------
    3. CONTENT AREA
    -------------------------------------------------------------------------- */
