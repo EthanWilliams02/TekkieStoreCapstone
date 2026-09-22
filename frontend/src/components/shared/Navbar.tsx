@@ -14,7 +14,7 @@ export const Navbar = () => {
   const [localSearch, setLocalSearch] = useState<string | null>(null);
   const { wishlistCount } = useWishlist();
   const { cartCount } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const searchValue = localSearch !== null ? localSearch : urlSearch;
 
@@ -135,6 +135,12 @@ export const Navbar = () => {
                 )}
               </div>
             </Link>
+
+            {user?.role === 'ADMIN' && (
+              <Link to="/admin" className="navAdminBtn" title="Back to Admin Dashboard">
+                Admin
+              </Link>
+            )}
 
             {/* Conditional Profile Avatar or Log In / Sign Up */}
             {isAuthenticated ? (

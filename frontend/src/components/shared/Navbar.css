@@ -239,14 +239,18 @@
 }
 
 .navAdminBtn {
-  background-color: var(--obsidian);
-  color: var(--pure-white);
-  border: 1px solid var(--obsidian);
+  color: #000000;
+  background-color: transparent;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  padding: 0;
+  transition: color 0.2s ease;
 }
 
 .navAdminBtn:hover {
-  background-color: var(--brand-orange);
-  border-color: var(--brand-orange);
-  color: var(--pure-white);
+  color: var(--brand-orange);
 }
 

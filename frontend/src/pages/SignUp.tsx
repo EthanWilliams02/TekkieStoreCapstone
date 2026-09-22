@@ -139,9 +139,6 @@ export const SignUp = () => {
               Admin
             </button>
           </div>
-          {role === 'ADMIN' && (
-            <span className="roleHint">Admin accounts require an @tekkies.com email address</span>
-          )}
         </div>
 
         <AuthField

@@ -32,8 +32,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      const token = localStorage.getItem(TOKEN_KEY);
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      const token = sessionStorage.getItem(TOKEN_KEY);
       if (saved && token) {
         const parsed = JSON.parse(saved);
         const user = parsed.user
@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
       }
     } catch (error) {
-      console.error('Failed to load auth from localStorage', error);
+      console.error('Failed to load auth from sessionStorage', error);
     }
     return {
       isAuthenticated: false,
@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(authState));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(authState));
     } catch (error) {
       console.error('Failed to persist auth state', error);
     }
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password?: string): Promise<AuthResponse> => {
     const response = await authService.login(email, password);
-    localStorage.setItem(TOKEN_KEY, response.token);
+    sessionStorage.setItem(TOKEN_KEY, response.token);
 
     let first = '';
     let last = '';
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = async (data: RegisterPayload): Promise<AuthResponse> => {
     const response = await authService.register(data);
-    localStorage.setItem(TOKEN_KEY, response.token);
+    sessionStorage.setItem(TOKEN_KEY, response.token);
 
     let first = data.firstName || '';
     let last = data.lastName || '';
@@ -128,8 +128,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
     setAuthState({
       isAuthenticated: false,
       user: null,
