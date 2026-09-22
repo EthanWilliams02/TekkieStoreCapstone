@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useShoes } from '../../../hooks/useShoes';
 import { useShoeVariants } from '../../../hooks/useShoeVariants';
 import { useAdminOrders } from '../../../hooks/useAdminOrders';
@@ -21,20 +21,22 @@ export const Dashboard: React.FC = () => {
   const { orders, loading: ordersLoading, error: ordersError, refresh: refreshOrders } = useAdminOrders();
   const { count: customerCount, loading: customersLoading, error: customersError, refresh: refreshCustomerCount } = useCustomerCount();
 
-  const [refreshing, setRefreshing] = useState(false);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await Promise.all([refreshShoes(), refreshVariants(), refreshOrders(), refreshCustomerCount()]);
-    setRefreshing(false);
-  };
+  useEffect(() => {
+    const id = setInterval(() => {
+      refreshShoes();
+      refreshVariants();
+      refreshOrders();
+      refreshCustomerCount();
+    }, 30000);
+    return () => clearInterval(id);
+  }, [refreshShoes, refreshVariants, refreshOrders, refreshCustomerCount]);
 
   // Cancelled orders were never fulfilled sales — excluded from revenue.
   const totalRevenue = orders.filter((o) => o.status !== 'CANCELLED').reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
   return (
     <div className="admin-dashboard-page">
-      <DashboardHeader onRefresh={handleRefresh} refreshing={refreshing} />
+      <DashboardHeader />
 
       <KpiCards
         shoes={{ value: shoes.length, loading: shoesLoading, error: Boolean(shoesError) }}
